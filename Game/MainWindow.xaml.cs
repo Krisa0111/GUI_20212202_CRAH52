@@ -24,5 +24,17 @@ namespace Game
         {
             InitializeComponent();
         }
+        public MainMenuDisplay mainMenuDisplay;
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+
+            mainmenudisplay.InvalidateVisual();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
