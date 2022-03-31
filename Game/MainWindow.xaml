@@ -19,7 +19,7 @@
 
             </Grid.ColumnDefinitions>
             <Label Content="Rail Runner" Grid.Column="1" FontSize="36" VerticalAlignment="Top" HorizontalAlignment="Center" FontFamily="Broadway" Padding="0" Margin="50,10,0,0"/>
-            <Button Content="New Game" Grid.Column="1" FontSize="24"  Padding="20" Opacity="0.8" VerticalAlignment="Top" HorizontalAlignment="Center" BorderThickness="0" FontFamily="Broadway" Margin="50,52,0,0">
+            <Button Click="New_Game_Button_Click" Content="New Game" Grid.Column="1" FontSize="24"  Padding="20" Opacity="0.8" VerticalAlignment="Top" HorizontalAlignment="Center" BorderThickness="0" FontFamily="Broadway" Margin="50,52,0,0">
                 <Button.Background>
                     <SolidColorBrush Color="#FFDDDDDD" Opacity="0.8"/>
                 </Button.Background>
@@ -31,13 +31,13 @@
                 </Button.Background>
 
             </Button>
-            <Button Content="High score" Grid.Column="1" FontSize="24" Padding="20" Opacity="0.8" VerticalAlignment="Top" HorizontalAlignment="Center" BorderThickness="0" FontFamily="Broadway" Margin="50,212,0,0">
+            <Button Click="HighScoreTable_Button_Click" Content="High score" Grid.Column="1" FontSize="24" Padding="20" Opacity="0.8" VerticalAlignment="Top" HorizontalAlignment="Center" BorderThickness="0" FontFamily="Broadway" Margin="50,212,0,0">
                 <Button.Background>
                     <SolidColorBrush Color="#FFDDDDDD" Opacity="0.8"/>
                 </Button.Background>
 
             </Button>
-            <Button Content="Exit Game" Grid.Column="1" FontSize="24" Padding="20" Opacity="0.8" VerticalAlignment="Top" HorizontalAlignment="Center" BorderThickness="0" FontFamily="Broadway" Margin="50,292,0,0">
+            <Button Click="Exit_Game_Button_Click" Content="Exit Game" Grid.Column="1" FontSize="24" Padding="20" Opacity="0.8" VerticalAlignment="Top" HorizontalAlignment="Center" BorderThickness="0" FontFamily="Broadway" Margin="50,292,0,0">
                 <Button.Background>
                     <SolidColorBrush Color="#FFDDDDDD" Opacity="0.8"/>
                 </Button.Background>

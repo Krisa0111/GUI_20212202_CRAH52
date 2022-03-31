@@ -23,6 +23,8 @@ namespace Game
     public partial class MainWindow : Window
     {
         GameController gameController;
+        GameWindow gameWindow = new GameWindow();
+        HighScoreWindow highScoreWindow = new HighScoreWindow();
         public MainWindow()
         {
             InitializeComponent();
@@ -40,6 +42,27 @@ namespace Game
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void New_Game_Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+            gameWindow.Show();
+        }
+        private void Exit_Game_Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void HighScoreTable_Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+            highScoreWindow.Show();
         }
     }
 }
