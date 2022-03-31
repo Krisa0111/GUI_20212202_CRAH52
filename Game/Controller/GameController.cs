@@ -30,6 +30,21 @@ namespace Game.Controller
                 case Key.Left:
                     gameController.Move(Directions.Left);
                     break;
+                case Key.W:
+                    gameController.Move(Directions.Up);
+                    break;
+                case Key.S:
+                    gameController.Move(Directions.Down);
+                    break;
+                case Key.D:
+                    gameController.Move(Directions.Right);
+                    break;
+                case Key.A:
+                    gameController.Move(Directions.Left);
+                    break;
+                case Key.Escape:
+                    ;
+                    break;
                 default:
                     break;
             }
