@@ -23,7 +23,7 @@ namespace Game
     public partial class MainWindow : Window
     {
         GameController gameController;
-        GameWindow gameWindow = new GameWindow();
+        
         HighScoreWindow highScoreWindow = new HighScoreWindow();
         public MainWindow()
         {
@@ -47,6 +47,7 @@ namespace Game
         private void New_Game_Button_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+            GameWindow gameWindow = new GameWindow();
             gameWindow.Show();
         }
         private void Exit_Game_Button_Click(object sender, RoutedEventArgs e)
