@@ -69,6 +69,8 @@
             </Viewport3D.Children>
 
         </Viewport3D>
-        
+        <Label Content="Life::" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="24" FontFamily="Broadway"/>
+        <Label Content="Score" HorizontalAlignment="Left" Margin="10,47,0,0" VerticalAlignment="Top" FontSize="24" FontFamily="Broadway"/>
+
     </Grid>
 </Window>
