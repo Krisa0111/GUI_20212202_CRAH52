@@ -19,9 +19,22 @@ namespace Game
     /// </summary>
     public partial class HighScoreWindow : Window
     {
+        
         public HighScoreWindow()
         {
             InitializeComponent();
+        }
+
+        private void BackToMainMenu_Clik(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BackToMain_Button_Menu_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.Show();
         }
     }
 }

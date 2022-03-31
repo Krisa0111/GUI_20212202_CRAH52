@@ -21,6 +21,7 @@
             <StackPanel Grid.Column="1">
 
             </StackPanel>
+            <Button Content="Back" Click="BackToMain_Button_Menu_Click"/>
 
         </Grid>
         
