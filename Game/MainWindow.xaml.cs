@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Game.Controller;
+using Game.Logic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +22,12 @@ namespace Game
     /// </summary>
     public partial class MainWindow : Window
     {
+        GameController gameController;
         public MainWindow()
         {
             InitializeComponent();
+            GameLogic logic = new GameLogic();
+            display
         }
         public MainMenuDisplay mainMenuDisplay;
 
