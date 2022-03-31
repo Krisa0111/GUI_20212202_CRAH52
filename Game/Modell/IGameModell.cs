@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Game.Model
 {
-    interface IGameModel
+    public interface IGameModell
     {
     }
 }
