@@ -10,6 +10,10 @@ namespace Game.Logic
 {
     class GameLogic : IGameController, IGameModell
     {
+        public int Life { get; set; }
+        public int Score { get; set; }
+        
+
         public void Move(Directions direction)
         {
             throw new NotImplementedException();

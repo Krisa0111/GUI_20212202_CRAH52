@@ -23,11 +23,12 @@ namespace Game
     public partial class MainWindow : Window
     {
         GameController gameController;
+        
         public MainWindow()
         {
             InitializeComponent();
             GameLogic logic = new GameLogic();
-            display
+            
         }
         public MainMenuDisplay mainMenuDisplay;
 
@@ -40,6 +41,17 @@ namespace Game
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void New_Game_Button_Click(object sender, RoutedEventArgs e)
+        {
+            GameWindow gameWindow = new GameWindow();
+            this.Close();
+            gameWindow.Show();
+        }
+        private void Exit_Game_Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

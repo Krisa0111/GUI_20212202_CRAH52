@@ -1,4 +1,6 @@
 ﻿<Window x:Class="Game.GameWindow"
+        WindowState="Maximized"
+        WindowStyle="None"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -67,6 +69,8 @@
             </Viewport3D.Children>
 
         </Viewport3D>
-        
+        <Label Content="Pontszám" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Opacity="0.8" FontFamily="Broadway" FontSize="24"/>
+        <Label Content="Élet" HorizontalAlignment="Left" Margin="10,47,0,0" VerticalAlignment="Top" Opacity="0.8" FontFamily="Broadway" FontSize="24"/>
+
     </Grid>
 </Window>
