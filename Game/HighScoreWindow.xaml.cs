@@ -25,10 +25,7 @@ namespace Game
             InitializeComponent();
         }
 
-        private void BackToMainMenu_Clik(object sender, RoutedEventArgs e)
-        {
-
-        }
+        
 
         private void BackToMain_Button_Menu_Click(object sender, RoutedEventArgs e)
         {
