@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game.Model
+namespace Game.Renderer
 {
-    class GameModel
+    class Display
     {
     }
 }
