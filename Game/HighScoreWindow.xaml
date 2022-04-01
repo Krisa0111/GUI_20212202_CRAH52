@@ -18,10 +18,14 @@
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
             <Label Content="High Score Table" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Center" FontFamily="Broadway" FontSize="24"/>
+            <Button Grid.Column="0" Content="Back" Click="BackToMain_Button_Menu_Click" FontSize="36" VerticalAlignment="Top" HorizontalAlignment="Center" FontFamily="Broadway" Padding="0" Margin="10,800,0,0">
+                <Button.Background>
+                    <SolidColorBrush Color="#FFDDDDDD" Opacity="0.8"/>
+                </Button.Background>
+            </Button>
             <StackPanel Grid.Column="1">
 
             </StackPanel>
-            <Button Content="Back" Click="BackToMain_Button_Menu_Click"/>
 
         </Grid>
         
