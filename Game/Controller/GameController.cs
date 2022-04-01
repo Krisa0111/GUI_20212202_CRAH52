@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Game.Enums;
 
 namespace Game.Controller
 {
@@ -16,7 +17,7 @@ namespace Game.Controller
         }
         public void KeyPressed(Key key)
         {
-            switch (key)
+           /* switch (key)
             {
                 case Key.Up:
                     gameController.Move(Directions.Up);
@@ -32,7 +33,7 @@ namespace Game.Controller
                     break;
                 default:
                     break;
-            }
+            }*/
         }
     }
 }

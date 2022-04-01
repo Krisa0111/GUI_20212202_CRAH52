@@ -8,18 +8,17 @@ using System.Threading.Tasks;
 
 namespace Game.Logic
 {
-    class GameLogic : IGameController, IGameModell
+    public class GameLogic : IGameController, IGameModell
     {
-        public int Life { get; set; }
         public int Score { get; set; }
-        public GameLogic()
+        public int Life { get; set; }
+        public bool ContinueGame { get; set; }
+        public GameLogic(int score, int life, bool continueGame)
         {
-            this.Life = 3;
-            this.Score = 0;
+            this.Life = score;
+            this.Score = life;
+            this.ContinueGame = continueGame;
         }
-        public void Move(Directions direction)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

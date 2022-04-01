@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game.Controller
+namespace Game.Enums
 {
-    interface IGameController
+    public enum Position
     {
-        //void Move(Directions direction);
+        Left,
+        Mid,
+        Right
     }
 }
