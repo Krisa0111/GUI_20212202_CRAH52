@@ -16,12 +16,10 @@ namespace Game.Graphics
             id = GL.GenVertexArray();
         }
 
-        public void LinkAttrib(VertexBufferObject vbo, int layout, int numComponents, VertexAttribPointerType type, int stride, int offset)
+        public void LinkAttrib(int layout, int numComponents, VertexAttribPointerType type, int stride, int offset)
         {
-            vbo.Bind();
             GL.VertexAttribPointer(layout, numComponents, type, false, stride, offset);
             GL.EnableVertexAttribArray(layout);
-            vbo.Unbind();
         }
 
         public void Bind()

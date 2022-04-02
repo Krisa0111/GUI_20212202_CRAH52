@@ -21,16 +21,18 @@ namespace Game.Graphics
             vao = new VertexArrayObject();
 
             vao.Bind();
+            vbo.Bind();
 
             // position
-            vao.LinkAttrib(vbo, 0, 3, VertexAttribPointerType.Float, Vertex.Stride, 0);
+            vao.LinkAttrib(0, 3, VertexAttribPointerType.Float, Vertex.Stride, Vertex.PositionOffset);
             // normal
-            vao.LinkAttrib(vbo, 1, 3, VertexAttribPointerType.Float, Vertex.Stride, 3);
+            vao.LinkAttrib(1, 3, VertexAttribPointerType.Float, Vertex.Stride, Vertex.NormalOffset);
             // color
-            vao.LinkAttrib(vbo, 2, 3, VertexAttribPointerType.Float, Vertex.Stride, 6);
+            vao.LinkAttrib(2, 3, VertexAttribPointerType.Float, Vertex.Stride, Vertex.ColorOffset);
             // texture uv
-            vao.LinkAttrib(vbo, 3, 2, VertexAttribPointerType.Float, Vertex.Stride, 9);
+            vao.LinkAttrib(3, 2, VertexAttribPointerType.Float, Vertex.Stride, Vertex.TextureUVOffset);
 
+            vbo.Unbind();
             vao.Unbind();
 
         }

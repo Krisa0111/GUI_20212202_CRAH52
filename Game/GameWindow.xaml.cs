@@ -19,7 +19,11 @@ namespace Game
 
         private Camera camera;
 
-        private Mesh mesh;
+        private Mesh mesh1;
+        private Mesh mesh2;
+
+        private Texture texture1;
+        private Texture texture2;
 
         public GameWindow()
         {
@@ -32,17 +36,28 @@ namespace Game
             };
             OpenTkControl.Start(settings);
 
-            shader = new Shader("Shaders/simplev.glsl", "Shaders/simplef.glsl");
+            GL.Enable(EnableCap.DepthTest);
 
-            camera = new Camera(Vector3.UnitZ * 3, (float)(ActualWidth / ActualHeight));
+            shader = new Shader("Shaders/simplev.glsl", "Shaders/simplef.glsl");
+            texture1 = Texture.LoadFromFile("Images/metalbox.png");
+            texture2 = Texture.LoadFromFile("Images/textureStone.png");
+
+            camera = new Camera(Vector3.UnitZ * 1, (float)(ActualWidth / ActualHeight));
 
             List<Vertex> vertices = new List<Vertex>();
 
-            vertices.Add(new Vertex(new Vector3(-0.5f, -0.5f, 0.0f), new Vector3(0), new Vector3(0), new Vector2(0)));
-            vertices.Add(new Vertex(new Vector3(0.5f, -0.5f, 0.0f), new Vector3(0), new Vector3(0), new Vector2(0)));
-            vertices.Add(new Vertex(new Vector3(0.0f, 0.5f, 0.0f), new Vector3(0), new Vector3(0), new Vector2(0)));
+            vertices.Add(new Vertex(new Vector3(-0.5f, -0.5f, 0.0f), new Vector3(0,0,1), new Vector3(0,0,1), new Vector2(0,0)));
+            vertices.Add(new Vertex(new Vector3(0.5f, -0.5f, 0.0f), new Vector3(0,0,1), new Vector3(0,1,0), new Vector2(1,0)));
+            vertices.Add(new Vertex(new Vector3(0.0f, 0.5f, 0.0f), new Vector3(0,0,1), new Vector3(1,0,0), new Vector2(.5f,1)));
 
-            mesh = new Mesh(vertices);
+            mesh1 = new Mesh(vertices);
+
+            vertices[0].Color = Vector3.One;
+            vertices[1].Color = Vector3.One;
+            vertices[2].Color = Vector3.One;
+
+            mesh2 = new Mesh(vertices);
+
         }
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
@@ -57,13 +72,30 @@ namespace Game
             GL.ClearColor(Color4.Blue);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
+            ang++;
+
             shader.Use();
-            var model = Matrix4.Identity * Matrix4.CreateRotationY((float)MathHelper.DegreesToRadians(ang++));
+            var model = Matrix4.Identity * Matrix4.CreateRotationX((float)MathHelper.DegreesToRadians(ang));
             shader.SetMatrix4("model", model);
             shader.SetMatrix4("view", camera.GetViewMatrix()); // camera.GetViewMatrix()
             shader.SetMatrix4("projection", camera.GetProjectionMatrix()); // camera.GetProjectionMatrix()
 
-            mesh.Draw();
+            texture1.Use(TextureUnit.Texture0);
+
+            mesh1.Draw();
+
+            model = Matrix4.Identity * Matrix4.CreateRotationY((float)MathHelper.DegreesToRadians(ang)) * Matrix4.CreateTranslation(Vector3.UnitX);
+            shader.SetMatrix4("model", model);
+
+            mesh2.Draw();
+
+            texture2.Use(TextureUnit.Texture0);
+
+            model = Matrix4.Identity * Matrix4.CreateRotationY((float)MathHelper.DegreesToRadians(-ang)) * Matrix4.CreateTranslation(-Vector3.UnitX);
+            shader.SetMatrix4("model", model);
+
+            mesh2.Draw();
+
 
             var code = GL.GetError();
             while (code != ErrorCode.NoError)

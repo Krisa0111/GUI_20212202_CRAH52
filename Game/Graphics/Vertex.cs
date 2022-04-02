@@ -36,5 +36,10 @@ namespace Game.Graphics
         public static int Size { get => 11; }
         public static int Stride { get => Size * sizeof(float); }
 
+        public static int PositionOffset { get => 0; }
+        public static int NormalOffset { get => 3 * sizeof(float); }
+        public static int ColorOffset { get => 6 * sizeof(float); }
+        public static int TextureUVOffset { get => 9 * sizeof(float); }
+
     }
 }
