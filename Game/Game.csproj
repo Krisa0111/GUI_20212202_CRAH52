@@ -1,51 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net5.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Images\background.jpg" />
-    <None Remove="Images\blueportal.jpg" />
-    <None Remove="Images\blueportal.png" />
-    <None Remove="Images\booster-icon-20.jpg" />
-    <None Remove="Images\decelerator.jpg" />
-    <None Remove="Images\metalbox.png" />
-    <None Remove="Images\redportal.jpg" />
-    <None Remove="Images\skull2 %281%29.jpg" />
-    <None Remove="Images\textureStone.png" />
-  </ItemGroup>
+	<ItemGroup>
+		<ContentWithTargetPath Include="Resources\**">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<TargetPath>%(RecursiveDir)\%(Filename)%(Extension)</TargetPath>
+		</ContentWithTargetPath>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Content Include="Images\background.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Images\blueportal.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Images\blueportal.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Images\booster-icon-20.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Images\decelerator.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Images\metalbox.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Images\redportal.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Images\skull2 (1).jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Images\textureStone.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="OpenTK" Version="4.7.1" />
+		<PackageReference Include="OpenTK.GLWpfControl" Version="4.1.0" />
+	</ItemGroup>
 
 </Project>
