@@ -13,7 +13,6 @@
 		</ContentWithTargetPath>
 	</ItemGroup>
 
-
 	<ItemGroup>
 		<PackageReference Include="OpenTK" Version="4.7.1" />
 		<PackageReference Include="OpenTK.GLWpfControl" Version="4.1.0" />

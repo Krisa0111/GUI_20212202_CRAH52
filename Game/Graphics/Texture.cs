@@ -100,7 +100,6 @@ namespace Game.Graphics
         // The OpenGL standard requires that there be at least 16, but there can be more depending on your graphics card.
         public void Use(TextureUnit unit)
         {
-            GL.ActiveTexture(unit);
             GL.BindTexture(TextureTarget.Texture2D, id);
         }
 

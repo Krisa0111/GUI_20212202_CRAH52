@@ -16,14 +16,15 @@ namespace Game
     public partial class GameWindow : Window
     {
         private Shader shader;
+        private Shader playerShader;
 
         private Camera camera;
 
-        private Mesh mesh1;
-        private Mesh mesh2;
+        private StaticMesh<VertexColorTextureUV> mesh1;
+        private StaticMesh<VertexTextureUV> playerMesh;
 
         private Texture texture1;
-        private Texture texture2;
+        private Texture playerTexture;
 
         public GameWindow()
         {
@@ -37,26 +38,32 @@ namespace Game
             OpenTkControl.Start(settings);
 
             GL.Enable(EnableCap.DepthTest);
-
-            shader = new Shader("Shaders/simplev.glsl", "Shaders/simplef.glsl");
+            
+            shader = new Shader("Shaders/simplev.glsl", "Shaders/colortexturef.glsl");
+            playerShader = new Shader("Shaders/playerv.glsl", "Shaders/texturef.glsl");
             texture1 = Texture.LoadFromFile("Images/metalbox.png");
-            texture2 = Texture.LoadFromFile("Images/textureStone.png");
+            playerTexture = Texture.LoadFromFile("Images/running.png");
 
             camera = new Camera(Vector3.UnitZ * 1, (float)(ActualWidth / ActualHeight));
 
-            List<Vertex> vertices = new List<Vertex>();
+            List<VertexColorTextureUV> vertices1 = new List<VertexColorTextureUV>();
 
-            vertices.Add(new Vertex(new Vector3(-0.5f, -0.5f, 0.0f), new Vector3(0,0,1), new Vector3(0,0,1), new Vector2(0,0)));
-            vertices.Add(new Vertex(new Vector3(0.5f, -0.5f, 0.0f), new Vector3(0,0,1), new Vector3(0,1,0), new Vector2(1,0)));
-            vertices.Add(new Vertex(new Vector3(0.0f, 0.5f, 0.0f), new Vector3(0,0,1), new Vector3(1,0,0), new Vector2(.5f,1)));
+            vertices1.Add(new VertexColorTextureUV(new Vector3(-0.5f, -0.5f, 0.0f), new Vector3(0,0,1), new Vector3(0,0,1), new Vector2(0,0)));
+            vertices1.Add(new VertexColorTextureUV(new Vector3(0.5f, -0.5f, 0.0f), new Vector3(0,0,1), new Vector3(0,1,0), new Vector2(1,0)));
+            vertices1.Add(new VertexColorTextureUV(new Vector3(0.0f, 0.5f, 0.0f), new Vector3(0,0,1), new Vector3(1,0,0), new Vector2(.5f,1)));
 
-            mesh1 = new Mesh(vertices);
+            mesh1 = new StaticMesh<VertexColorTextureUV>(vertices1);
 
-            vertices[0].Color = Vector3.One;
-            vertices[1].Color = Vector3.One;
-            vertices[2].Color = Vector3.One;
+            List<VertexTextureUV> vertices2 = new List<VertexTextureUV>();
 
-            mesh2 = new Mesh(vertices);
+            vertices2.Add(new VertexTextureUV(new Vector3(-0.5f, -0.5f, 0.0f), new Vector3(0, 0, 1), new Vector2(0, 0)));
+            vertices2.Add(new VertexTextureUV(new Vector3(-0.5f, 0.5f, 0.0f), new Vector3(0, 0, 1), new Vector2(0, 1)));
+            vertices2.Add(new VertexTextureUV(new Vector3(0.5f, 0.5f, 0.0f), new Vector3(0, 0, 1), new Vector2(1, 1)));
+            vertices2.Add(new VertexTextureUV(new Vector3(-0.5f, -0.5f, 0.0f), new Vector3(0, 0, 1), new Vector2(0, 0)));
+            vertices2.Add(new VertexTextureUV(new Vector3(0.5f, 0.5f, 0.0f), new Vector3(0, 0, 1), new Vector2(1, 1)));
+            vertices2.Add(new VertexTextureUV(new Vector3(0.5f, -0.5f, 0.0f), new Vector3(0, 0, 1), new Vector2(1, 0)));
+
+            playerMesh = new StaticMesh<VertexTextureUV>(vertices2);
 
         }
 
@@ -67,6 +74,8 @@ namespace Game
         }
 
         int ang = 0;
+        int x = 1;
+        int y = 1;
         private void OpenTkControl_OnRender(TimeSpan delta)
         {
             GL.ClearColor(Color4.Blue);
@@ -75,26 +84,37 @@ namespace Game
             ang++;
 
             shader.Use();
-            var model = Matrix4.Identity * Matrix4.CreateRotationX((float)MathHelper.DegreesToRadians(ang));
+            var model = Matrix4.Identity * Matrix4.CreateRotationX((float)MathHelper.DegreesToRadians(ang)) * Matrix4.CreateTranslation(Vector3.UnitX);
             shader.SetMatrix4("model", model);
-            shader.SetMatrix4("view", camera.GetViewMatrix()); // camera.GetViewMatrix()
-            shader.SetMatrix4("projection", camera.GetProjectionMatrix()); // camera.GetProjectionMatrix()
+            shader.SetMatrix4("view", camera.GetViewMatrix());
+            shader.SetMatrix4("projection", camera.GetProjectionMatrix());
 
             texture1.Use(TextureUnit.Texture0);
 
             mesh1.Draw();
 
-            model = Matrix4.Identity * Matrix4.CreateRotationY((float)MathHelper.DegreesToRadians(ang)) * Matrix4.CreateTranslation(Vector3.UnitX);
-            shader.SetMatrix4("model", model);
 
-            mesh2.Draw();
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusConstantAlpha);
 
-            texture2.Use(TextureUnit.Texture0);
+            playerShader.Use();
+            playerShader.SetMatrix4("model", Matrix4.Identity);
+            playerShader.SetMatrix4("view", camera.GetViewMatrix());
+            playerShader.SetMatrix4("projection", camera.GetProjectionMatrix());
+            playerShader.SetVector2("textureID", new Vector2(x, y));
+            x++;
+            if (x > 16)
+            {
+                x = 1;
+                y++;
+                if (y > 8) y = 1;
+            }
 
-            model = Matrix4.Identity * Matrix4.CreateRotationY((float)MathHelper.DegreesToRadians(-ang)) * Matrix4.CreateTranslation(-Vector3.UnitX);
-            shader.SetMatrix4("model", model);
+            playerTexture.Use(TextureUnit.Texture0);
 
-            mesh2.Draw();
+            playerMesh.Draw();
+
+            GL.Disable(EnableCap.Blend);
 
 
             var code = GL.GetError();
@@ -105,7 +125,6 @@ namespace Game
             }
 
         }
-
 
     }
 }

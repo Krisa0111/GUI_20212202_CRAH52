@@ -7,26 +7,42 @@ using System.Threading.Tasks;
 
 namespace Game.Graphics
 {
-    internal class VertexBufferObject
+    internal class VertexBufferObject<T> where T : IVertex
     {
-        private int id;
+        private readonly int id = 0;
+        private int bufferSize;
+        public int VertexSize { get; }
 
-        public VertexBufferObject(IReadOnlyList<Vertex> vertices)
+        public VertexBufferObject(IList<T> vertices, int vertexSize, BufferUsageHint bufferUsageHint)
         {
             id = GL.GenBuffer();
+            this.VertexSize = vertexSize;
+            BufferData(vertices, bufferUsageHint);
+        }
+
+        public void BufferData(IList<T> vertices, BufferUsageHint bufferUsageHint)
+        {
             GL.BindBuffer(BufferTarget.ArrayBuffer, id);
 
-            float[] data = new float[vertices.Count * Vertex.Size];
+            float[] data = new float[vertices.Count * VertexSize];
             for (int i = 0; i < vertices.Count; i++)
             {
                 float[] vertex = vertices[i].GetData();
                 for (int j = 0; j < vertex.Length; j++)
                 {
-                    data[i * Vertex.Size + j] = vertex[j];
+                    data[i * VertexSize + j] = vertex[j];
                 }
             }
 
-            GL.BufferData(BufferTarget.ArrayBuffer, data.Length * sizeof(float), data, BufferUsageHint.StaticDraw);
+            if (data.Length * sizeof(float) > bufferSize)
+            {
+                GL.BufferData(BufferTarget.ArrayBuffer, data.Length * sizeof(float), data, bufferUsageHint);
+                bufferSize = data.Length * sizeof(float);
+            }
+            else
+            {
+                GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, data.Length * sizeof(float), data);
+            }
         }
 
         public void Bind()

@@ -136,5 +136,15 @@ namespace Game.Graphics
             GL.Uniform3(uniformLocations[name], data);
         }
 
+        /// <summary>
+        /// Set a uniform Vector2 on this shader.
+        /// </summary>
+        /// <param name="name">The name of the uniform</param>
+        /// <param name="data">The data to set</param>
+        public void SetVector2(string name, Vector2 data)
+        {
+            GL.Uniform2(uniformLocations[name], data);
+        }
+
     }
 }
