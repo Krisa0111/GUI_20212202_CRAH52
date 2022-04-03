@@ -1,4 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL;
+using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,8 @@ namespace Game.Graphics
         protected VertexBufferObject<T> vbo;
         protected VertexArrayObject vao;
         protected int vertexCount;
+
+        private Texture texture;
 
         public StaticMesh(IList<T> vertices)
         {
@@ -29,8 +32,18 @@ namespace Game.Graphics
 
         }
 
-        public void Draw()
+        public void AttachTexture(Texture texture)
         {
+            this.texture = texture;
+        }
+
+        public void Draw(Shader shader, Matrix4 model)
+        {
+            shader.Use();
+            shader.SetMatrix4("model", model);
+
+            texture?.Use(TextureUnit.Texture0);
+
             vao.Bind();
             GL.DrawArrays(PrimitiveType.Triangles, 0, vertexCount);
         }
