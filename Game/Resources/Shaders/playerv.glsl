@@ -12,11 +12,12 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-uniform vec2 textureID;
+uniform vec2 atlasSize;
+uniform vec2 atlasXY;
 
 void main()
 {
     normal = aNormal;
-    uv = vec2(aUv.x / 16.0 + textureID.x / 16.0 , aUv.y / 8.0 + textureID.y / 8.0);
+    uv = aUv / atlasSize + atlasXY / atlasSize;
     gl_Position = vec4(aPosition, 1.0) * model * view * projection;
 }

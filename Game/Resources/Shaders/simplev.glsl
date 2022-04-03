@@ -13,10 +13,12 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+uniform vec2 uvOffset;
+
 void main()
 {
     normal = aNormal;
     color = aColor;
-    uv = aUv;
+    uv = aUv + uvOffset;
     gl_Position = vec4(aPosition, 1.0) * model * view * projection;
 }
