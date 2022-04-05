@@ -28,7 +28,7 @@ namespace Game
         public MainWindow()
         {
             InitializeComponent();
-            GameLogic logic = new GameLogic();
+            GameLogic logic = new GameLogic(0,3,false);
             
         }
         public MainMenuDisplay mainMenuDisplay;
