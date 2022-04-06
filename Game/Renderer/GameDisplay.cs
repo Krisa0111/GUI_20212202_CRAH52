@@ -3,6 +3,7 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,9 +20,11 @@ namespace Game.Renderer
         private StaticMesh<VertexTextureUV> squareMesh;
         private StaticMesh<VertexTextureUV> floorMesh;
         private StaticMesh<VertexTextureUV> boxMesh;
+        private StaticMesh<VertexTextureUV>[] playerMeshes = new StaticMesh<VertexTextureUV>[30];
 
         private Texture floorTexture;
         private Texture boxTexture;
+        private Texture leatherTexture;
         private Texture playerTexture;
         private Vector2 playerAtlasSize;
         private Vector2 playerAtlasPos;
@@ -35,6 +38,8 @@ namespace Game.Renderer
             playerTexture = Texture.LoadFromFile("Images/running3.png");
             floorTexture = Texture.LoadFromFile("Images/textureStone.png");
             boxTexture = Texture.LoadFromFile("Images/metalbox.png");
+            leatherTexture = Texture.LoadFromFile("Images/Leather_Base_01_basecolor.jpg");
+            
 
             mainCamera = new Camera(new Vector3(0.0f, 1.5f, 1.5f), width / height);
             mainCamera.Pitch = -15f;
@@ -57,7 +62,15 @@ namespace Game.Renderer
 
             boxMesh.AttachTexture(boxTexture);
 
-            //GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+            for (int i = 0; i < playerMeshes.Length; i++)
+            {
+                var m = ModelLoader.loadModel("Models/human" + i + ".obj");
+                playerMeshes[i] = new StaticMesh<VertexTextureUV>(m.vertices, m.indices);
+                playerMeshes[i].AttachTexture(leatherTexture);
+            }
+
+            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+
         }
 
         public void Resize(float width, float height)
@@ -66,6 +79,7 @@ namespace Game.Renderer
         }
 
         float x = 0;
+        int a = 0;
         public void Render()
         {
             GL.ClearColor(Color4.Black);
@@ -86,27 +100,9 @@ namespace Game.Renderer
 
             boxMesh.Draw(gameItemShader, Matrix4.Identity * Matrix4.CreateTranslation(new Vector3(1,0.0f,-1)));
 
-
-            // render player
-
-            GL.Enable(EnableCap.Blend); // enable transparency
-            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-
-            mainCamera.SetMatrices(playerShader);
-
-            playerShader.Use();
-            playerShader.SetVector2("atlasXY", playerAtlasPos);
-            playerAtlasPos.X++;
-            if (playerAtlasPos.X > playerAtlasSize.X)
-            {
-                playerAtlasPos.X = 1;
-                playerAtlasPos.Y++;
-                if (playerAtlasPos.Y > playerAtlasSize.Y) playerAtlasPos.Y = 1;
-            }
-
-            squareMesh.Draw(playerShader, Matrix4.Identity);
-
-            GL.Disable(EnableCap.Blend);
+            a = (a + 1) % playerMeshes.Length;
+            playerMeshes[a].Draw(gameItemShader, Matrix4.Identity /** Matrix4.CreateScale(0.5f)*/);
+            
         }
 
         private List<VertexTextureUV> generateSquareMesh()

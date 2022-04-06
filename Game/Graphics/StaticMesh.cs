@@ -12,8 +12,10 @@ namespace Game.Graphics
     internal class StaticMesh<T> where T : IVertex
     {
         protected VertexBufferObject<T> vbo;
+        protected ElementsBufferObject ebo;
         protected VertexArrayObject vao;
         protected int vertexCount;
+        protected int indexCount;
 
         private Texture texture;
 
@@ -27,9 +29,32 @@ namespace Game.Graphics
 
             vao.Bind();
             vbo.Bind();
-            vertices[0].SetAttributes(vao);
-            vbo.Unbind();
 
+            vertices[0].SetAttributes(vao);
+
+            vbo.Unbind();
+            vao.Unbind();
+        }
+
+        public StaticMesh(IList<T> vertices, IList<uint> indices) : this(vertices)
+        {
+            vertexCount = vertices.Count;
+            indexCount = indices.Count;
+
+            vbo = new VertexBufferObject<T>(vertices, vertices[0].Size, BufferUsageHint.StaticDraw);
+
+            vao = new VertexArrayObject();
+
+            vao.Bind();
+            vbo.Bind();
+
+            vertices[0].SetAttributes(vao);
+
+            ebo = new ElementsBufferObject(indices, BufferUsageHint.StaticDraw);
+            ebo.Bind();
+
+            vbo.Unbind();
+            vao.Unbind();
         }
 
         public void AttachTexture(Texture texture)
@@ -45,7 +70,11 @@ namespace Game.Graphics
             texture?.Use(TextureUnit.Texture0);
 
             vao.Bind();
-            GL.DrawArrays(PrimitiveType.Triangles, 0, vertexCount);
+
+            if (ebo is null)
+                GL.DrawArrays(PrimitiveType.Triangles, 0, vertexCount);
+            else
+                GL.DrawElements(BeginMode.Triangles, indexCount, DrawElementsType.UnsignedInt, 0);
         }
 
     }

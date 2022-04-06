@@ -40,16 +40,12 @@ namespace Game.Graphics
 
         public void SetAttributes(VertexArrayObject vao)
         {
-            vao.Bind();
-
             // position
             vao.LinkAttrib(0, 3, VertexAttribPointerType.Float, Stride, PositionOffset);
             // normal
             vao.LinkAttrib(1, 3, VertexAttribPointerType.Float, Stride, NormalOffset);
             // color
             vao.LinkAttrib(2, 3, VertexAttribPointerType.Float, Stride, ColorOffset);
-
-            vao.Unbind();
         }
     }
 }
