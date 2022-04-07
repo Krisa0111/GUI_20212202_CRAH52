@@ -1,0 +1,11 @@
+﻿#version 330 core
+
+in vec3 normal;
+in vec3 color;
+
+out vec4 outputColor;
+
+void main()
+{
+    outputColor = vec4(color,0.0f);
+}
