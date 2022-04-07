@@ -69,7 +69,7 @@ namespace Game.Renderer
                 playerMeshes[i].AttachTexture(leatherTexture);
             }
 
-            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+            //GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
 
         }
 
@@ -101,7 +101,7 @@ namespace Game.Renderer
             boxMesh.Draw(gameItemShader, Matrix4.Identity * Matrix4.CreateTranslation(new Vector3(1,0.0f,-1)));
 
             a = (a + 1) % playerMeshes.Length;
-            playerMeshes[a].Draw(gameItemShader, Matrix4.Identity /** Matrix4.CreateScale(0.5f)*/);
+            playerMeshes[a].Draw(gameItemShader, Matrix4.Identity * Matrix4.CreateScale(0.5f));
             
         }
 
