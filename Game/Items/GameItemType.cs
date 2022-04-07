@@ -9,7 +9,8 @@
         PlusLife,
         PremiumPortal,
         Random,
-        Skull
+        Skull,
+        Box
 
     }
 }
