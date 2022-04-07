@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -70,9 +71,9 @@ namespace Game.Graphics
                     {
                         vertices.Add(
                             new Vector3(
-                                float.Parse(parts[1]),
-                                float.Parse(parts[2]),
-                                float.Parse(parts[3])
+                                float.Parse(parts[1],CultureInfo.InvariantCulture),
+                                float.Parse(parts[2], CultureInfo.InvariantCulture),
+                                float.Parse(parts[3], CultureInfo.InvariantCulture)
                                 )
                             );
                     }
@@ -80,8 +81,8 @@ namespace Game.Graphics
                     {
                         uvs.Add(
                             new Vector2(
-                                float.Parse(parts[1]),
-                                float.Parse(parts[2])
+                                float.Parse(parts[1], CultureInfo.InvariantCulture),
+                                float.Parse(parts[2], CultureInfo.InvariantCulture)
                                 )
                             );
                     }
@@ -89,9 +90,9 @@ namespace Game.Graphics
                     {
                         normals.Add(
                             new Vector3(
-                                float.Parse(parts[1]),
-                                float.Parse(parts[2]),
-                                float.Parse(parts[3])
+                                float.Parse(parts[1], CultureInfo.InvariantCulture),
+                                float.Parse(parts[2], CultureInfo.InvariantCulture),
+                                float.Parse(parts[3], CultureInfo.InvariantCulture)
                                 )
                             );
                     } 
