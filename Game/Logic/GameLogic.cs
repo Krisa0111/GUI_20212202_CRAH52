@@ -6,45 +6,88 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 
 namespace Game.Logic
 {
     class GameLogic : IGameController, IGameModell
     {
-        public int Life { get; set; }
         public int Score { get; set; }
-        public List<Decelerator> Decelerators { get; set; }
-        public List<Accelerator> Accelerators { get; set; }
-        public List<BluePortal> BluePortals { get; set; }
-        public List<RedPortal> RedPortals { get; set; }
-        public List<PlusLife> PlusLifes { get; set; }
-        public List<PremiumPortal> PremiumPortals { get; set; }
-        public List<RandomItem> RandomItems { get; set; }
-        public List<Skull> Skulls { get; set; }
-        public List<Box> Boxes { get; set; }
+        public List<GameItem> GameItems { get; set; }
+        public Player Player { get; set; }
         public event EventHandler Changed;
         public event EventHandler GameOver;
         public GameLogic()
         {
-            this.Life = 3;
             this.Score = 0;
         }
         Size area;
         public void SetupSizes(Size area)
         {
             this.area = area;
-            Decelerators = new List<Decelerator>();
-            Accelerators = new List<Accelerator>();
-            BluePortals = new List<BluePortal>();
-            RedPortals = new List<RedPortal>();
-            PlusLifes = new List<PlusLife>();
-            PremiumPortals = new List<PremiumPortal>();
-            RandomItems = new List<RandomItem>();
-            Skulls = new List<Skull>();
+            GameItems = new List<GameItem>();
+            Player = new Player();
 
         }
-        
+        public bool IsCollision(GameItem other)
+        {
+            return Geometry.Combine(
+                Player.Area,
+                other.Area,
+                GeometryCombineMode.Intersect,
+                null
+                ).GetArea() > 0;
+        }
+        public void Update()
+        {
+            foreach (var item in GameItems)
+            {
+                if (IsCollision(item))
+                {
+                    if (item is Accelerator)
+                    {
+                        Player.Speed += new Vector(0, 10); // CHNAGE THIS ACCORDING TO TESTS
+                        Score -= 5;
+                    }
+                    else if (item is Decelerator)
+                    {
+                        Player.Speed -= new Vector(0, 10); // CHNAGE THIS ACCORDING TO TESTS
+                        Score += 5;
+                    }
+                    else if (item is BluePortal )
+                    {
+                        Player.Position += new Vector(0, 20);
+                        Score += 20;
+                    }
+                    else if (item is RedPortal )
+                    {
+                        Player.Position -= new Vector(0, 20);
+                        Score -= 20;
+                    }
+                    else if (item is PlusLife)
+                    {
+                        if (Player.MaxLife >Player.Life)
+                        {
+                            Player.Life++;
+                        }
+                    }
+                    else if (item is PremiumPortal)
+                    {
+                        //TO DO
+                        Player.Position += new Vector();
+                    }
+                    else if (item is RandomItem)
+                    {
 
+                    }
+                    else if (item is Skull)
+                    {
+                        // Game over
+                    }
+                }
+                
+            }
+        }
         public void Move(Directions direction)
         {
             throw new NotImplementedException();
