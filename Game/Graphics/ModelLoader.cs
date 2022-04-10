@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,10 +14,17 @@ namespace Game.Graphics
     {
         public IList<T> vertices;
         public IList<uint> indices;
+        public Material material;
+
         public Model()
         {
             vertices = new List<T>();
             indices = new List<uint>();
+        }
+
+        public StaticMesh<T> GetMesh()
+        {
+            return new StaticMesh<T>(vertices, indices);
         }
     }
     
@@ -50,9 +58,9 @@ namespace Game.Graphics
             public Index[] Points { get; private set; }
         }
 
-        public static Model<VertexTextureUV> loadModel(string file)
+        public static Model<VertexNT> LoadModel(string file)
         {
-            var model = new Model<VertexTextureUV>();
+            var model = new Model<VertexNT>();
 
             List<Vector3> vertices = new List<Vector3>();
             List<Vector2> uvs = new List<Vector2>();
@@ -70,9 +78,9 @@ namespace Game.Graphics
                     {
                         vertices.Add(
                             new Vector3(
-                                float.Parse(parts[1]),
-                                float.Parse(parts[2]),
-                                float.Parse(parts[3])
+                                float.Parse(parts[1], CultureInfo.InvariantCulture),
+                                float.Parse(parts[2], CultureInfo.InvariantCulture),
+                                float.Parse(parts[3], CultureInfo.InvariantCulture)
                                 )
                             );
                     }
@@ -80,8 +88,8 @@ namespace Game.Graphics
                     {
                         uvs.Add(
                             new Vector2(
-                                float.Parse(parts[1]),
-                                float.Parse(parts[2])
+                                float.Parse(parts[1], CultureInfo.InvariantCulture),
+                                float.Parse(parts[2], CultureInfo.InvariantCulture)
                                 )
                             );
                     }
@@ -89,15 +97,21 @@ namespace Game.Graphics
                     {
                         normals.Add(
                             new Vector3(
-                                float.Parse(parts[1]),
-                                float.Parse(parts[2]),
-                                float.Parse(parts[3])
+                                float.Parse(parts[1], CultureInfo.InvariantCulture),
+                                float.Parse(parts[2], CultureInfo.InvariantCulture),
+                                float.Parse(parts[3], CultureInfo.InvariantCulture)
                                 )
                             );
-                    } 
+                    }
                     else if (parts[0] == "f")
                     {
                         faces.Add(new Face(parts[1], parts[2], parts[3]));
+                    }
+                    else if (parts[0] == "mtllib")
+                    {
+                        string path = Path.GetDirectoryName(Path.Combine(Directory.GetCurrentDirectory(), file));
+                        string mtlFile = Path.Combine(path, parts[1]);
+                        model.material = LoadMaterial(mtlFile);
                     }
                 }
             }
@@ -108,7 +122,7 @@ namespace Game.Graphics
             {
                 foreach (var item in face.Points)
                 {
-                    VertexTextureUV vertex = new VertexTextureUV(
+                    VertexNT vertex = new VertexNT(
                     vertices[item.Vertex-1],
                     normals[item.Normal-1],
                     uvs[item.Texture-1]);
@@ -116,7 +130,6 @@ namespace Game.Graphics
                 }
             }
 
-            // TODO index vertices
             for (int i = 0; i < model.vertices.Count; i++)
             {
                 int index = i;
@@ -133,7 +146,17 @@ namespace Game.Graphics
                 model.indices.Add((uint)index);
 
             }
+
+            Debug.WriteLine($" {file} loaded with {model.vertices.Count} vertices and {model.indices.Count} indices");
+
             return model;
+        }
+
+        public static Material LoadMaterial(string file)
+        {
+            Material material = null;
+            // TODO
+            return material;
         }
     }
 }
