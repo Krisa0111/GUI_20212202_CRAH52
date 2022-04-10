@@ -52,6 +52,53 @@ namespace Game.Graphics
             }
         }
 
+        public Shader(string vertexPath, string fragmantPath, string geometryPath)
+        {
+            var shaderSource = File.ReadAllText(vertexPath);
+
+            var vertexShader = GL.CreateShader(ShaderType.VertexShader);
+            GL.ShaderSource(vertexShader, shaderSource);
+            CompileShader(vertexShader);
+
+            shaderSource = File.ReadAllText(fragmantPath);
+
+            var fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
+            GL.ShaderSource(fragmentShader, shaderSource);
+            CompileShader(fragmentShader);
+
+            shaderSource = File.ReadAllText(geometryPath);
+
+            var geometryShader = GL.CreateShader(ShaderType.GeometryShader);
+            GL.ShaderSource(geometryShader, shaderSource);
+            CompileShader(geometryShader);
+
+            ID = GL.CreateProgram();
+
+            GL.AttachShader(ID, vertexShader);
+            GL.AttachShader(ID, fragmentShader);
+            GL.AttachShader(ID, geometryShader);
+
+            LinkProgram(ID);
+
+            GL.DetachShader(ID, vertexShader);
+            GL.DetachShader(ID, fragmentShader);
+            GL.DetachShader(ID, geometryShader);
+            GL.DeleteShader(fragmentShader);
+            GL.DeleteShader(vertexShader);
+            GL.DeleteShader(geometryShader);
+
+            // chache uniform locations
+            GL.GetProgram(ID, GetProgramParameterName.ActiveUniforms, out var numberOfUniforms);
+            uniformLocations = new Dictionary<string, int>();
+
+            for (var i = 0; i < numberOfUniforms; i++)
+            {
+                var key = GL.GetActiveUniform(ID, i, out _, out _);
+                var location = GL.GetUniformLocation(ID, key);
+                uniformLocations.Add(key, location);
+            }
+        }
+
         ~Shader()
         {
             GL.DeleteProgram(ID);
