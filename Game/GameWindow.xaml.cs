@@ -18,6 +18,8 @@ namespace Game
     {
         GameDisplay gameDisplay;
 
+        double fps;
+
         public GameWindow()
         {
             InitializeComponent();
@@ -29,19 +31,22 @@ namespace Game
             };
             OpenTkControl.Start(settings);
 
-            gameDisplay = new GameDisplay((float)ActualWidth, (float)ActualHeight);
+            gameDisplay = new GameDisplay(OpenTkControl.FrameBufferWidth, OpenTkControl.FrameBufferHeight);
         }
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);
-            gameDisplay.Resize((float)sizeInfo.NewSize.Width, (float)sizeInfo.NewSize.Height);
+            gameDisplay.Resize(OpenTkControl.FrameBufferWidth, OpenTkControl.FrameBufferHeight, OpenTkControl.Framebuffer);
         }
-
         
         private void OpenTkControl_OnRender(TimeSpan delta)
         {
             gameDisplay.Render();
+
+            fps = 1.0 / delta.TotalSeconds;
+
+            lb_fps.Content = Math.Round(fps);
 
             var code = GL.GetError();
             while (code != ErrorCode.NoError)

@@ -11,5 +11,6 @@
         <glWpfControl:GLWpfControl 
             x:Name="OpenTkControl" 
             Render="OpenTkControl_OnRender"/>
+        <Label x:Name="lb_fps" FontSize="24" FontWeight="Bold"/>
     </Grid>
 </Window>
