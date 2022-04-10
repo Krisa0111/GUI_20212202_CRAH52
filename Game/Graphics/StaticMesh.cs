@@ -11,21 +11,21 @@ namespace Game.Graphics
 
     internal class StaticMesh<T> where T : IVertex
     {
-        protected VertexBufferObject<T> vbo;
-        protected ElementsBufferObject ebo;
-        protected VertexArrayObject vao;
+        protected VertexBuffer<T> vbo;
+        protected ElementsBuffer ebo;
+        protected VertexArray vao;
         protected int vertexCount;
         protected int indexCount;
 
-        private Texture texture;
+        public Material Material { get; set; }
 
         public StaticMesh(IList<T> vertices)
         {
             vertexCount = vertices.Count;
             
-            vbo = new VertexBufferObject<T>(vertices, vertices[0].Size, BufferUsageHint.StaticDraw);
+            vbo = new VertexBuffer<T>(vertices, vertices[0].Size, BufferUsageHint.StaticDraw);
 
-            vao = new VertexArrayObject();
+            vao = new VertexArray();
 
             vao.Bind();
             vbo.Bind();
@@ -41,25 +41,30 @@ namespace Game.Graphics
             vertexCount = vertices.Count;
             indexCount = indices.Count;
 
-            vbo = new VertexBufferObject<T>(vertices, vertices[0].Size, BufferUsageHint.StaticDraw);
+            vbo = new VertexBuffer<T>(vertices, vertices[0].Size, BufferUsageHint.StaticDraw);
 
-            vao = new VertexArrayObject();
+            vao = new VertexArray();
 
             vao.Bind();
             vbo.Bind();
 
             vertices[0].SetAttributes(vao);
 
-            ebo = new ElementsBufferObject(indices, BufferUsageHint.StaticDraw);
+            ebo = new ElementsBuffer(indices, BufferUsageHint.StaticDraw);
             ebo.Bind();
 
             vbo.Unbind();
             vao.Unbind();
         }
-
-        public void AttachTexture(Texture texture)
+        
+        public StaticMesh(IList<T> vertices, IList<uint> indices, Material material) : this(vertices, indices)
         {
-            this.texture = texture;
+            this.Material = material;
+        }
+
+        public StaticMesh(IList<T> vertices, Material material) : this(vertices)
+        {
+            this.Material = material;
         }
 
         public void Draw(Shader shader, Matrix4 model)
@@ -67,14 +72,30 @@ namespace Game.Graphics
             shader.Use();
             shader.SetMatrix4("model", model);
 
-            texture?.Use(TextureUnit.Texture0);
+            Material?.Use();
 
             vao.Bind();
 
             if (ebo is null)
                 GL.DrawArrays(PrimitiveType.Triangles, 0, vertexCount);
             else
-                GL.DrawElements(BeginMode.Triangles, indexCount, DrawElementsType.UnsignedInt, 0);
+                GL.DrawElements(PrimitiveType.Triangles, indexCount, DrawElementsType.UnsignedInt, IntPtr.Zero);
+        }
+
+        public void Draw(Shader shader, Matrix4 model, int instances, Vector3 instanceOffset)
+        {
+            shader.Use();
+            shader.SetMatrix4("model", model);
+            shader.SetVector3("instanceOffset", instanceOffset);
+
+            Material?.Use();
+
+            vao.Bind();
+
+            if (ebo is null)
+                GL.DrawArraysInstanced(PrimitiveType.Triangles, 0, vertexCount, instances);
+            else
+                GL.DrawElementsInstanced(PrimitiveType.Triangles, indexCount, DrawElementsType.UnsignedInt, IntPtr.Zero, instances);
         }
 
     }
