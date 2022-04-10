@@ -4,7 +4,7 @@
     {
         int Size { get; }
         int Stride { get; }
-        void SetAttributes(VertexArrayObject vao);
+        void SetAttributes(VertexArray vao);
         float[] GetData();
     }
 }

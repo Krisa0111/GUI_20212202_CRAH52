@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Game.Graphics
 {
-    internal class ElementsBufferObject
+    internal class ElementsBuffer
     {
         private readonly int id = 0;
         private int bufferSize;
 
-        public ElementsBufferObject(IList<uint> indices, BufferUsageHint bufferUsageHint)
+        public ElementsBuffer(IList<uint> indices, BufferUsageHint bufferUsageHint)
         {
             id = GL.GenBuffer();
             BufferData(indices, bufferUsageHint);

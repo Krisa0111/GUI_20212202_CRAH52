@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace Game.Graphics
 {
-    internal class VertexBufferObject<T> where T : IVertex
+    internal class VertexBuffer<T> where T : IVertex
     {
         private readonly int id = 0;
         private int bufferSize;
         public int VertexSize { get; }
 
-        public VertexBufferObject(IList<T> vertices, int vertexSize, BufferUsageHint bufferUsageHint)
+        public VertexBuffer(IList<T> vertices, int vertexSize, BufferUsageHint bufferUsageHint)
         {
             id = GL.GenBuffer();
             this.VertexSize = vertexSize;

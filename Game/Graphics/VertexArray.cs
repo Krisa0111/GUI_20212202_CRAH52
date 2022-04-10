@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 
 namespace Game.Graphics
 {
-    internal class VertexArrayObject
+    internal class VertexArray
     {
         private int id;
 
-        public VertexArrayObject()
+        public VertexArray()
         {
             id = GL.GenVertexArray();
+            ;
         }
 
         public void LinkAttrib(int layout, int numComponents, VertexAttribPointerType type, int stride, int offset)
@@ -32,7 +33,7 @@ namespace Game.Graphics
             GL.BindVertexArray(0);
         }
 
-        void Delete()
+        public void Delete()
         {
             GL.DeleteVertexArray(id);
         }
