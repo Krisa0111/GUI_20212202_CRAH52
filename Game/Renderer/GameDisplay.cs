@@ -3,6 +3,7 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,172 +13,188 @@ namespace Game.Renderer
 {
     internal class GameDisplay
     {
-        private Shader gameItemShader;
-        private Shader playerShader;
+        private FrameBuffer multisapleFbo;
+        private FrameBuffer intermediateFBO;
 
-        private Camera mainCamera;
+        private Shader shader;
+        private Shader normalShader;
+        private Shader fboShader;
 
-        private StaticMesh<VertexTextureUV> squareMesh;
-        private StaticMesh<VertexTextureUV> floorMesh;
-        private StaticMesh<VertexTextureUV> boxMesh;
-        private StaticMesh<VertexTextureUV>[] playerMeshes = new StaticMesh<VertexTextureUV>[30];
+        private Camera camera;
 
-        private Texture floorTexture;
-        private Texture boxTexture;
-        private Texture leatherTexture;
-        private Texture playerTexture;
-        private Vector2 playerAtlasSize;
-        private Vector2 playerAtlasPos;
+        private StaticMesh<VertexNT> floorMesh;
+        private StaticMesh<VertexNT> tunnelMesh;
+        private StaticMesh<VertexNT> pipeMesh;
+        private StaticMesh<VertexNT> wireMesh;
+        private StaticMesh<VertexNT> lampMesh;
+        private StaticMesh<VertexNT> boxMesh;
+        private StaticMesh<VertexNT>[] playerMeshes = new StaticMesh<VertexNT>[30];
 
-        public GameDisplay(float width, float height)
+        private Material floorMaterial;
+        private Material concreteMaterial;
+        private Material metalMaterial;
+        private Material metalBoxMaterial;
+        private Material leatherMaterial;
+
+        private DirectionalLight directionalLight;
+        private PointLight[] pointLights;
+
+        public bool ShowWireframe { get; set; } = false;
+        public bool ShowNormals { get; set; } = false;
+
+        public GameDisplay(int width, int height)
         {
-            GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.CullFace);
+            GL.FrontFace(FrontFaceDirection.Ccw);
+            GL.CullFace(CullFaceMode.Back);
 
-            gameItemShader = new Shader("Shaders/simplev.glsl", "Shaders/texturef.glsl");
-            playerShader = new Shader("Shaders/playerv.glsl", "Shaders/texturef.glsl");
-            playerTexture = Texture.LoadFromFile("Images/running3.png");
-            floorTexture = Texture.LoadFromFile("Images/textureStone.png");
-            boxTexture = Texture.LoadFromFile("Images/metalbox.png");
-            leatherTexture = Texture.LoadFromFile("Images/Leather_Base_01_basecolor.jpg");
-            
+            GL.Enable(EnableCap.Multisample);
 
-            mainCamera = new Camera(new Vector3(0.0f, 1.5f, 1.5f), width / height);
-            mainCamera.Pitch = -15f;
+            shader = new Shader("Shaders/default_vert.glsl", "Shaders/default_frag.glsl", "Shaders/default_geom.glsl");
+            normalShader = new Shader("Shaders/default_vert.glsl", "Shaders/normals_frag.glsl", "Shaders/normals_geom.glsl");
+            fboShader = new Shader("Shaders/fbo_vert.glsl", "Shaders/fbo_frag.glsl");
 
-            squareMesh = new StaticMesh<VertexTextureUV>(generateSquareMesh());
+            multisapleFbo = new FrameBuffer(width, height, 4);
+            intermediateFBO = new FrameBuffer(width, height);
 
-            squareMesh.AttachTexture(playerTexture);
+            floorMaterial = new Material("Images/Metal_Floor_01_basecolor.jpg", "Images/Metal_Floor_01_metallic.jpg");
 
-            playerAtlasSize = new Vector2(16, 3);
-            playerAtlasPos = new Vector2(1, 1);
+            concreteMaterial = new Material("Images/Concrete_Base_02_Base_Color.jpg", "Images/Concrete_Base_02_Metallic.jpg");
 
-            playerShader.Use();
-            playerShader.SetVector2("atlasSize", playerAtlasSize);
+            metalMaterial = new Material("Images/Metal_Tiles_01_basecolor.jpg", "Images/Metal_Tiles_01_metallic.jpg");
 
-            floorMesh = new StaticMesh<VertexTextureUV>(generateFloorMesh());
+            metalBoxMaterial = new Material("Images/metalbox_diffuse.png", "Images/metalbox_AO.png");
 
-            floorMesh.AttachTexture(floorTexture);
+            leatherMaterial = new Material("Images/Leather_Base_01_basecolor.jpg", "Images/Leather_Base_01_metallic.jpg");
 
-            boxMesh = new StaticMesh<VertexTextureUV>(generateBoxMesh());
 
-            boxMesh.AttachTexture(boxTexture);
+            camera = new Camera(new Vector3(0.0f, 1.5f, 1.5f), width / (float)height);
+            camera.Pitch = -15;
+
+            floorMesh = new StaticMesh<VertexNT>(generateFloorMesh());
+            floorMesh.Material = floorMaterial;
+
+            tunnelMesh = ModelLoader.LoadModel("Models/tunnel.obj").GetMesh();
+            tunnelMesh.Material = concreteMaterial;
+            pipeMesh = ModelLoader.LoadModel("Models/pipe.obj").GetMesh();
+            pipeMesh.Material = metalMaterial;
+            wireMesh = ModelLoader.LoadModel("Models/wire.obj").GetMesh();
+            wireMesh.Material = leatherMaterial;
+            lampMesh = ModelLoader.LoadModel("Models/lamp.obj").GetMesh();
+            lampMesh.Material = metalMaterial;
+
+            boxMesh = ModelLoader.LoadModel("Models/box.obj").GetMesh();
+            boxMesh.Material = metalBoxMaterial;
 
             for (int i = 0; i < playerMeshes.Length; i++)
             {
-                var m = ModelLoader.loadModel("Models/human" + i + ".obj");
-                playerMeshes[i] = new StaticMesh<VertexTextureUV>(m.vertices, m.indices);
-                playerMeshes[i].AttachTexture(leatherTexture);
+                playerMeshes[i] = ModelLoader.LoadModel("Models/human" + i + ".obj").GetMesh();
+                playerMeshes[i].Material = leatherMaterial;
             }
+            
+            shader.Use();
+            shader.SetInt("material.diffuse", 0);
+            shader.SetInt("material.specular", 1);
+            //shader.SetInt("material.normal", 2);
+            shader.SetFloat("material.shininess", 32.0f);
 
-            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+            directionalLight = new DirectionalLight(
+                new Vector3(0.0f, -0.5f, -1.0f),
+                new Vector3(0.05f, 0.03f, 0.03f),
+                new Vector3(0.3f, 0.2f, 0.2f),
+                new Vector3(0.4f, 0.3f, 0.3f)
+                );
+            directionalLight.SetUniforms(shader);
 
-        }
-
-        public void Resize(float width, float height)
-        {
-            mainCamera.AspectRatio = width / height;
-        }
-
-        float x = 0;
-        int a = 0;
-        public void Render()
-        {
-            GL.ClearColor(Color4.Black);
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-            // render floor
-
-            mainCamera.SetMatrices(gameItemShader);
-
-            gameItemShader.Use();
-            gameItemShader.SetVector2("uvOffset", new Vector2(0, x+=0.02f));
-
-            floorMesh.Draw(gameItemShader, Matrix4.Identity);
-
-            // render game items
-
-            gameItemShader.SetVector2("uvOffset", new Vector2(0, 0));
-
-            boxMesh.Draw(gameItemShader, Matrix4.Identity * Matrix4.CreateTranslation(new Vector3(1,0.0f,-1)));
-
-            a = (a + 1) % playerMeshes.Length;
-            playerMeshes[a].Draw(gameItemShader, Matrix4.Identity /** Matrix4.CreateScale(0.5f)*/);
+            int numLigh = 16;
+            pointLights = new PointLight[numLigh];
+            for (int i = 0; i < numLigh; i++)
+            {
+                pointLights[i] = new PointLight(
+                    new Vector3(0.0f, 1.95f, -12.0f * i),
+                    1.0f, 0.09f, 0.032f,
+                    new Vector3(0.05f, 0.05f, 0.05f),
+                    new Vector3(0.8f, 0.8f, 0.8f),
+                    new Vector3(1.0f, 1.0f, 1.0f)
+                );
+                pointLights[i].SetUniforms(shader, i);
+            }
+            shader.SetInt("numOfPointLights", numLigh);
             
         }
 
-        private List<VertexTextureUV> generateSquareMesh()
+        public void Resize(int width, int height, int defaultFbo)
         {
-            List<VertexTextureUV> square = new List<VertexTextureUV>();
-            square.Add(new VertexTextureUV(new Vector3(-0.5f, -0.5f, 0.0f), new Vector3(0, 0, 1), new Vector2(0, 0)));
-            square.Add(new VertexTextureUV(new Vector3(-0.5f, 0.5f, 0.0f), new Vector3(0, 0, 1), new Vector2(0, 1)));
-            square.Add(new VertexTextureUV(new Vector3(0.5f, 0.5f, 0.0f), new Vector3(0, 0, 1), new Vector2(1, 1)));
-            square.Add(new VertexTextureUV(new Vector3(-0.5f, -0.5f, 0.0f), new Vector3(0, 0, 1), new Vector2(0, 0)));
-            square.Add(new VertexTextureUV(new Vector3(0.5f, 0.5f, 0.0f), new Vector3(0, 0, 1), new Vector2(1, 1)));
-            square.Add(new VertexTextureUV(new Vector3(0.5f, -0.5f, 0.0f), new Vector3(0, 0, 1), new Vector2(1, 0)));
-            return square;
+            camera.AspectRatio = width / (float)height;
+            multisapleFbo.Resize(width, height, defaultFbo);
+            intermediateFBO.Resize(width, height, defaultFbo);
         }
 
-        private List<VertexTextureUV> generateFloorMesh()
+        private void DrawScene(Shader shader)
         {
-            List<VertexTextureUV> floor = new List<VertexTextureUV>();
+            floorMesh.Draw(shader, Matrix4.Identity);
 
-            floor.Add(new VertexTextureUV(new Vector3(-1.5f, -0.5f, 1.0f), new Vector3(0, 1, 0), new Vector2(0, 0)));
-            floor.Add(new VertexTextureUV(new Vector3(1.5f, -0.5f, -299.0f), new Vector3(0, 1, 0), new Vector2(1, 100)));
-            floor.Add(new VertexTextureUV(new Vector3(-1.5f, -0.5f, -299.0f), new Vector3(0, 1, 0), new Vector2(0, 100)));
-            floor.Add(new VertexTextureUV(new Vector3(-1.5f, -0.5f, 1.0f), new Vector3(0, 1, 0), new Vector2(0, 0)));
-            floor.Add(new VertexTextureUV(new Vector3(1.5f, -0.5f, 1.0f), new Vector3(0, 1, 0), new Vector2(1, 0)));
-            floor.Add(new VertexTextureUV(new Vector3(1.5f, -0.5f, -299.0f), new Vector3(0, 0, 0), new Vector2(1, 100)));
+            tunnelMesh.Draw(shader, Matrix4.Identity, 32, new Vector3(0, 0, -6));
+            pipeMesh.Draw(shader, Matrix4.Identity, 64, new Vector3(0, 0, -2));
+            wireMesh.Draw(shader, Matrix4.Identity, 64, new Vector3(0, 0, -2));
+            lampMesh.Draw(shader, Matrix4.Identity, 16, new Vector3(0, 0, -12));
+
+            boxMesh.Draw(shader, Matrix4.Identity * Matrix4.CreateTranslation(new Vector3(1, .5f, -10)));
+
+            playerMeshes[a].Draw(shader, Matrix4.Identity * Matrix4.CreateScale(.75f) * Matrix4.CreateTranslation(camera.Position - new Vector3(0.0f, 1.5f, 1.5f)));
+
+        }
+
+        int a = 0;
+        public void Render()
+        {
+
+            multisapleFbo.Bind();
+            GL.ClearColor(Color4.White);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            GL.Enable(EnableCap.DepthTest);
+
+            if (ShowWireframe) GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+
+            camera.Position += new Vector3(0, 0, -0.03f);
+            a = (a + 1) % playerMeshes.Length;
+
+            shader.Use();
+
+            camera.SetMatrices(shader);
+            shader.SetVector3("viewPos", camera.Position);
+
+            DrawScene(shader);
+
+            if (ShowNormals) { 
+                normalShader.Use();
+
+                camera.SetMatrices(normalShader);
+
+                DrawScene(normalShader);
+            }
+
+            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+
+            multisapleFbo.BlitTo(intermediateFBO);
+            multisapleFbo.Unbind();
+            intermediateFBO.Unbind();
+
+            intermediateFBO.Draw(fboShader);
+        }
+
+        private List<VertexNT> generateFloorMesh()
+        {
+            List<VertexNT> floor = new List<VertexNT>();
+
+            floor.Add(new VertexNT(new Vector3(-3f, 0f, 1.0f), new Vector3(0, 1, 0), new Vector2(0, 0)));
+            floor.Add(new VertexNT(new Vector3( 3f, 0f, -299.0f), new Vector3(0, 1, 0), new Vector2(1, 100)));
+            floor.Add(new VertexNT(new Vector3(-3f, 0f, -299.0f), new Vector3(0, 1, 0), new Vector2(0, 100)));
+            floor.Add(new VertexNT(new Vector3(-3f, 0f, 1.0f), new Vector3(0, 1, 0), new Vector2(0, 0)));
+            floor.Add(new VertexNT(new Vector3( 3f, 0f, 1.0f), new Vector3(0, 1, 0), new Vector2(1, 0)));
+            floor.Add(new VertexNT(new Vector3( 3f, 0f, -299.0f), new Vector3(0, 1, 0), new Vector2(1, 100)));
 
             return floor;
-        }
-
-        private List<VertexTextureUV> generateBoxMesh()
-        {
-            List<VertexTextureUV> box = new List<VertexTextureUV>();
-
-            box.Add(new VertexTextureUV(new Vector3(-0.5f, -0.5f, -0.5f), new Vector3(0.0f, 0.0f, -1.0f), new Vector2(0.0f, 0.0f)));
-            box.Add(new VertexTextureUV(new Vector3(0.5f, -0.5f, -0.5f), new Vector3(0.0f, 0.0f, -1.0f), new Vector2(1.0f, 0.0f)));
-            box.Add(new VertexTextureUV(new Vector3(0.5f, 0.5f, -0.5f), new Vector3(0.0f, 0.0f, -1.0f), new Vector2(1.0f, 1.0f)));
-            box.Add(new VertexTextureUV(new Vector3(0.5f, 0.5f, -0.5f), new Vector3(0.0f, 0.0f, -1.0f), new Vector2(1.0f, 1.0f)));
-            box.Add(new VertexTextureUV(new Vector3(-0.5f, 0.5f, -0.5f), new Vector3(0.0f, 0.0f, -1.0f), new Vector2(0.0f, 1.0f)));
-            box.Add(new VertexTextureUV(new Vector3(-0.5f, -0.5f, -0.5f), new Vector3(0.0f, 0.0f, -1.0f), new Vector2(0.0f, 0.0f)));
-
-            box.Add(new VertexTextureUV(new Vector3(-0.5f, -0.5f, 0.5f), new Vector3(0.0f, 0.0f, 1.0f), new Vector2(0.0f, 0.0f)));
-            box.Add(new VertexTextureUV(new Vector3(0.5f, -0.5f, 0.5f), new Vector3(0.0f, 0.0f, 1.0f), new Vector2(1.0f, 0.0f)));
-            box.Add(new VertexTextureUV(new Vector3(0.5f, 0.5f, 0.5f), new Vector3(0.0f, 0.0f, 1.0f), new Vector2(1.0f, 1.0f)));
-            box.Add(new VertexTextureUV(new Vector3(0.5f, 0.5f, 0.5f), new Vector3(0.0f, 0.0f, 1.0f), new Vector2(1.0f, 1.0f)));
-            box.Add(new VertexTextureUV(new Vector3(-0.5f, 0.5f, 0.5f), new Vector3(0.0f, 0.0f, 1.0f), new Vector2(0.0f, 1.0f)));
-            box.Add(new VertexTextureUV(new Vector3(-0.5f, -0.5f, 0.5f), new Vector3(0.0f, 0.0f, 1.0f), new Vector2(0.0f, 0.0f)));
-
-            box.Add(new VertexTextureUV(new Vector3(-0.5f, 0.5f, 0.5f), new Vector3(-1.0f, 0.0f, 0.0f), new Vector2(1.0f, 0.0f)));
-            box.Add(new VertexTextureUV(new Vector3(-0.5f, 0.5f, -0.5f), new Vector3(-1.0f, 0.0f, 0.0f), new Vector2(1.0f, 1.0f)));
-            box.Add(new VertexTextureUV(new Vector3(-0.5f, -0.5f, -0.5f), new Vector3(-1.0f, 0.0f, 0.0f), new Vector2(0.0f, 1.0f)));
-            box.Add(new VertexTextureUV(new Vector3(-0.5f, -0.5f, -0.5f), new Vector3(-1.0f, 0.0f, 0.0f), new Vector2(0.0f, 1.0f)));
-            box.Add(new VertexTextureUV(new Vector3(-0.5f, -0.5f, 0.5f), new Vector3(-1.0f, 0.0f, 0.0f), new Vector2(0.0f, 0.0f)));
-            box.Add(new VertexTextureUV(new Vector3(-0.5f, 0.5f, 0.5f), new Vector3(-1.0f, 0.0f, 0.0f), new Vector2(1.0f, 0.0f)));
-
-            box.Add(new VertexTextureUV(new Vector3(0.5f, 0.5f, 0.5f), new Vector3(1.0f, 0.0f, 0.0f), new Vector2(1.0f, 0.0f)));
-            box.Add(new VertexTextureUV(new Vector3(0.5f, 0.5f, -0.5f), new Vector3(1.0f, 0.0f, 0.0f), new Vector2(1.0f, 1.0f)));
-            box.Add(new VertexTextureUV(new Vector3(0.5f, -0.5f, -0.5f), new Vector3(1.0f, 0.0f, 0.0f), new Vector2(0.0f, 1.0f)));
-            box.Add(new VertexTextureUV(new Vector3(0.5f, -0.5f, -0.5f), new Vector3(1.0f, 0.0f, 0.0f), new Vector2(0.0f, 1.0f)));
-            box.Add(new VertexTextureUV(new Vector3(0.5f, -0.5f, 0.5f), new Vector3(1.0f, 0.0f, 0.0f), new Vector2(0.0f, 0.0f)));
-            box.Add(new VertexTextureUV(new Vector3(0.5f, 0.5f, 0.5f), new Vector3(1.0f, 0.0f, 0.0f), new Vector2(1.0f, 0.0f)));
-
-            box.Add(new VertexTextureUV(new Vector3(-0.5f, -0.5f, -0.5f), new Vector3(0.0f, -1.0f, 0.0f), new Vector2(0.0f, 1.0f)));
-            box.Add(new VertexTextureUV(new Vector3(0.5f, -0.5f, -0.5f), new Vector3(0.0f, -1.0f, 0.0f), new Vector2(1.0f, 1.0f)));
-            box.Add(new VertexTextureUV(new Vector3(0.5f, -0.5f, 0.5f), new Vector3(0.0f, -1.0f, 0.0f), new Vector2(1.0f, 0.0f)));
-            box.Add(new VertexTextureUV(new Vector3(0.5f, -0.5f, 0.5f), new Vector3(0.0f, -1.0f, 0.0f), new Vector2(1.0f, 0.0f)));
-            box.Add(new VertexTextureUV(new Vector3(-0.5f, -0.5f, 0.5f), new Vector3(0.0f, -1.0f, 0.0f), new Vector2(0.0f, 0.0f)));
-            box.Add(new VertexTextureUV(new Vector3(-0.5f, -0.5f, -0.5f), new Vector3(0.0f, -1.0f, 0.0f), new Vector2(0.0f, 1.0f)));
-
-            box.Add(new VertexTextureUV(new Vector3(-0.5f, 0.5f, -0.5f), new Vector3(0.0f, 1.0f, 0.0f), new Vector2(0.0f, 1.0f)));
-            box.Add(new VertexTextureUV(new Vector3(0.5f, 0.5f, -0.5f), new Vector3(0.0f, 1.0f, 0.0f), new Vector2(1.0f, 1.0f)));
-            box.Add(new VertexTextureUV(new Vector3(0.5f, 0.5f, 0.5f), new Vector3(0.0f, 1.0f, 0.0f), new Vector2(1.0f, 0.0f)));
-            box.Add(new VertexTextureUV(new Vector3(0.5f, 0.5f, 0.5f), new Vector3(0.0f, 1.0f, 0.0f), new Vector2(1.0f, 0.0f)));
-            box.Add(new VertexTextureUV(new Vector3(-0.5f, 0.5f, 0.5f), new Vector3(0.0f, 1.0f, 0.0f), new Vector2(0.0f, 0.0f)));
-            box.Add(new VertexTextureUV(new Vector3(-0.5f, 0.5f, -0.5f), new Vector3(0.0f, 1.0f, 0.0f), new Vector2(0.0f, 1.0f)));
-
-            return box;
         }
     }
 }
