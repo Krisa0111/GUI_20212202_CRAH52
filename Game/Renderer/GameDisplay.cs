@@ -2,6 +2,7 @@
 using Game.Graphics.OpenGL;
 using Game.ViewModel;
 using Game.ViewModel.Entities;
+using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,19 +16,16 @@ namespace Game.Renderer
 {
     internal class GameDisplay : IDisposable
     {
-        IRenderer renderer;
-        IGameModel gameModel;
         Player player;
         Entity box;
-
+        IGameModel gameModel = Ioc.Default.GetService<IGameModel>();
+        IRenderer renderer = Ioc.Default.GetService<IRenderer>();
         Map map;
 
         public GameDisplay(int width, int height)
         {
             // TODO: dependency injection (IOC)
-            gameModel = new GameModel();
-            renderer = new OpenGLRenderer(width, height);
-
+           
             // TODO: move this to logic
             player = new Player(Vector3.Zero);
             box = new Box(new Vector3(1, 0.5f, 5));
