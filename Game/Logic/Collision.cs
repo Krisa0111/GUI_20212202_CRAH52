@@ -9,7 +9,7 @@ namespace Game.Logic
 {
     class Collision
     {
-        public bool CheckPointInTriangle(ref Vector3 point, ref Vector3 pa, ref Vector3 pb,ref Vector3 pc)
+        public static bool CheckPointInTriangle(ref Vector3 point, ref Vector3 pa, ref Vector3 pb,ref Vector3 pc)
         {
            
             // Lets define some local variables, we can change these
@@ -54,7 +54,7 @@ namespace Game.Logic
             // All normals facing the same way, return true
             return true;
         }
-        public bool GetLowestRoot(double a,double b, double c, double MaxR, out double? root)
+        public static bool GetLowestRoot(double a,double b, double c, double? MaxR, out double? root)
         {
             double determinant = b * b - 4 * a * c;
             if (determinant >0)

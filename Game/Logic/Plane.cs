@@ -11,7 +11,7 @@ namespace Game.Logic
     {
         float[] equation = new float[4];
         Vector3 origin = new Vector3();
-        Vector3 normal = new Vector3();
+        public Vector3 normal = new Vector3();
         
         public Plane(ref Vector3 origin, ref Vector3 normal)
         {
