@@ -8,6 +8,7 @@ in DATA
     vec3 normal;
 	vec3 color;
 	vec2 texCoord;
+    vec3 fragPos;
 } data_in[];
 
 out vec3 color;
