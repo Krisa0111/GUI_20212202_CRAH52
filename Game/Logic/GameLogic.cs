@@ -10,7 +10,7 @@ using System.Windows;
 
 namespace Game.Logic
 {
-    class GameLogic : IGameController
+    class GameLogic : IGameController, IGameLogic
     {
         public int Life { get; set; }
         public int Score { get; set; }
