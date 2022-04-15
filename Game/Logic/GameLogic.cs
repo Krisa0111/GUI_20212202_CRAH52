@@ -24,14 +24,6 @@ namespace Game.Logic
         public void SetupSizes(Size area)
         {
             this.area = area;
-            Decelerators = new List<Decelerator>();
-            Accelerators = new List<Accelerator>();
-            BluePortals = new List<BluePortal>();
-            RedPortals = new List<RedPortal>();
-            PlusLifes = new List<PlusLife>();
-            PremiumPortals = new List<PremiumPortal>();
-            RandomItems = new List<RandomItem>();
-            Skulls = new List<Skull>();
 
         }
         
