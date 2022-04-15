@@ -13,6 +13,7 @@ namespace Game.Graphics
 {
     internal class OpenGLRenderer : IDisposable, IRenderer
     {
+        
         private readonly Camera camera;
 
         public ICamera Camera
@@ -90,6 +91,10 @@ namespace Game.Graphics
 
             models = new Dictionary<string, Mesh>();
             textures = new Dictionary<string, Texture>();
+        }
+        public OpenGLRenderer():this(0,0)
+        {
+
         }
 
         public void BeginFrame()
