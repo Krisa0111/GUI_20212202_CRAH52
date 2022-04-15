@@ -32,6 +32,8 @@ namespace Game
             OpenTkControl.Start(settings);
 
             gameDisplay = new GameDisplay(OpenTkControl.FrameBufferWidth, OpenTkControl.FrameBufferHeight);
+
+
         }
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
@@ -57,5 +59,9 @@ namespace Game
 
         }
 
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            gameDisplay.Dispose();
+        }
     }
 }

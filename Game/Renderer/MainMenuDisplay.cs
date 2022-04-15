@@ -1,4 +1,4 @@
-﻿using Game.Model;
+﻿using Game.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,13 +13,13 @@ namespace Game
 {
     public class MainMenuDisplay : FrameworkElement
     {
-        IGameModell model;
+        IGameModel model;
         Size size;
         public void Resize(Size size)
         {
             this.size = size;
         }
-        public void SetupModel(IGameModell gameModell)
+        public void SetupModel(IGameModel gameModell)
         {
             this.model = gameModell;
         }

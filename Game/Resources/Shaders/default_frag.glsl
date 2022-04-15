@@ -27,12 +27,14 @@ struct PointLight {
     vec3 specular;
 };
 
-#define NR_POINT_LIGHTS 32
+#define NR_POINT_LIGHTS 16
 
 in vec3 normal;
 in vec3 color;
 in vec2 texCoord;
 in vec3 fragPos;
+in vec3 tangent;
+in vec3 bitangent;
 
 // Outputs colors in RGBA
 out vec4 FragColor;
@@ -41,7 +43,6 @@ uniform vec3 viewPos;
 uniform DirLight dirLight;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform Material material;
-uniform int numOfPointLights;
 
 // function prototypes
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
@@ -50,7 +51,15 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 void main()
 {    
     // properties
-    vec3 norm = normalize(normal);
+    vec3 norm;
+   /* if (textureSize(material.normal, 0).x > 1) // if texture is active
+    {
+        vec3 n = texture(material.normal, texCoord).xyz; //* 2.0f - 1.0f;
+        norm = normalize(n.x * tangent + n.y * bitangent + n.z * normal);
+    }
+    else*/
+        norm = normalize(normal);
+    
 
     vec3 viewDir = normalize(viewPos - fragPos);
     
@@ -63,7 +72,7 @@ void main()
     // phase 1: directional lighting
     vec3 result = CalcDirLight(dirLight, norm, viewDir);
     // phase 2: point lights
-    for(int i = 0; i < numOfPointLights; i++)
+    for(int i = 0; i < NR_POINT_LIGHTS; i++)
         result += CalcPointLight(pointLights[i], norm, fragPos, viewDir);  
     
     FragColor.rgb = result;
