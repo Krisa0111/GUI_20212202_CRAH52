@@ -37,7 +37,7 @@ namespace Game.Logic
             //collisionrecursionDpeth = 0;
             //finalPosition = CollideWithWorld(ref finalPosition, ref espaceVelocity);
             // TO HERE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            finalPosition = finalPosition * collisionPacket.eRadius;
+            finalPosition *= collisionPacket.eRadius;
             return finalPosition;
         }
         private void CheckCollisionWithEntities(ref IList<Entity> entities)
@@ -82,17 +82,14 @@ namespace Game.Logic
             Vector3 newBasePoint = pos;
             if (collisionPacket.nearestDistance >= veryCloseDistance)
             {
-                Vector3 V = new Vector3(vel.X,vel.Y,vel.Z);
-
-                V = Vector3.Normalize(V) * (float)(collisionPacket.nearestDistance - veryCloseDistance); // LOOK FOR ERRORS
+                Vector3 V = Vector3.Normalize(vel) * (float)(collisionPacket.nearestDistance - veryCloseDistance); // LOOK FOR ERRORS
                 newBasePoint = collisionPacket.basePoint + V;
                 V = Vector3.Normalize(V);
                 collisionPacket.intersectionPoint -= veryCloseDistance * V;
             }
             // determine the sliding plane
             Vector3 slidingPlaneOrigin = collisionPacket.intersectionPoint;
-            Vector3 slidingPlaneNormal = newBasePoint - collisionPacket.intersectionPoint;
-            Vector3.Normalize(slidingPlaneNormal);
+            Vector3 slidingPlaneNormal = Vector3.Normalize(newBasePoint - collisionPacket.intersectionPoint);
             Plane slidingplane = new Plane(ref slidingPlaneOrigin, ref slidingPlaneNormal);
             Vector3 newDestinationPoint = destinationPoint - (float)slidingplane.SignedDistanceTo(ref destinationPoint) * slidingPlaneNormal;
             Vector3 newVelocityVector = newDestinationPoint - collisionPacket.intersectionPoint;

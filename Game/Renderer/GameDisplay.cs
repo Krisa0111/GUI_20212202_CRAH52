@@ -34,7 +34,7 @@ namespace Game.Renderer
             // TODO: dependency injection (IOC)
            
             // TODO: move this to logic
-            box = new Box(new Vector3(2, 0.5f, 5));
+            box = new Box(new Vector3(0, 0.5f, 5));
             player = gameModel.Player;
 
             gameModel.Entities.Add(box);
