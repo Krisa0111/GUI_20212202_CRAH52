@@ -66,7 +66,7 @@ namespace Game
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
+            gameDisplay.Start();
         }
     }
 }

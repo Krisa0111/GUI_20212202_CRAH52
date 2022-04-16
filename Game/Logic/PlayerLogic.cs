@@ -105,9 +105,9 @@ namespace Game.Logic
             return CollideWithWorld(ref newBasePoint,ref newVelocityVector);
 
         }
-        public void Move(TimeSpan dt)
+        public void Move(double dt)
         {
-            gameModel.Player.CurrentAnimatonStep += (dt.Milliseconds*gameModel.Player.velocity.Length())/1000.0f;
+            gameModel.Player.CurrentAnimatonStep += (float)(dt*gameModel.Player.velocity.Length());
             //if (collisionPacket.foundCollison)
             //{
             //    verticalVelocity = -gravity * dt.Milliseconds;
@@ -123,12 +123,12 @@ namespace Game.Logic
 
             //}
 
-            Vector3 temp = CollideAndSlide(gameModel.Player.velocity, new Vector3(0, verticalVelocity, 0), gameModel.Player.Position);
+            Vector3 temp = CollideAndSlide(gameModel.Player.velocity * (float)dt, new Vector3(0, verticalVelocity, 0), gameModel.Player.Position);
             /*if (temp.Y <0)
             {
                 temp.Y = 0;
             }*/
-            Debug.WriteLine(temp + " " + gameModel.Player.velocity + " " + dt.Milliseconds);
+            //Debug.WriteLine(temp + " " + gameModel.Player.velocity + " " + dt);
 
             gameModel.Player.Position = temp;
         }

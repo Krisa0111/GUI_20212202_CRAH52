@@ -8,6 +8,6 @@ namespace Game.Logic
 {
     interface IGameLogic
     {
-        public void Update(TimeSpan delta);
+        public void Update(double delta);
     }
 }

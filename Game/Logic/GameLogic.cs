@@ -31,7 +31,7 @@ namespace Game.Logic
         {
             throw new NotImplementedException();
         }
-        public void Update(TimeSpan delta)
+        public void Update(double delta)
         {
             playerLogic.Move(delta);
         }
