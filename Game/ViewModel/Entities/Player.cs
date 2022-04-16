@@ -1,6 +1,7 @@
 ﻿using Game.ResourceLoader;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -8,9 +9,10 @@ using System.Threading.Tasks;
 
 namespace Game.ViewModel.Entities
 {
-    internal class Player : Entity
+    public class Player : Entity
     {
         public const int AnimationSteps = 30;
+        public Vector3 velocity;
         private float currentAnimatonStep;
         public float CurrentAnimatonStep
         {
@@ -25,12 +27,13 @@ namespace Game.ViewModel.Entities
                 return models[(int)CurrentAnimatonStep];
             }
         }
-
-        public const int MaxLife = 3;
+        
+        [Range(0,5)]
         public int Life { get; set; }
 
         public Player(Vector3 position) : base(EntityType.Player, position)
         {
+            velocity = new Vector3(0, 0, 1);
             models = new Model[AnimationSteps];
             for (int i = 0; i < models.Length; i++)
             {

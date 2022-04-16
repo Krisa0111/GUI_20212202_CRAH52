@@ -17,7 +17,7 @@ namespace Game
     public partial class GameWindow : Window
     {
         GameDisplay gameDisplay;
-
+        
         double fps;
 
         public GameWindow()
@@ -62,6 +62,11 @@ namespace Game
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             gameDisplay.Dispose();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

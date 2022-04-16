@@ -12,25 +12,28 @@ namespace Game.Logic
 {
     class GameLogic : IGameController, IGameLogic
     {
-        public int Life { get; set; }
-        public int Score { get; set; }
+        IGameModel gameModel;
+        PlayerLogic playerLogic;
         
-        public GameLogic()
-        {
-            this.Life = 3;
-            this.Score = 0;
-        }
+
         Size area;
         public void SetupSizes(Size area)
         {
             this.area = area;
 
         }
-        
+        public GameLogic()
+        {
+            playerLogic = new PlayerLogic();
+        }
 
         public void Move(Directions direction)
         {
             throw new NotImplementedException();
+        }
+        public void Update(TimeSpan delta)
+        {
+            playerLogic.Move(delta);
         }
     }
 }

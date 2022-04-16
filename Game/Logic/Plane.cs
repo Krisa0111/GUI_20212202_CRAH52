@@ -20,7 +20,7 @@ namespace Game.Logic
             equation[0] = normal.X;
             equation[1] = normal.Y;
             equation[2] = normal.Z;
-            equation[4] = -(
+            equation[3] = -(
                 normal.X * origin.X
                 + normal.Y * origin.Y 
                 + normal.Z * origin.Z);
@@ -33,7 +33,7 @@ namespace Game.Logic
             equation[0] = normal.X;
             equation[1] = normal.Y;
             equation[2] = normal.Z;
-            equation[4] = -(
+            equation[3] = -(
                 normal.X * origin.X
                 + normal.Y * origin.Y
                 + normal.Z * origin.Z);

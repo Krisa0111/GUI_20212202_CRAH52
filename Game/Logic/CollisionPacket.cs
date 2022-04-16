@@ -9,7 +9,7 @@ namespace Game.Logic
 {
     internal class CollisionPacket
     {
-        public Vector3 eRadius;  // elipsoid radius
+        public Vector3 eRadius = Vector3.One; // elipsoid radius
 
         public Vector3 R3Velocity;
         public Vector3 R3Position;
