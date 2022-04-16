@@ -12,8 +12,8 @@ namespace Game.Logic
 {
     internal class PlayerLogic
     {
-        //CollisionPacket collisionPacket = new CollisionPacket();
-        const float unitspermeter = 1.0f;
+        CollisionPacket collisionPacket = new CollisionPacket();
+        const float unitspermeter = 100.0f;
         int collisionrecursionDpeth = 0;
         IGameModel gameModel = Ioc.Default.GetService<IGameModel>();
         float verticalVelocity;
@@ -22,14 +22,13 @@ namespace Game.Logic
 
         public Vector3 CollideAndSlide(Vector3 vel,Vector3 gravity, Vector3 position)
         {
-            CollisionPacket collisionPacket = new CollisionPacket();
             collisionPacket.R3Position = position;
             collisionPacket.R3Velocity = vel;
 
             Vector3 espacePosition = collisionPacket.R3Position / collisionPacket.eRadius;
             Vector3 espaceVelocity = collisionPacket.R3Velocity / collisionPacket.eRadius;
             collisionrecursionDpeth = 0;
-            Vector3 finalPosition = CollideWithWorld(ref espacePosition, ref espaceVelocity, ref collisionPacket);
+            Vector3 finalPosition = CollideWithWorld(ref espacePosition, ref espaceVelocity);
 
             //   GRAVITY PULL COMMENT IF NOT NEEDED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             //collisionPacket.R3Position = finalPosition*collisionPacket.eRadius;
@@ -41,18 +40,21 @@ namespace Game.Logic
             finalPosition = finalPosition * collisionPacket.eRadius;
             return finalPosition;
         }
-        private void CheckCollisionWithEntities(ref IList<Entity> entities,ref CollisionPacket collisionPacket)
+        private void CheckCollisionWithEntities(ref IList<Entity> entities)
         {
             foreach (var item in entities)
             {
                 for (int i = 0; i < item.Model.Triangles.Length; i++)
                 {
-                    (Vector3 P1, Vector3 P2, Vector3 P3) triangle = item.Model.Triangles[i];
-                    Collision.CheckTriangle(ref collisionPacket, ref triangle.P1, ref triangle.P2, ref triangle.P3);
+                    (Vector3 P1, Vector3 P2, Vector3 P3) = item.Model.Triangles[i];
+                    P1 += item.Position;
+                    P2 += item.Position;
+                    P3 += item.Position;
+                    Collision.CheckTriangle(ref collisionPacket, ref P1, ref P2, ref P3);
                 }
             }
         }
-        private Vector3 CollideWithWorld(ref Vector3 pos, ref Vector3 vel, ref CollisionPacket collisionPacket)
+        private Vector3 CollideWithWorld(ref Vector3 pos, ref Vector3 vel)
         {
             // All hard-coded distances in this function is
             // scaled to fit the setting above..
@@ -70,7 +72,7 @@ namespace Game.Logic
             // check for collision
             IList<Entity> entities = gameModel.Entities;                    // check for errors
             
-            CheckCollisionWithEntities( ref entities, ref collisionPacket);
+            CheckCollisionWithEntities( ref entities);
             if (collisionPacket.foundCollison == false)
             {
                 return pos + vel;
@@ -100,12 +102,11 @@ namespace Game.Logic
                 return newBasePoint;
             }
             collisionrecursionDpeth++;
-            return CollideWithWorld(ref newBasePoint,ref newVelocityVector, ref collisionPacket);
+            return CollideWithWorld(ref newBasePoint,ref newVelocityVector);
 
         }
         public void Move(TimeSpan dt)
         {
-            
             gameModel.Player.CurrentAnimatonStep += (dt.Milliseconds*gameModel.Player.velocity.Length())/1000.0f;
             //if (collisionPacket.foundCollison)
             //{
@@ -123,12 +124,11 @@ namespace Game.Logic
             //}
 
             Vector3 temp = CollideAndSlide(gameModel.Player.velocity, new Vector3(0, verticalVelocity, 0), gameModel.Player.Position);
-            if (temp.Y <0)
+            /*if (temp.Y <0)
             {
                 temp.Y = 0;
-                
-            }
-            Debug.WriteLine(temp + " " + gameModel.Player.velocity);
+            }*/
+            Debug.WriteLine(temp + " " + gameModel.Player.velocity + " " + dt.Milliseconds);
 
             gameModel.Player.Position = temp;
         }
