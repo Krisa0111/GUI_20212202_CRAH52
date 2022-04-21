@@ -54,8 +54,10 @@ namespace Game.Logic
             // All normals facing the same way, return true
             return true;
         }
-        public static bool GetLowestRoot(double a, double b, double c, double? MaxR, out double? root)
+        
+        public static bool GetLowestRoot(double a, double b, double c, double MaxR, out double root)
         {
+            root = 0;
             double determinant = b * b - 4 * a * c;
             if (determinant > 0)
             {
@@ -79,17 +81,16 @@ namespace Game.Logic
                     return true;
                 }
                 // no valid solution
-                root = null;
                 return false;
 
             }
             else
             {
                 // no valid solution
-                root = null;
                 return false;
             }
         }
+
         public static void CheckTriangle(ref CollisionPacket colPackage, ref Vector3 p1, ref Vector3 p2, ref Vector3 p3)
         {
             //Make the plane containing the triangle
@@ -153,7 +154,7 @@ namespace Game.Logic
                 }
                 Vector3 collisionPoint = new Vector3();
                 bool foundCollision = false;
-                double? t = 1;
+                double t = 1;
                 if (!embedInPlane)
                 {
                     Vector3 planeIntersectionPoint = (colPackage.basePoint - trinaglePlane.normal) + ((float)t0 * colPackage.velocity);
@@ -170,7 +171,7 @@ namespace Game.Logic
                     Vector3 basep = colPackage.basePoint;
                     double velocitySquaredLength = velocity.LengthSquared();
                     double a, b, c;
-                    double? newT;
+                    double newT;
                     //Check against points
                     a = velocitySquaredLength;
                     //P1
@@ -229,9 +230,9 @@ namespace Game.Logic
                     edgeDotVelocity = Vector3.Dot(edge, velocity);
                     edgeDotBaseToVertex = Vector3.Dot(edge, baseToVertex);
 
-                    a = edgeSquaredLength * (-velocitySquaredLength) + (edgeDotVelocity * edgeDotVelocity);
+                    a = edgeSquaredLength * (-velocitySquaredLength) + edgeDotVelocity * edgeDotVelocity;
                     b = edgeSquaredLength * (2 * Vector3.Dot(velocity, baseToVertex)) - 2 * edgeDotVelocity * edgeDotBaseToVertex;
-                    c = edgeSquaredLength * (1 - baseToVertex.LengthSquared() + edgeDotBaseToVertex * edgeDotBaseToVertex);
+                    c = edgeSquaredLength * (1 - baseToVertex.LengthSquared()) + edgeDotBaseToVertex * edgeDotBaseToVertex;
 
                     if (GetLowestRoot(a, b, c, t, out newT))
                     {
@@ -249,7 +250,7 @@ namespace Game.Logic
                     edgeSquaredLength = edge.LengthSquared();
                     edgeDotVelocity = Vector3.Dot(edge, velocity);
                     edgeDotBaseToVertex = Vector3.Dot(edge, baseToVertex);
-                    a = edgeSquaredLength * (-velocitySquaredLength) + (edgeDotVelocity * edgeDotVelocity);
+                    a = edgeSquaredLength * (-velocitySquaredLength) + edgeDotVelocity * edgeDotVelocity;
                     b = edgeSquaredLength * (2 * Vector3.Dot(velocity, baseToVertex)) - 2 * edgeDotVelocity * edgeDotBaseToVertex;
                     c = edgeSquaredLength * (1 - baseToVertex.LengthSquared()) + edgeDotBaseToVertex * edgeDotBaseToVertex;
                     if (GetLowestRoot(a, b, c, t, out newT))
