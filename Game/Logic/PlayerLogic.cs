@@ -17,8 +17,8 @@ namespace Game.Logic
         int collisionrecursionDpeth = 0;
         IGameModel gameModel = Ioc.Default.GetService<IGameModel>();
         float verticalVelocity;
-        const float gravity = 0.3f;
-        const float jumpForce = 0.12f;
+        const float gravity = 0.05f;
+        const float jumpForce = 0.02f;
 
         public PlayerLogic()
         {
@@ -37,11 +37,11 @@ namespace Game.Logic
             Vector3 finalPosition = CollideWithWorld(ref espacePosition, ref espaceVelocity);
 
             //   GRAVITY PULL COMMENT IF NOT NEEDED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            //collisionPacket.R3Position = finalPosition*collisionPacket.eRadius;
-            //collisionPacket.R3Velocity = gravity;
-            //espaceVelocity = gravity / collisionPacket.eRadius;
-            //collisionrecursionDpeth = 0;
-            //finalPosition = CollideWithWorld(ref finalPosition, ref espaceVelocity);
+            collisionPacket.R3Position = finalPosition * collisionPacket.eRadius;
+            collisionPacket.R3Velocity = gravity;
+            espaceVelocity = gravity / collisionPacket.eRadius;
+            collisionrecursionDpeth = 0;
+            finalPosition = CollideWithWorld(ref finalPosition, ref espaceVelocity);
             // TO HERE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             finalPosition *= collisionPacket.eRadius;
             return finalPosition;
@@ -113,31 +113,34 @@ namespace Game.Logic
         }
         public void Move(double dt)
         {
-            //if (collisionPacket.foundCollison)
-            //{
-            //    verticalVelocity = -gravity * dt.Milliseconds;
-            //    if (gameModel.Player.velocity.Y > 0)
-            //    {
-            //        verticalVelocity = jumpForce;
+            Vector3 prevPos = gameModel.Player.Position;
 
-            //    }
-            //}
-            //else
-            //{
-            //    verticalVelocity -= gravity * dt.Milliseconds;
-
-            //}
-
-            Vector3 temp = CollideAndSlide(gameModel.Player.velocity * (float)dt, new Vector3(0, verticalVelocity, 0), gameModel.Player.Position);
-            /*if (temp.Y <0)
+            // if player was on ground
+            if (collisionPacket.foundCollison || prevPos.Y <= collisionPacket.eRadius.Y)
             {
-                temp.Y = 0;
-            }*/
+                // reset gravity
+                verticalVelocity = -gravity * (float)dt;
+                // if player jumps
+                if (gameModel.Player.velocity.Y > 0)
+                {
+                    verticalVelocity = jumpForce;
+                }
+            }
+            else // player in the air
+            {
+                verticalVelocity -= gravity * (float)dt;
+            }
 
-            gameModel.Player.Position = temp;
+            Vector3 pos = CollideAndSlide(gameModel.Player.velocity * (float)dt, new Vector3(0, verticalVelocity, 0), gameModel.Player.Position);
 
-            if (collisionPacket.foundCollison == false)
-                gameModel.Player.CurrentAnimatonStep += (float)(collisionPacket.R3Velocity.Length() * 15);
+            if (pos.Y < collisionPacket.eRadius.Y)
+            {
+                pos.Y = collisionPacket.eRadius.Y;
+            }
+
+            gameModel.Player.Position = pos;
+
+            gameModel.Player.CurrentAnimatonStep += (float)(Vector3.Distance(prevPos, pos) * 15);
 
         }
     }
