@@ -23,7 +23,7 @@ namespace Game.ViewModel
         {
             Entities = new List<Entity>();
             mapTunnel = new MapTunnel();
-            Player = new Player(Vector3.Zero);
+            Player = new Player(new Vector3(0,0.7f,0));
         }
     }
 }
