@@ -12,7 +12,7 @@ namespace Game.Logic
 {
     internal class PlayerLogic
     {
-        CollisionPacket collisionPacket = new CollisionPacket();
+        CollisionPacket collisionPacket;
         const float unitspermeter = 100.0f;
         int collisionrecursionDpeth = 0;
         IGameModel gameModel = Ioc.Default.GetService<IGameModel>();
@@ -20,7 +20,13 @@ namespace Game.Logic
         const float gravity = 0.3f;
         const float jumpForce = 0.12f;
 
-        public Vector3 CollideAndSlide(Vector3 vel,Vector3 gravity, Vector3 position)
+        public PlayerLogic()
+        {
+            collisionPacket = new CollisionPacket();
+            collisionPacket.eRadius = new Vector3(0.2f, 0.7f, 0.2f);
+        }
+
+        public Vector3 CollideAndSlide(Vector3 vel, Vector3 gravity, Vector3 position)
         {
             collisionPacket.R3Position = position;
             collisionPacket.R3Velocity = vel;
@@ -50,6 +56,9 @@ namespace Game.Logic
                     P1 += item.Position;
                     P2 += item.Position;
                     P3 += item.Position;
+                    P1 /= collisionPacket.eRadius;
+                    P2 /= collisionPacket.eRadius;
+                    P3 /= collisionPacket.eRadius;
                     Collision.CheckTriangle(ref collisionPacket, ref P1, ref P2, ref P3);
                 }
             }
@@ -61,7 +70,7 @@ namespace Game.Logic
             //CollisionPacket collisionPacket = new CollisionPacket();
             float unitscale = unitspermeter / 100.0f;
             float veryCloseDistance = 0.005f * unitscale;
-            if (collisionrecursionDpeth >5)
+            if (collisionrecursionDpeth > 5)
             {
                 return pos;
             }
@@ -71,8 +80,8 @@ namespace Game.Logic
             collisionPacket.foundCollison = false;
             // check for collision
             IList<Entity> entities = gameModel.Entities;                    // check for errors
-            
-            CheckCollisionWithEntities( ref entities);
+
+            CheckCollisionWithEntities(ref entities);
             if (collisionPacket.foundCollison == false)
             {
                 return pos + vel;
@@ -99,12 +108,11 @@ namespace Game.Logic
                 return newBasePoint;
             }
             collisionrecursionDpeth++;
-            return CollideWithWorld(ref newBasePoint,ref newVelocityVector);
+            return CollideWithWorld(ref newBasePoint, ref newVelocityVector);
 
         }
         public void Move(double dt)
         {
-            gameModel.Player.CurrentAnimatonStep += (float)(dt*gameModel.Player.velocity.Length());
             //if (collisionPacket.foundCollison)
             //{
             //    verticalVelocity = -gravity * dt.Milliseconds;
@@ -125,9 +133,12 @@ namespace Game.Logic
             {
                 temp.Y = 0;
             }*/
-            //Debug.WriteLine(temp + " " + gameModel.Player.velocity + " " + dt);
 
             gameModel.Player.Position = temp;
+
+            if (collisionPacket.foundCollison == false)
+                gameModel.Player.CurrentAnimatonStep += (float)(collisionPacket.R3Velocity.Length() * 15);
+
         }
     }
 }
