@@ -101,9 +101,11 @@ namespace Game.Renderer
                 renderer.PointLights[i].Position = startPos + new OpenTK.Mathematics.Vector3(0, 2, map.ModelLength * i - map.ModelLength);
             }
 
-            renderer.Camera.Position = new OpenTK.Mathematics.Vector3(player.Position.X, player.Position.Y + 1.5f, player.Position.Z - 1.5f);
+            renderer.Camera.Position = new OpenTK.Mathematics.Vector3(player.Position.X, player.Position.Y + 0.75f, player.Position.Z - 1.5f);
 
             renderer.BeginFrame();
+
+            renderer.Render(gameModel.Player);
 
             renderer.Render(gameModel.Entities);
 

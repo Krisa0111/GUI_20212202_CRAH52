@@ -17,6 +17,7 @@ namespace Game.Graphics
         void Dispose();
         void EndFrame();
         void Render(IList<Entity> entities);
+        void Render(Entity entity);
         void RenderMultible(Model model, Vector3 startPosition, Vector3 offset, int instances);
         void Resize(int width, int height, int defaultFbo);
     }

@@ -91,6 +91,7 @@ namespace Game.Graphics
 
             models = new Dictionary<string, Mesh>();
             textures = new Dictionary<string, Texture>();
+
         }
         public OpenGLRenderer():this(0,0)
         {
@@ -141,6 +142,15 @@ namespace Game.Graphics
             }
         }
 
+        public void Render(Entity entity)
+        {
+            RenderEntity(shader, entity);
+            if (ShowNormals)
+            {
+                RenderEntity(normalShader, entity);
+            }
+        }
+
         public void RenderMultible(Model model, Vector3 startPosition, Vector3 offset, int instances)
         {
             Mesh mesh = GetMesh(model);
@@ -158,18 +168,23 @@ namespace Game.Graphics
         {
             foreach (var entity in entities)
             {
-                Mesh mesh = GetMesh(entity.Model);
-
-                Vector3 pos = new()
-                {
-                    X = entity.Position.X,
-                    Y = entity.Position.Y,
-                    Z = entity.Position.Z
-                };
-
-                var transformationMatrix = Matrix4.Identity * Matrix4.CreateRotationY(entity.RotationY) * Matrix4.CreateTranslation(pos);
-                mesh.Draw(shader, transformationMatrix);
+                RenderEntity(shader, entity);
             }
+        }
+
+        private void RenderEntity(Shader shader, Entity entity)
+        {
+            Mesh mesh = GetMesh(entity.Model);
+
+            Vector3 pos = new()
+            {
+                X = entity.Position.X,
+                Y = entity.Position.Y,
+                Z = entity.Position.Z
+            };
+
+            var transformationMatrix = Matrix4.Identity * Matrix4.CreateRotationY(entity.RotationY) * Matrix4.CreateTranslation(pos);
+            mesh.Draw(shader, transformationMatrix);
         }
 
         private Mesh GetMesh(Model model)
@@ -218,5 +233,7 @@ namespace Game.Graphics
                 item.Value.Dispose();
             }
         }
+
+        
     }
 }
