@@ -48,11 +48,10 @@ namespace Game.ResourceLoader
 
             for (int i = 0; i < Triangles.Length; i++)
             {
-                Triangles[i].P1 = vertices[indices[i * 3 + 0]].Position;
-                Triangles[i].P2 = vertices[indices[i * 3 + 1]].Position;
-                Triangles[i].P3 = vertices[indices[i * 3 + 2]].Position;
+                Triangles[i].P1 = vertices[indices[i / 3 + 0]].Position;
+                Triangles[i].P2 = vertices[indices[i / 3 + 1]].Position;
+                Triangles[i].P3 = vertices[indices[i / 3 + 2]].Position;
             }
-            ;
         }
 
     }
