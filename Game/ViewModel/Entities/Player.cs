@@ -33,7 +33,7 @@ namespace Game.ViewModel.Entities
 
         public Player(Vector3 position) : base(EntityType.Player, position)
         {
-            velocity = new Vector3(0, 0, 1);
+            velocity = new Vector3(0, 0, 2);
             models = new Model[AnimationSteps];
             for (int i = 0; i < models.Length; i++)
             {

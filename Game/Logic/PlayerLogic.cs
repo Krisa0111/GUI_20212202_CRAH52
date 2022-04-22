@@ -140,7 +140,7 @@ namespace Game.Logic
 
             gameModel.Player.Position = pos;
 
-            gameModel.Player.CurrentAnimatonStep += (float)(Vector3.Distance(prevPos, pos) * 15);
+            gameModel.Player.CurrentAnimatonStep += Vector3.Distance(prevPos, pos) * 15f;
 
         }
     }
