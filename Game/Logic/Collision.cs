@@ -9,9 +9,9 @@ namespace Game.Logic
 {
     class Collision
     {
-        public static bool CheckPointInTriangle(ref Vector3 point, ref Vector3 pa, ref Vector3 pb,ref Vector3 pc)
+        public static bool CheckPointInTriangle(ref Vector3 point, ref Vector3 pa, ref Vector3 pb, ref Vector3 pc)
         {
-           
+
             // Lets define some local variables, we can change these
             // without affecting the references passed in
 
@@ -54,42 +54,43 @@ namespace Game.Logic
             // All normals facing the same way, return true
             return true;
         }
-        public static bool GetLowestRoot(double a,double b, double c, double? MaxR, out double? root)
+        
+        public static bool GetLowestRoot(double a, double b, double c, double MaxR, out double root)
         {
+            root = 0;
             double determinant = b * b - 4 * a * c;
-            if (determinant >0)
+            if (determinant > 0)
             {
                 double sqrtD = Math.Sqrt(determinant);
                 double r1 = (-b - sqrtD) / (2 * a);
                 double r2 = (-b + sqrtD) / (2 * a);
-                if (r1>r2)
+                if (r1 > r2)
                 {
                     double temp = r2;
                     r2 = r1;
                     r1 = temp;
                 }
-                if (r1>0 && r1<MaxR)
+                if (r1 > 0 && r1 < MaxR)
                 {
                     root = r1;
                     return true;
                 }
-                if (r2>0 && r2<MaxR)
+                if (r2 > 0 && r2 < MaxR)
                 {
                     root = r2;
                     return true;
                 }
                 // no valid solution
-                root = null;
                 return false;
 
             }
             else
             {
                 // no valid solution
-                root = null;
                 return false;
             }
         }
+
         public static void CheckTriangle(ref CollisionPacket colPackage, ref Vector3 p1, ref Vector3 p2, ref Vector3 p3)
         {
             //Make the plane containing the triangle
@@ -120,7 +121,7 @@ namespace Game.Logic
                 }
                 else
                 {
-                    // n dot is not 0
+                    // N dot D is not 0
                     t0 = (-1 - signedDistToTrianglePlane) / normalDotVelocity;
                     t1 = (1 - signedDistToTrianglePlane) / normalDotVelocity;
                     if (t0 > t1)
@@ -153,11 +154,11 @@ namespace Game.Logic
                 }
                 Vector3 collisionPoint = new Vector3();
                 bool foundCollision = false;
-                double? t = 1;
+                double t = 1;
                 if (!embedInPlane)
                 {
                     Vector3 planeIntersectionPoint = (colPackage.basePoint - trinaglePlane.normal) + ((float)t0 * colPackage.velocity);
-                    if (Collision.CheckPointInTriangle(ref planeIntersectionPoint, ref p1, ref p2, ref p3))
+                    if (CheckPointInTriangle(ref planeIntersectionPoint, ref p1, ref p2, ref p3))
                     {
                         foundCollision = true;
                         t = t0;
@@ -170,13 +171,13 @@ namespace Game.Logic
                     Vector3 basep = colPackage.basePoint;
                     double velocitySquaredLength = velocity.LengthSquared();
                     double a, b, c;
-                    double? newT;
+                    double newT;
                     //Check against points
                     a = velocitySquaredLength;
                     //P1
                     b = 2 * (Vector3.Dot(velocity, (basep - p1)));
                     c = (p1 - basep).LengthSquared() - 1;
-                    if (Collision.GetLowestRoot(a, b, c, t, out newT))
+                    if (GetLowestRoot(a, b, c, t, out newT))
                     {
                         t = newT;
                         foundCollision = true;
@@ -185,7 +186,7 @@ namespace Game.Logic
                     //P2
                     b = 2 * (Vector3.Dot(velocity, (basep - p2)));
                     c = (p2 - basep).LengthSquared() - 1;
-                    if (Collision.GetLowestRoot(a, b, c, t, out newT))
+                    if (GetLowestRoot(a, b, c, t, out newT))
                     {
                         t = newT;
                         foundCollision = true;
@@ -194,7 +195,7 @@ namespace Game.Logic
                     //P3
                     b = 2 * (Vector3.Dot(velocity, (basep - p3)));
                     c = (p3 - basep).LengthSquared() - 1;
-                    if (Collision.GetLowestRoot(a, b, c, t, out newT))
+                    if (GetLowestRoot(a, b, c, t, out newT))
                     {
                         t = newT;
                         foundCollision = true;
@@ -210,7 +211,7 @@ namespace Game.Logic
                     a = edgeSquaredLength * (-velocitySquaredLength) + edgeDotVelocity * edgeDotVelocity;
                     b = edgeSquaredLength * (2 * Vector3.Dot(velocity, baseToVertex)) - 2 * edgeDotVelocity * edgeDotBaseToVertex;
                     c = edgeSquaredLength * (1 - baseToVertex.LengthSquared()) + edgeDotBaseToVertex * edgeDotBaseToVertex;
-                    if (Collision.GetLowestRoot(a, b, c, t, out newT))
+                    if (GetLowestRoot(a, b, c, t, out newT))
                     {
                         //check if interection with line segment
                         double f = (edgeDotVelocity * (double)newT - edgeDotBaseToVertex) / edgeSquaredLength;
@@ -229,11 +230,11 @@ namespace Game.Logic
                     edgeDotVelocity = Vector3.Dot(edge, velocity);
                     edgeDotBaseToVertex = Vector3.Dot(edge, baseToVertex);
 
-                    a = edgeSquaredLength * (-velocitySquaredLength) + (edgeDotVelocity * edgeDotVelocity);
+                    a = edgeSquaredLength * (-velocitySquaredLength) + edgeDotVelocity * edgeDotVelocity;
                     b = edgeSquaredLength * (2 * Vector3.Dot(velocity, baseToVertex)) - 2 * edgeDotVelocity * edgeDotBaseToVertex;
-                    c = edgeSquaredLength * (1 - baseToVertex.LengthSquared() + edgeDotBaseToVertex * edgeDotBaseToVertex);
+                    c = edgeSquaredLength * (1 - baseToVertex.LengthSquared()) + edgeDotBaseToVertex * edgeDotBaseToVertex;
 
-                    if (Collision.GetLowestRoot(a, b, c, t, out newT))
+                    if (GetLowestRoot(a, b, c, t, out newT))
                     {
                         double f = (edgeDotVelocity * (double)newT - edgeDotBaseToVertex) / edgeSquaredLength;
                         if (f >= 0 && f <= 1)
@@ -249,10 +250,10 @@ namespace Game.Logic
                     edgeSquaredLength = edge.LengthSquared();
                     edgeDotVelocity = Vector3.Dot(edge, velocity);
                     edgeDotBaseToVertex = Vector3.Dot(edge, baseToVertex);
-                    a = edgeSquaredLength * (-velocitySquaredLength) + (edgeDotVelocity * edgeDotVelocity);
+                    a = edgeSquaredLength * (-velocitySquaredLength) + edgeDotVelocity * edgeDotVelocity;
                     b = edgeSquaredLength * (2 * Vector3.Dot(velocity, baseToVertex)) - 2 * edgeDotVelocity * edgeDotBaseToVertex;
                     c = edgeSquaredLength * (1 - baseToVertex.LengthSquared()) + edgeDotBaseToVertex * edgeDotBaseToVertex;
-                    if (Collision.GetLowestRoot(a, b, c, t, out newT))
+                    if (GetLowestRoot(a, b, c, t, out newT))
                     {
                         double f = (edgeDotVelocity * (double)newT - edgeDotBaseToVertex) / edgeSquaredLength;
                         if (f >= 0 && f <= 1)

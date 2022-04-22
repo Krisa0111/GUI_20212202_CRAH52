@@ -1,5 +1,6 @@
 ﻿using Game.Graphics;
 using Game.Graphics.OpenGL;
+using Game.Logic;
 using Game.ViewModel;
 using Game.ViewModel.Entities;
 using Microsoft.Toolkit.Mvvm.DependencyInjection;
@@ -10,34 +11,72 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace Game.Renderer
 {
     internal class GameDisplay : IDisposable
     {
-        Player player;
         Entity box;
         IGameModel gameModel = Ioc.Default.GetService<IGameModel>();
         IRenderer renderer = Ioc.Default.GetService<IRenderer>();
+        IGameLogic logic = Ioc.Default.GetService<IGameLogic>();
         Map map;
+        Player player;
+        Thread updateThread;
+
+        private bool Running { get; set; }
 
         public GameDisplay(int width, int height)
         {
             // TODO: dependency injection (IOC)
            
             // TODO: move this to logic
-            player = new Player(Vector3.Zero);
-            box = new Box(new Vector3(1, 0.5f, 5));
-            gameModel.Entities.Add(player);
-            gameModel.Entities.Add(box);
+            box = new Box(new Vector3(0, 0.5f, 5));
+            player = gameModel.Player;
 
+            gameModel.Entities.Add(box);
             map = new MapTunnel();
             
             renderer.Camera.Position = new OpenTK.Mathematics.Vector3(0.0f, 1.5f, -1.5f);
             renderer.Camera.Yaw = 90;
             renderer.Camera.Pitch = -15;
 
+            updateThread = new Thread(UpdateLoop);
+
+        }
+
+        public void Start()
+        {
+            Running = true;
+            updateThread.Start();
+        }
+
+        private void UpdateLoop()
+        {
+            const double updatePerSec = 120;
+            const double updateStep = 1000 / updatePerSec; // milliseconds
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            double accumulator = 0;
+            while(Running)
+            {
+                stopwatch.Stop();
+                double dt = stopwatch.Elapsed.TotalMilliseconds;
+                stopwatch.Restart();
+
+                accumulator += dt;
+
+                while (accumulator > updateStep)
+                {
+                    logic.Update(updateStep / 1000); // millisec to sec
+                    accumulator -= updateStep;
+                }
+
+                Thread.Sleep(1);
+            }
         }
 
         public void Resize(int width, int height, int defaultFbo)
@@ -47,8 +86,8 @@ namespace Game.Renderer
 
         public void Render()
         {
-            player.CurrentAnimatonStep += 1.0f;
-            player.Position += Vector3.UnitZ*0.07f;
+            //player.CurrentAnimatonStep += 1.0f;
+            //player.Position += Vector3.UnitZ*0.07f;
 
             OpenTK.Mathematics.Vector3 startPos = new()
             {
@@ -62,9 +101,11 @@ namespace Game.Renderer
                 renderer.PointLights[i].Position = startPos + new OpenTK.Mathematics.Vector3(0, 2, map.ModelLength * i - map.ModelLength);
             }
 
-            renderer.Camera.Position = new OpenTK.Mathematics.Vector3(player.Position.X, player.Position.Y + 1.5f, player.Position.Z - 1.5f);
+            renderer.Camera.Position = new OpenTK.Mathematics.Vector3(player.Position.X, player.Position.Y + 0.75f, player.Position.Z - 1.5f);
 
             renderer.BeginFrame();
+
+            renderer.Render(gameModel.Player);
 
             renderer.Render(gameModel.Entities);
 
@@ -73,13 +114,10 @@ namespace Game.Renderer
             renderer.EndFrame();
         }
 
-        public void Update(TimeSpan delta)
-        {
-            
-        }
-
         public void Dispose()
         {
+            Running = false;
+            updateThread.Join();
             renderer.Dispose();
         }
     }

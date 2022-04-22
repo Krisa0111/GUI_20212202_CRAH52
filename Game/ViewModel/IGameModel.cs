@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Game.ViewModel.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,5 +10,6 @@ namespace Game.ViewModel
     public interface IGameModel
     {
         IList<Entity> Entities { get; set; }
+        Player Player { get; set; }
     }
 }

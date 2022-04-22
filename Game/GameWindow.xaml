@@ -7,7 +7,10 @@
         xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
         mc:Ignorable="d"
         Title="GameWindow" Height="450" Width="800"
-        Closing="Window_Closing">
+        Closing="Window_Closing"
+        Loaded="Window_Loaded"
+        >
+        
     <Grid x:Name="grid">
         <glWpfControl:GLWpfControl 
             x:Name="OpenTkControl" 
