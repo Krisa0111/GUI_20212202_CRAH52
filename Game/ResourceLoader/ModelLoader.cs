@@ -128,9 +128,13 @@ namespace Game.ResourceLoader
                                 )
                             );
                     }
-                    else if (parts[0] == "f") // 1 face (triangle)
+                    else if (parts[0] == "f") // 1 face
                     {
-                        faces.Add(new Face(parts[1], parts[2], parts[3]));
+                        // triangulate, assuming ngons are convex and coplanar
+                        for (int i = 2; i + 1 < parts.Length; i++)
+                        {
+                            faces.Add(new Face(parts[1], parts[i], parts[i + 1]));
+                        }
                     }
                     else if (parts[0] == "mtllib")
                     {
