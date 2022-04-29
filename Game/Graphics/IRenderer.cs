@@ -12,6 +12,7 @@ namespace Game.Graphics
         IPointLight[] PointLights { get; }
         bool ShowNormals { get; set; }
         bool ShowWireframe { get; set; }
+        bool ShowColliders { get; set; }
 
         void BeginFrame();
         void Dispose();
