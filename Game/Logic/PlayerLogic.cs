@@ -1,4 +1,6 @@
-﻿using Game.ViewModel;
+﻿using Game.Controller;
+using Game.ViewModel;
+using Game.ViewModel.Entities;
 using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -12,21 +14,26 @@ namespace Game.Logic
 {
     internal class PlayerLogic
     {
-        CollisionPacket collisionPacket;
-        const float unitspermeter = 100.0f;
-        int collisionrecursionDpeth = 0;
-        IGameModel gameModel = Ioc.Default.GetService<IGameModel>();
-        float verticalVelocity;
-        const float gravity = 0.05f;
-        const float jumpForce = 0.02f;
+        private IGameModel gameModel = Ioc.Default.GetService<IGameModel>();
+        private Player player;
+        private CollisionPacket collisionPacket;
+        private const float unitspermeter = 100.0f;
+        private int collisionrecursionDpeth = 0;
+        private float verticalVelocity;
+        private const float gravity = 5.0f;
+        private const float jumpForce = 3.0f;
+        private volatile float finalPosX;
+        private volatile bool jump;
+        private readonly object playerLock = new object();
 
         public PlayerLogic()
         {
+            this.player = gameModel.Player;
             collisionPacket = new CollisionPacket();
-            collisionPacket.eRadius = new Vector3(0.2f, 0.7f, 0.2f);
+            collisionPacket.eRadius = new Vector3(0.15f, 0.5f, 0.15f);
         }
 
-        public Vector3 CollideAndSlide(Vector3 vel, Vector3 gravity, Vector3 position)
+        public Vector3 CollideAndSlide(Vector3 vel, /*Vector3 gravity,*/ Vector3 position)
         {
             collisionPacket.R3Position = position;
             collisionPacket.R3Velocity = vel;
@@ -37,32 +44,48 @@ namespace Game.Logic
             Vector3 finalPosition = CollideWithWorld(ref espacePosition, ref espaceVelocity);
 
             //   GRAVITY PULL COMMENT IF NOT NEEDED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            collisionPacket.R3Position = finalPosition * collisionPacket.eRadius;
+            /*collisionPacket.R3Position = finalPosition * collisionPacket.eRadius;
             collisionPacket.R3Velocity = gravity;
             espaceVelocity = gravity / collisionPacket.eRadius;
             collisionrecursionDpeth = 0;
-            finalPosition = CollideWithWorld(ref finalPosition, ref espaceVelocity);
+            finalPosition = CollideWithWorld(ref finalPosition, ref espaceVelocity);*/
             // TO HERE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             finalPosition *= collisionPacket.eRadius;
             return finalPosition;
         }
-        private void CheckCollisionWithEntities(ref IList<Entity> entities)
+
+        private void CollideWithEntities(ref IList<Entity> entities)
         {
-            foreach (var item in entities)
+            foreach (var entity in entities)
             {
-                for (int i = 0; i < item.Model.Triangles.Length; i++)
+                CollisionPacket temp = collisionPacket;
+
+                for (int i = 0; i < entity.ColliderModel.Triangles.Length; i++)
                 {
-                    (Vector3 P1, Vector3 P2, Vector3 P3) = item.Model.Triangles[i];
-                    P1 += item.Position;
-                    P2 += item.Position;
-                    P3 += item.Position;
+                    (Vector3 P1, Vector3 P2, Vector3 P3) = entity.ColliderModel.Triangles[i];
+                    P1 += entity.Position;
+                    P2 += entity.Position;
+                    P3 += entity.Position;
                     P1 /= collisionPacket.eRadius;
                     P2 /= collisionPacket.eRadius;
                     P3 /= collisionPacket.eRadius;
-                    Collision.CheckTriangle(ref collisionPacket, ref P1, ref P2, ref P3);
+                    Collision.CheckTriangle(ref temp, ref P1, ref P2, ref P3);
+                }
+                if (temp.foundCollison)
+                {
+                    if (entity.Type == EntityType.Obstacle)
+                    {
+                        collisionPacket = temp;
+                    }
+                    else
+                    {
+                        // apply powerups / portals
+
+                    }
                 }
             }
         }
+
         private Vector3 CollideWithWorld(ref Vector3 pos, ref Vector3 vel)
         {
             // All hard-coded distances in this function is
@@ -79,9 +102,9 @@ namespace Game.Logic
             collisionPacket.basePoint = pos;
             collisionPacket.foundCollison = false;
             // check for collision
-            IList<Entity> entities = gameModel.Entities;                    // check for errors
+            IList<Entity> entities = gameModel.Entities;
 
-            CheckCollisionWithEntities(ref entities);
+            CollideWithEntities(ref entities);
             if (collisionPacket.foundCollison == false)
             {
                 return pos + vel;
@@ -91,7 +114,7 @@ namespace Game.Logic
             Vector3 newBasePoint = pos;
             if (collisionPacket.nearestDistance >= veryCloseDistance)
             {
-                Vector3 V = Vector3.Normalize(vel) * (float)(collisionPacket.nearestDistance - veryCloseDistance); // LOOK FOR ERRORS
+                Vector3 V = Vector3.Normalize(vel) * (float)(collisionPacket.nearestDistance - veryCloseDistance);
                 newBasePoint = collisionPacket.basePoint + V;
                 V = Vector3.Normalize(V);
                 collisionPacket.intersectionPoint -= veryCloseDistance * V;
@@ -111,37 +134,91 @@ namespace Game.Logic
             return CollideWithWorld(ref newBasePoint, ref newVelocityVector);
 
         }
-        public void Move(double dt)
-        {
-            Vector3 prevPos = gameModel.Player.Position;
 
-            // if player was on ground
-            if (collisionPacket.foundCollison || prevPos.Y <= collisionPacket.eRadius.Y)
+        public void Move(Directions direction)
+        {
+            lock (playerLock) // lock finalPosX & jump
             {
-                // reset gravity
-                verticalVelocity = -gravity * (float)dt;
-                // if player jumps
-                if (gameModel.Player.velocity.Y > 0)
+                switch (direction)
                 {
-                    verticalVelocity = jumpForce;
+                    case Directions.Up:
+                        jump = true;
+                        break;
+                    case Directions.Down:
+                        break;
+                    case Directions.Left:
+                        finalPosX++;
+                        break;
+                    case Directions.Right:
+                        finalPosX--;
+                        break;
+                    default:
+                        break;
                 }
             }
-            else // player in the air
+        }
+
+        public void Update(double dt)
+        {
+            Vector3 prevPos = player.Position;
+            bool onGround = collisionPacket.foundCollison || prevPos.Y <= collisionPacket.eRadius.Y;
+
+            lock (playerLock) // lock finalPosX & jump
             {
-                verticalVelocity -= gravity * (float)dt;
+                // if player was on ground
+                if (onGround)
+                {
+                    // reset gravity
+                    verticalVelocity = -gravity * (float)dt;
+                    if (jump == true)
+                    {
+                        verticalVelocity = jumpForce;
+                    }
+                }
+                else // player in the air
+                {
+                    verticalVelocity -= gravity * (float)dt;
+                }
+
+                jump = false;
+
+
+                //player.Velocity.X = finalPosX - player.Position.X;
+                player.Velocity.X =
+                    (MathF.Abs(finalPosX - player.Position.X) < 0.85f ?
+                    MathF.Sin((finalPosX - player.Position.X) * MathF.PI) :
+                    MathF.Sign(finalPosX - player.Position.X) * 0.454f) * 3.0f;
             }
 
-            Vector3 pos = CollideAndSlide(gameModel.Player.velocity * (float)dt, new Vector3(0, verticalVelocity, 0), gameModel.Player.Position);
+            player.Velocity.Z = 1;
+            player.Velocity.Y = 0;
+            player.Velocity = Vector3.Normalize(player.Velocity) * player.Speed;
+
+            Vector3 velocity = player.Velocity;
+            velocity.Y = verticalVelocity;
+            Vector3 pos = CollideAndSlide(velocity * (float)dt,/* new Vector3(0, verticalVelocity, 0),*/ player.Position);
 
             if (pos.Y < collisionPacket.eRadius.Y)
             {
                 pos.Y = collisionPacket.eRadius.Y;
             }
 
-            gameModel.Player.Position = pos;
+            float distanceMoved = Vector3.Distance(prevPos, pos);
+            float momentum = player.Velocity.Length() * (float)dt;
 
-            gameModel.Player.CurrentAnimatonStep += Vector3.Distance(prevPos, pos) * 15f;
+            if (distanceMoved < momentum * .99f)
+            {
+                Debug.WriteLine("collision");
+            }
 
+            player.Position = pos;
+
+            if (onGround)
+                player.CurrentAnimatonStep += distanceMoved * 10f;
+            else
+                player.CurrentAnimatonStep += distanceMoved * 5f;
+
+            player.RotationY = MathF.Atan(player.Velocity.X / player.Velocity.Z) / 2.0f;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Game.Controller;
 using Game.ViewModel;
+using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,18 +11,11 @@ using System.Windows;
 
 namespace Game.Logic
 {
-    class GameLogic : IGameController, IGameLogic
+    class GameLogic : IGameLogic
     {
-        IGameModel gameModel;
         PlayerLogic playerLogic;
-        
+        IGameModel gameModel = Ioc.Default.GetService<IGameModel>();
 
-        Size area;
-        public void SetupSizes(Size area)
-        {
-            this.area = area;
-
-        }
         public GameLogic()
         {
             playerLogic = new PlayerLogic();
@@ -29,11 +23,16 @@ namespace Game.Logic
 
         public void Move(Directions direction)
         {
-            throw new NotImplementedException();
+            playerLogic.Move(direction);
         }
+
         public void Update(double delta)
         {
-            playerLogic.Move(delta);
+            playerLogic.Update(delta);
+            foreach (var entity in gameModel.Entities)
+            {
+                if (entity.Type == EntityType.Decelerator) entity.RotationY += (float)delta;
+            }
         }
     }
 }

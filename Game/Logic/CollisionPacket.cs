@@ -7,13 +7,16 @@ using System.Threading.Tasks;
 
 namespace Game.Logic
 {
-    internal class CollisionPacket
+    internal struct CollisionPacket
     {
-        public Vector3 eRadius = Vector3.One; // elipsoid radius
+        // ellipsoid radius
+        public Vector3 eRadius;
 
+        // move infomration in r3 space
         public Vector3 R3Velocity;
         public Vector3 R3Position;
 
+        // move infomration in ellipsoid space
         public Vector3 velocity;
         public Vector3 normalizedVelocity;
         public Vector3 basePoint;
@@ -21,9 +24,5 @@ namespace Game.Logic
         public bool foundCollison;
         public double nearestDistance;
         public Vector3 intersectionPoint;
-
-        
-
-
     }
 }

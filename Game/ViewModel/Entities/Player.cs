@@ -12,7 +12,10 @@ namespace Game.ViewModel.Entities
     public class Player : Entity
     {
         public const int AnimationSteps = 30;
-        public Vector3 velocity;
+
+        public Vector3 Velocity;
+        public float Speed;
+
         private float currentAnimatonStep;
         public float CurrentAnimatonStep
         {
@@ -27,13 +30,14 @@ namespace Game.ViewModel.Entities
                 return models[(int)CurrentAnimatonStep];
             }
         }
-        
+
         [Range(0,5)]
         public int Life { get; set; }
 
         public Player(Vector3 position) : base(EntityType.Player, position)
         {
-            velocity = new Vector3(0, 0, 2);
+            Velocity = new Vector3(0, 0, 1);
+            Speed = 4.0f;
             models = new Model[AnimationSteps];
             for (int i = 0; i < models.Length; i++)
             {
