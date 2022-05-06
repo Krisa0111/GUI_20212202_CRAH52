@@ -49,7 +49,7 @@ namespace Game
 
             fps = 1.0 / delta.TotalSeconds;
 
-            lb_fps.Content = Math.Round(fps);
+            lb_info.Content = $"FPS: {Math.Round(fps)} TickRate: {Math.Round(gameDisplay.TickRate)}";
 
             var code = GL.GetError();
             while (code != ErrorCode.NoError)
