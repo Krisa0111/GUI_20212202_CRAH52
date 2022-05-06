@@ -37,7 +37,22 @@ namespace Game.Renderer
             // TODO: move this to logic
             box = new Box(new Vector3(0, 0.5f, 5));
             gameModel.Entities.Add(box);
-            gameModel.Entities.Add(new Watch(new Vector3(0, 0.7f, 10)));
+            gameModel.Entities.Add(new Watch(new Vector3(1, 0.7f, 10)));
+
+            gameModel.Entities.Add(new Road(new Vector3(0, 0, 60)));
+
+            for (int i = 0; i < 10; i++)
+            {
+                gameModel.Entities.Add(new Road(new Vector3(0, 0, 20 + 40 * i)));
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                gameModel.Entities.Add(new Car(new Vector3(0, 0, 10 * i+10)));
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                gameModel.Entities.Add(new RoadBlock(new Vector3(-1, 0, 10 * i + 15)));
+            }
 
             renderer.Camera.Position = new OVector3(0.0f, 1.5f, -1.5f);
             renderer.Camera.Yaw = 90;
