@@ -14,6 +14,29 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Include="Resources\Maps\map1.txt" />
+	  <Content Include="Resources\Maps\map10.txt" />
+	  <Content Include="Resources\Maps\map11.txt" />
+	  <Content Include="Resources\Maps\map12.txt" />
+	  <Content Include="Resources\Maps\map13.txt" />
+	  <Content Include="Resources\Maps\map14.txt" />
+	  <Content Include="Resources\Maps\map15.txt" />
+	  <Content Include="Resources\Maps\map16.txt" />
+	  <Content Include="Resources\Maps\map17.txt" />
+	  <Content Include="Resources\Maps\map18.txt" />
+	  <Content Include="Resources\Maps\map19.txt" />
+	  <Content Include="Resources\Maps\map2.txt" />
+	  <Content Include="Resources\Maps\map20.txt" />
+	  <Content Include="Resources\Maps\map3.txt" />
+	  <Content Include="Resources\Maps\map4.txt" />
+	  <Content Include="Resources\Maps\map5.txt" />
+	  <Content Include="Resources\Maps\map6.txt" />
+	  <Content Include="Resources\Maps\map7.txt" />
+	  <Content Include="Resources\Maps\map8.txt" />
+	  <Content Include="Resources\Maps\map9.txt" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
 		<PackageReference Include="OpenTK" Version="4.3.0" />
