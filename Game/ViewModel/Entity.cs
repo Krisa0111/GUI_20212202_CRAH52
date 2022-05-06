@@ -17,9 +17,11 @@ namespace Game.ViewModel
         public Vector3 Position { get; set; }
         public float RotationY { get; set; }
 
-        public virtual Model Model { get; protected set; }
+        public bool ShouldDelete { get; private set; } = false;
+
+        public virtual Model Model { get; private set; }
         // low poly model for collison detection
-        public virtual Model ColliderModel { get => Model; }
+        public Model ColliderModel { get; private set; }
 
         public static ModelLoader ModelLoader { get; }
 
@@ -30,18 +32,27 @@ namespace Game.ViewModel
             ModelLoader = ModelLoader.GetInstance();
             Rnd = new Random();
         }
-
-        protected Entity(EntityType type, Vector3 position, Model model)
+        protected Entity(EntityType type, Vector3 position, Model model, Model collider = null)
         {
             Type = type;
             Position = position;
             Model = model;
+            ColliderModel = collider ?? model;
         }
 
         protected Entity(EntityType type, Vector3 position)
         {
             Type = type;
             Position = position;
+            Model = Model.Empty;
+            ColliderModel = Model.Empty;
+        }
+
+        public void MarkToDelete()
+        {
+            ShouldDelete = true;
+            Model = Model.Empty;
+            ColliderModel = Model.Empty;
         }
     }
 }

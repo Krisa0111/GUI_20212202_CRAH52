@@ -57,7 +57,7 @@ namespace Game.Logic
             return finalPosition;
         }
 
-        private void CollideWithEntities(ref IList<Entity> entities)
+        private void CollideWithEntities(ref IReadOnlyCollection<Entity> entities)
         {
             foreach (var entity in entities)
             {
@@ -84,7 +84,6 @@ namespace Game.Logic
                     else
                     {
                         // apply powerups / portals
-
                     }
                 }
             }
@@ -106,7 +105,7 @@ namespace Game.Logic
             collisionPacket.basePoint = pos;
             collisionPacket.foundCollison = false;
             // check for collision
-            IList<Entity> entities = gameModel.Entities;
+            IReadOnlyCollection<Entity> entities = gameModel.Entities;
 
             CollideWithEntities(ref entities);
             if (collisionPacket.foundCollison == false)
@@ -212,7 +211,7 @@ namespace Game.Logic
 
             if (distanceMoved < momentum * .99f)
             {
-                Debug.WriteLine("collision");
+                //Debug.WriteLine("collision");
             }
 
             player.Position = pos;

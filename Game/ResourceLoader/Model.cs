@@ -15,11 +15,14 @@ namespace Game.ResourceLoader
         private uint[] indices;
         public Material Material { get; }
 
+        public static Model Empty { get => new Model("empty", Array.Empty<Vertex>(), Array.Empty<uint>(), new Material()); }
 
         public float[] Vertices
         {
             get
             {
+                if (this.vertices.Length < 1) return Array.Empty<float>();
+
                 float[] vertices = new float[this.vertices.Length * this.vertices[0].GetData().Length];
                 int i = 0;
                 foreach (Vertex vertex in this.vertices)

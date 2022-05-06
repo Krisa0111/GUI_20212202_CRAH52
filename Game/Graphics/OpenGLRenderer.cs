@@ -135,7 +135,7 @@ namespace Game.Graphics
             intermediateFBO.Draw(fboShader);
         }
 
-        public void Render(IList<Entity> entities)
+        public void Render(IReadOnlyCollection<Entity> entities)
         {
             if (ShowColliders)
             {
@@ -182,7 +182,7 @@ namespace Game.Graphics
             }
         }
 
-        private void RenderEntities(Shader shader, IList<Entity> entities)
+        private void RenderEntities(Shader shader, IReadOnlyCollection<Entity> entities)
         {
             foreach (var entity in entities)
             {
@@ -205,7 +205,7 @@ namespace Game.Graphics
             mesh.Draw(shader, transformationMatrix);
         }
 
-        private void RenderEntitiesCollider(Shader shader, IList<Entity> entities)
+        private void RenderEntitiesCollider(Shader shader, IReadOnlyCollection<Entity> entities)
         {
             foreach (var entity in entities)
             {

@@ -1,5 +1,6 @@
 ﻿using Game.ViewModel.Entities;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -11,7 +12,7 @@ namespace Game.ViewModel
     public class GameModel : IGameModel
     {
         public Player Player { get;set; }
-        public IList<Entity> Entities
+        public ConcurrentQueue<Entity> Entities
         {
             get; set;
         }
@@ -21,7 +22,7 @@ namespace Game.ViewModel
 
         public GameModel()
         {
-            Entities = new List<Entity>();
+            Entities = new ConcurrentQueue<Entity>();
             mapTunnel = new MapTunnel();
             Player = new Player(new Vector3(0,0.7f,0));
         }

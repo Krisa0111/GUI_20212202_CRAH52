@@ -1,5 +1,6 @@
 ﻿using Game.ViewModel.Entities;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace Game.ViewModel
 {
     public interface IGameModel
     {
-        IList<Entity> Entities { get; set; }
+        ConcurrentQueue<Entity> Entities { get; set; }
         Player Player { get; set; }
     }
 }
