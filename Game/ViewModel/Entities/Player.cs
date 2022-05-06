@@ -15,6 +15,7 @@ namespace Game.ViewModel.Entities
 
         public Vector3 Velocity;
         public float Speed;
+        public float Score;
 
         private float currentAnimatonStep;
         public float CurrentAnimatonStep
@@ -37,6 +38,7 @@ namespace Game.ViewModel.Entities
         public Player(Vector3 position) : base(EntityType.Player, position)
         {
             Velocity = new Vector3(0, 0, 1);
+            Score = position.Z;
             Speed = 4.0f;
             models = new Model[AnimationSteps];
             for (int i = 0; i < models.Length; i++)

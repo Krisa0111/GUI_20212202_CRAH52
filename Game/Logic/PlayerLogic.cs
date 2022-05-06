@@ -224,6 +224,18 @@ namespace Game.Logic
 
             player.RotationY = MathF.Atan(player.Velocity.X / player.Velocity.Z) / 2.0f;
 
+
+            IncreaseSpeed(player, pos);
+        }
+
+        private void IncreaseSpeed(Player player, Vector3 pos)
+        {
+            string s = pos.Z.ToString();
+            double d = double.Parse(s);
+            if (pos.Z > 1)
+            {
+                player.Speed = (float)Math.Sqrt(d);
+            };
         }
     }
 }
