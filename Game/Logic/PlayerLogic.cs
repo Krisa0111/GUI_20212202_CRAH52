@@ -230,12 +230,16 @@ namespace Game.Logic
 
         private void IncreaseSpeed(Player player, Vector3 pos)
         {
-            string s = pos.Z.ToString();
-            double d = double.Parse(s);
-            if (pos.Z > 1)
+            if (pos.Z > 16)
             {
+                string s = pos.Z.ToString();
+                double d = double.Parse(s);
                 player.Speed = (float)Math.Sqrt(d);
-            };
+            }
+            else
+            {
+                player.Speed = 4.0f;
+            }
         }
     }
 }
