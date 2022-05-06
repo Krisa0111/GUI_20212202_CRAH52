@@ -26,6 +26,7 @@ namespace Game.Logic
         private volatile float finalPosX;
         private volatile bool jump;
         private readonly object playerLock = new object();
+        private int DecreaseSpeedCounter = 0;
 
         public PlayerLogic()
         {
@@ -85,6 +86,18 @@ namespace Game.Logic
                     {
                         // apply powerups / portals
 
+                        // Decrease speed
+                        if (entity.Type == EntityType.Decelerator)
+                        {
+                            player.Distance = player.Position.Z;
+                            player.Speed = player.Position.Z * 0.8f;
+                            if (DecreaseSpeedCounter == 0)
+                            {
+                                player.Distance += player.Position.Z + 0.8f;
+                            }
+                        }
+
+                        // Increase speed
                     }
                 }
             }
