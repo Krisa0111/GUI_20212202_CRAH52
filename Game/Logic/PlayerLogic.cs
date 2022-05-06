@@ -22,6 +22,7 @@ namespace Game.Logic
         private float verticalVelocity;
         private const float gravity = 5.0f;
         private const float jumpForce = 3.0f;
+        private bool collided;
         private volatile float finalPosX;
         private volatile bool jump;
         private readonly object playerLock = new object();
@@ -35,6 +36,8 @@ namespace Game.Logic
 
         public Vector3 CollideAndSlide(Vector3 vel, /*Vector3 gravity,*/ Vector3 position)
         {
+            collided = false;
+
             collisionPacket.R3Position = position;
             collisionPacket.R3Velocity = vel;
 
@@ -73,6 +76,7 @@ namespace Game.Logic
                 }
                 if (temp.foundCollison)
                 {
+                    collided = true;
                     if (entity.Type == EntityType.Obstacle)
                     {
                         collisionPacket = temp;
@@ -161,12 +165,12 @@ namespace Game.Logic
         public void Update(double dt)
         {
             Vector3 prevPos = player.Position;
-            bool onGround = collisionPacket.foundCollison || prevPos.Y <= collisionPacket.eRadius.Y;
+            bool grouned = collided;
 
             lock (playerLock) // lock finalPosX & jump
             {
                 // if player was on ground
-                if (onGround)
+                if (grouned)
                 {
                     // reset gravity
                     verticalVelocity = -gravity * (float)dt;
@@ -198,10 +202,10 @@ namespace Game.Logic
             velocity.Y = verticalVelocity;
             Vector3 pos = CollideAndSlide(velocity * (float)dt,/* new Vector3(0, verticalVelocity, 0),*/ player.Position);
 
-            if (pos.Y < collisionPacket.eRadius.Y)
+            /*if (pos.Y < collisionPacket.eRadius.Y)
             {
                 pos.Y = collisionPacket.eRadius.Y;
-            }
+            }*/
 
             float distanceMoved = Vector3.Distance(prevPos, pos);
             float momentum = player.Velocity.Length() * (float)dt;
@@ -213,12 +217,13 @@ namespace Game.Logic
 
             player.Position = pos;
 
-            if (onGround)
+            if (grouned)
                 player.CurrentAnimatonStep += distanceMoved * 10f;
             else
                 player.CurrentAnimatonStep += distanceMoved * 5f;
 
             player.RotationY = MathF.Atan(player.Velocity.X / player.Velocity.Z) / 2.0f;
+
         }
     }
 }
