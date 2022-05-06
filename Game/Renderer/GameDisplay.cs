@@ -1,5 +1,5 @@
-﻿using Game.Graphics;
-using Game.Graphics.OpenGL;
+﻿using Game.Controller;
+using Game.Graphics;
 using Game.Logic;
 using Game.ViewModel;
 using Game.ViewModel.Entities;
@@ -14,38 +14,51 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using OVector3 = OpenTK.Mathematics.Vector3;
 
 namespace Game.Renderer
 {
-    internal class GameDisplay : IDisposable
+    internal class GameDisplay : IDisposable, IGameDisplay
     {
         Entity box;
         IGameModel gameModel = Ioc.Default.GetService<IGameModel>();
         IRenderer renderer = Ioc.Default.GetService<IRenderer>();
         IGameLogic logic = Ioc.Default.GetService<IGameLogic>();
-        Map map;
+        
         Player player;
         Thread updateThread;
 
         private bool Running { get; set; }
 
-        public GameDisplay(int width, int height)
+        public GameDisplay()
         {
-            // TODO: dependency injection (IOC)
-           
-            // TODO: move this to logic
-            box = new Box(new Vector3(0, 0.5f, 5));
             player = gameModel.Player;
 
+            // TODO: move this to logic
+            box = new Box(new Vector3(0, 0.5f, 5));
             gameModel.Entities.Add(box);
-            map = new MapTunnel();
-            
-            renderer.Camera.Position = new OpenTK.Mathematics.Vector3(0.0f, 1.5f, -1.5f);
+            gameModel.Entities.Add(new Watch(new Vector3(1, 0.7f, 10)));
+
+            gameModel.Entities.Add(new Road(new Vector3(0, 0, 60)));
+
+            for (int i = 0; i < 10; i++)
+            {
+                gameModel.Entities.Add(new Road(new Vector3(0, 0, 20 + 40 * i)));
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                gameModel.Entities.Add(new Car(new Vector3(0, 0, 10 * i+10)));
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                gameModel.Entities.Add(new RoadBlock(new Vector3(-1, 0, 10 * i + 15)));
+            }
+
+            renderer.Camera.Position = new OVector3(0.0f, 1.5f, -1.5f);
             renderer.Camera.Yaw = 90;
             renderer.Camera.Pitch = -15;
 
             updateThread = new Thread(UpdateLoop);
-
         }
 
         public void Start()
@@ -61,7 +74,7 @@ namespace Game.Renderer
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             double accumulator = 0;
-            while(Running)
+            while (Running)
             {
                 stopwatch.Stop();
                 double dt = stopwatch.Elapsed.TotalMilliseconds;
@@ -86,30 +99,25 @@ namespace Game.Renderer
 
         public void Render()
         {
-            //player.CurrentAnimatonStep += 1.0f;
-            //player.Position += Vector3.UnitZ*0.07f;
-
-            OpenTK.Mathematics.Vector3 startPos = new()
+            OVector3 startPos = new()
             {
                 X = 0,
                 Y = 0,
-                Z = player.Position.Z - (player.Position.Z % map.ModelLength) 
+                Z = player.Position.Z - (player.Position.Z % 10)
             };
 
             for (int i = 0; i < renderer.PointLights.Length; i++)
             {
-                renderer.PointLights[i].Position = startPos + new OpenTK.Mathematics.Vector3(0, 2, map.ModelLength * i - map.ModelLength);
+                renderer.PointLights[i].Position = startPos + new OVector3(0, 2, 10 * i - 10);
             }
 
-            renderer.Camera.Position = new OpenTK.Mathematics.Vector3(player.Position.X, player.Position.Y + 0.75f, player.Position.Z - 1.5f);
+            renderer.Camera.Position = new OVector3(player.Position.X, player.Position.Y + 0.75f, player.Position.Z - 1.5f);
 
             renderer.BeginFrame();
 
             renderer.Render(gameModel.Player);
 
             renderer.Render(gameModel.Entities);
-
-            renderer.RenderMultible(map.Model, startPos, new OpenTK.Mathematics.Vector3(0, 0, map.ModelLength), 30);
 
             renderer.EndFrame();
         }

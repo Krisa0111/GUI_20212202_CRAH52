@@ -11,7 +11,7 @@ namespace Game.ViewModel.Entities
     internal class Box : Entity
     {
         public Box(Vector3 position)
-            : base(EntityType.Obstacle, position, ModelLoader.GetModel("Models/untitled.obj"))
+            : base(EntityType.Obstacle, position, ModelLoader.GetModel("Models/box.obj"))
         { }
     }
 }

@@ -1,5 +1,6 @@
-﻿using Game.Graphics;
+﻿using Game.Controller;
 using Game.Renderer;
+using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Wpf;
@@ -16,9 +17,10 @@ namespace Game
     /// 
     public partial class GameWindow : Window
     {
-        GameDisplay gameDisplay;
-        
-        double fps;
+        private IGameDisplay gameDisplay;
+        private IGameController controller;
+
+        private double fps;
 
         public GameWindow()
         {
@@ -31,9 +33,8 @@ namespace Game
             };
             OpenTkControl.Start(settings);
 
-            gameDisplay = new GameDisplay(OpenTkControl.FrameBufferWidth, OpenTkControl.FrameBufferHeight);
-
-
+            gameDisplay = Ioc.Default.GetService<IGameDisplay>();
+            controller = Ioc.Default.GetService<IGameController>();
         }
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
@@ -67,6 +68,11 @@ namespace Game
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             gameDisplay.Start();
+        }
+
+        private void Window_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            controller.KeyPressed(e.Key);
         }
     }
 }

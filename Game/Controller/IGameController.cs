@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Windows.Input;
 
 namespace Game.Controller
 {
-    interface IGameController
+    internal interface IGameController
     {
-        void Move(Directions direction);
+        void KeyPressed(Key key);
     }
 }

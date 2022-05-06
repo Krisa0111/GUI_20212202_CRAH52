@@ -13,7 +13,7 @@ namespace Game.Graphics
 {
     internal class OpenGLRenderer : IDisposable, IRenderer
     {
-        
+
         private readonly Camera camera;
 
         public ICamera Camera
@@ -28,7 +28,7 @@ namespace Game.Graphics
         private Shader normalShader;
         private Shader fboShader;
 
-        private FrameBuffer multisapleFbo;
+        private FrameBuffer multisapleFBO;
         private FrameBuffer intermediateFBO;
 
         private const int MAX_POINT_LIGHTS = 16;
@@ -41,6 +41,8 @@ namespace Game.Graphics
 
         public bool ShowWireframe { get; set; } = false;
         public bool ShowNormals { get; set; } = false;
+        public bool ShowColliders { get; set; } = false;
+
 
         public IDirectionalLight DirectionalLight { get => directionalLight; }
         public IPointLight[] PointLights { get => pointLights; }
@@ -59,7 +61,7 @@ namespace Game.Graphics
             fboShader = new Shader("Shaders/fbo_vert.glsl", "Shaders/fbo_frag.glsl");
 
             // setup framebuffers
-            multisapleFbo = new FrameBuffer(width, height, 4);
+            multisapleFBO = new FrameBuffer(width, height, 4);
             intermediateFBO = new FrameBuffer(width, height);
 
             shader.Use();
@@ -93,14 +95,15 @@ namespace Game.Graphics
             textures = new Dictionary<string, Texture>();
 
         }
-        public OpenGLRenderer():this(0,0)
+
+        public OpenGLRenderer() : this(0, 0)
         {
 
         }
 
         public void BeginFrame()
         {
-            multisapleFbo.Bind();
+            multisapleFBO.Bind();
             GL.ClearColor(Color4.White);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.Enable(EnableCap.DepthTest);
@@ -125,8 +128,8 @@ namespace Game.Graphics
         {
             GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
 
-            multisapleFbo.BlitTo(intermediateFBO);
-            multisapleFbo.Unbind();
+            multisapleFBO.BlitTo(intermediateFBO);
+            multisapleFBO.Unbind();
             intermediateFBO.Unbind();
 
             intermediateFBO.Draw(fboShader);
@@ -134,20 +137,35 @@ namespace Game.Graphics
 
         public void Render(IList<Entity> entities)
         {
-            RenderEntities(shader, entities);
-
-            if (ShowNormals)
+            if (ShowColliders)
             {
-                RenderEntities(normalShader, entities);
+                RenderEntitiesCollider(shader, entities);
             }
+            else
+            {
+                RenderEntities(shader, entities);
+
+                if (ShowNormals)
+                {
+                    RenderEntities(normalShader, entities);
+                }
+            }
+
         }
 
         public void Render(Entity entity)
         {
-            RenderEntity(shader, entity);
-            if (ShowNormals)
+            if (ShowColliders)
             {
-                RenderEntity(normalShader, entity);
+                RenderEntityCollider(shader, entity);
+            }
+            else
+            {
+                RenderEntity(shader, entity);
+                if (ShowNormals)
+                {
+                    RenderEntity(normalShader, entity);
+                }
             }
         }
 
@@ -187,6 +205,29 @@ namespace Game.Graphics
             mesh.Draw(shader, transformationMatrix);
         }
 
+        private void RenderEntitiesCollider(Shader shader, IList<Entity> entities)
+        {
+            foreach (var entity in entities)
+            {
+                RenderEntityCollider(shader, entity);
+            }
+        }
+
+        private void RenderEntityCollider(Shader shader, Entity entity)
+        {
+            Mesh mesh = GetMesh(entity.ColliderModel);
+
+            Vector3 pos = new()
+            {
+                X = entity.Position.X,
+                Y = entity.Position.Y,
+                Z = entity.Position.Z
+            };
+
+            var transformationMatrix = Matrix4.Identity * Matrix4.CreateTranslation(pos);
+            mesh.Draw(shader, transformationMatrix);
+        }
+
         private Mesh GetMesh(Model model)
         {
             if (!models.TryGetValue(model.Name, out Mesh mesh))
@@ -218,7 +259,7 @@ namespace Game.Graphics
         public void Resize(int width, int height, int defaultFbo)
         {
             camera.AspectRatio = width / (float)height;
-            multisapleFbo.Resize(width, height, defaultFbo);
+            multisapleFBO.Resize(width, height, defaultFbo);
             intermediateFBO.Resize(width, height, defaultFbo);
         }
 
@@ -233,7 +274,5 @@ namespace Game.Graphics
                 item.Value.Dispose();
             }
         }
-
-        
     }
 }

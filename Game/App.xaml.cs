@@ -1,6 +1,7 @@
 ﻿using Game.Graphics;
 using Game.Logic;
 using Game.ViewModel;
+using Game.Controller;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.Messaging;
@@ -11,6 +12,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Game.Renderer;
 
 namespace Game
 {
@@ -19,16 +21,17 @@ namespace Game
     /// </summary>
     public partial class App : Application
     {
-        
+
         public App()
         {
             Ioc.Default.ConfigureServices(
                 new ServiceCollection()
-                .AddSingleton<IGameModel,GameModel>()
-                .AddSingleton<IGameLogic,GameLogic>()
-                .AddSingleton<IRenderer,OpenGLRenderer>()
+                .AddSingleton<IGameDisplay, GameDisplay>()
+                .AddSingleton<IGameController, GameController>()
+                .AddSingleton<IGameModel, GameModel>()
+                .AddSingleton<IGameLogic, GameLogic>()
+                .AddSingleton<IRenderer, OpenGLRenderer>()
                 .BuildServiceProvider()
-                
                 );
         }
     }

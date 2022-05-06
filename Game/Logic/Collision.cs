@@ -7,55 +7,38 @@ using System.Threading.Tasks;
 
 namespace Game.Logic
 {
+    // https://www.peroxide.dk/papers/collision/collision.pdf
     class Collision
     {
-        public static bool CheckPointInTriangle(ref Vector3 point, ref Vector3 pa, ref Vector3 pb, ref Vector3 pc)
+        private static bool CheckPointInTriangle(ref Vector3 point, ref Vector3 pa, ref Vector3 pb, ref Vector3 pc)
         {
+            Vector3 e10 = pb - pa;
+            Vector3 e20 = pc - pa;
 
-            // Lets define some local variables, we can change these
-            // without affecting the references passed in
+            float a, b, c, ac_bb;
 
-            Vector3 p = point;
-            Vector3 a = pa;
-            Vector3 b = pb;
-            Vector3 c = pc;
+            a = Vector3.Dot(e10, e10);
+            b = Vector3.Dot(e10, e20);
+            c = Vector3.Dot(e20, e20);
+            ac_bb = (a * c) - (b * b);
 
-            // Move the triangle so that the point becomes the 
-            // triangles origin
-            a -= p;
-            b -= p;
-            c -= p;
+            Vector3 vp = new Vector3(point.X - pa.X, point.Y - pa.Y, point.Z - pa.Z);
 
-            // The point should be moved too, so they are both
-            // relative, but because we don't use p in the
-            // equation anymore, we don't need it!
-            // p -= p;
+            float d = Vector3.Dot(vp, e10);
+            float e = Vector3.Dot(vp, e20);
 
-            // Compute the normal vectors for triangles:
-            // u = normal of PBC
-            // v = normal of PCA
-            // w = normal of PAB
+            float x = (d * c) - (e * b);
+            float y = (e * a) - (d * b);
+            float z = x + y - ac_bb;
 
-            Vector3 u = Vector3.Cross(b, c);
-            Vector3 v = Vector3.Cross(c, a);
-            Vector3 w = Vector3.Cross(a, b);
+            uint _x = BitConverter.ToUInt32(BitConverter.GetBytes(x), 0);
+            uint _y = BitConverter.ToUInt32(BitConverter.GetBytes(y), 0);
+            uint _z = BitConverter.ToUInt32(BitConverter.GetBytes(z), 0);
 
-            // Test to see if the normals are facing 
-            // the same direction, return false if not
-            if (Vector3.Dot(u, v) < 0f)
-            {
-                return false;
-            }
-            if (Vector3.Dot(u, w) < 0.0f)
-            {
-                return false;
-            }
-
-            // All normals facing the same way, return true
-            return true;
+            return (((_z) & ~((_x) | (_y))) & 0x80000000) != 0;
         }
-        
-        public static bool GetLowestRoot(double a, double b, double c, double MaxR, out double root)
+
+        private static bool GetLowestRoot(double a, double b, double c, double MaxR, out double root)
         {
             root = 0;
             double determinant = b * b - 4 * a * c;

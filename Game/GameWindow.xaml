@@ -6,9 +6,10 @@
         xmlns:local="clr-namespace:Game"
         xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
         mc:Ignorable="d"
-        Title="GameWindow" Height="450" Width="800"
+        Title="GameWindow" Height="720" Width="1280"
         Closing="Window_Closing"
         Loaded="Window_Loaded"
+        PreviewKeyDown="Window_PreviewKeyDown"
         >
         
     <Grid x:Name="grid">
