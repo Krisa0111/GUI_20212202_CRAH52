@@ -15,7 +15,9 @@ namespace Game.ViewModel.Entities
 
         public Vector3 Velocity;
         public float Speed;
-        public float Distance;
+        public float Distance = 4.0f;
+        public int DecreaseVariable = 0;
+        public float PreviousPositionZ = 0;
 
         private float currentAnimatonStep;
         public float CurrentAnimatonStep
@@ -38,7 +40,6 @@ namespace Game.ViewModel.Entities
         public Player(Vector3 position) : base(EntityType.Player, position)
         {
             Velocity = new Vector3(0, 0, 1);
-            Distance = 0;
             Speed = 4.0f;
             models = new Model[AnimationSteps];
             for (int i = 0; i < models.Length; i++)

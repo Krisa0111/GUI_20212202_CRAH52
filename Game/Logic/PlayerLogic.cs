@@ -26,7 +26,9 @@ namespace Game.Logic
         private volatile float finalPosX;
         private volatile bool jump;
         private readonly object playerLock = new object();
-        private int DecreaseSpeedCounter = 0;
+        private float previouscollisionEntityPosition = 0;
+        private Entity previouscollisionEntityType;
+
 
         public PlayerLogic()
         {
@@ -89,15 +91,23 @@ namespace Game.Logic
                         // Decrease speed
                         if (entity.Type == EntityType.Decelerator)
                         {
-                            player.Distance = player.Position.Z;
-                            player.Speed = player.Position.Z * 0.8f;
-                            if (DecreaseSpeedCounter == 0)
+                            if (previouscollisionEntityType.Type == EntityType.Decelerator && (player.Position.Z - previouscollisionEntityPosition) > 0.2f)
                             {
-                                player.Distance += player.Position.Z + 0.8f;
+                                player.Distance *= 0.8f;
+                                previouscollisionEntityPosition = player.Position.Z;
+                                //previouscollisionEntityType.Type = EntityType.Decelerator;
+                            }
+                            else if(previouscollisionEntityType.Type != EntityType.Decelerator) 
+                            {
+                                player.Distance *= 0.8f;
                             }
                         }
 
                         // Increase speed
+                        else if (entity.Type == EntityType.Accelerator)
+                        {
+                        }
+
                     }
                 }
             }
@@ -238,21 +248,14 @@ namespace Game.Logic
             player.RotationY = MathF.Atan(player.Velocity.X / player.Velocity.Z) / 2.0f;
 
 
-            IncreaseSpeed(player, pos);
+            IncreaseSpeed(player, pos, dt);
         }
 
-        private void IncreaseSpeed(Player player, Vector3 pos)
+        private void IncreaseSpeed(Player player, Vector3 pos, double delta)
         {
-            if (pos.Z > 16)
-            {
-                string s = pos.Z.ToString();
-                double d = double.Parse(s);
-                player.Speed = (float)Math.Sqrt(d);
-            }
-            else
-            {
-                player.Speed = 4.0f;
-            }
+            player.Distance += 0.0083f;
+
+            player.Speed = (float)Math.Sqrt(player.Distance);
         }
     }
 }

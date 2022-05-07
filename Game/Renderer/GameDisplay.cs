@@ -37,7 +37,7 @@ namespace Game.Renderer
             // TODO: move this to logic
             box = new Box(new Vector3(0, 0.5f, 5));
             gameModel.Entities.Add(box);
-            gameModel.Entities.Add(new Watch(new Vector3(1, 0.7f, 10)));
+            gameModel.Entities.Add(new Watch(new Vector3(1, 0.7f, 24)));
 
             gameModel.Entities.Add(new Road(new Vector3(0, 0, 60)));
 
