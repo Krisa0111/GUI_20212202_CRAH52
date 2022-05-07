@@ -22,26 +22,30 @@ namespace Game.Logic
 
         private const int CHUNK_SIZE = 40;
         private const int CHUNK_GEN_DISTANCE = 100;
-        private int lastChunkPos = 0;
+        private int chunkPos = 0;
 
         public GameLogic()
         {
             playerLogic = new PlayerLogic();
             chunkLoader = new ChunkLoader("maps");
 
-            gameModel.Entities.Enqueue(new Road(new Vector3(0, 0, 20)));
             GenEntities();
+
+            gameModel.Entities.Enqueue(new Heart(new Vector3(0, .7f, 20)));
+            gameModel.Entities.Enqueue(new Heart(new Vector3(1, .7f, 20)));
+            gameModel.Entities.Enqueue(new Heart(new Vector3(-1, .7f, 20)));
         }
 
         private void GenEntities()
         {
-            lastChunkPos += CHUNK_SIZE;
-            var entities = chunkLoader.GetRandomChunk(new Vector3(0, 0, lastChunkPos));
+            var entities = chunkLoader.GetRandomChunk(new Vector3(0, 0, chunkPos));
 
             for (int i = 0; i < entities.Count; i++)
             {
                 gameModel.Entities.Enqueue(entities[i]);
             }
+
+            chunkPos += CHUNK_SIZE;
         }
 
         private void RemoveEntities()
@@ -68,10 +72,20 @@ namespace Game.Logic
 
         public void Update(double delta)
         {
+            // update entities
             playerLogic.Update(delta);
             foreach (var entity in gameModel.Entities)
             {
-                if (entity.Type == EntityType.Decelerator) entity.RotationY += (float)delta;
+                switch (entity.Type)
+                {
+                    case EntityType.Decelerator:
+                    case EntityType.Accelerator:
+                    case EntityType.Skull:
+                    case EntityType.PlusLife:
+                    case EntityType.Random:
+                        entity.RotationY += (float)delta;
+                        break;
+                }
             }
 
             // add entities

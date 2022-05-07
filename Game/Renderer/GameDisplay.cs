@@ -52,6 +52,7 @@ namespace Game.Renderer
         private void UpdateLoop()
         {
             const double MAX_TPS = 120;
+            const double MIN_TPS = 120;
             double updatePerSec = MAX_TPS;
             double updateStep = 1000 / updatePerSec; // milliseconds
             Stopwatch stopwatch = new Stopwatch();
@@ -63,11 +64,17 @@ namespace Game.Renderer
                 double dt = stopwatch.Elapsed.TotalMilliseconds;
                 stopwatch.Restart();
 
+                if (dt > 500) // prevent updating after breakpoint
+                {
+                    dt = updatePerSec;
+                }
+
                 accumulator += dt;
 
                 if (accumulator > updateStep * 2)
                 {
                     updatePerSec *= 0.75;
+                    if (updatePerSec < MIN_TPS) updatePerSec = MIN_TPS;
                     updateStep = 1000 / updatePerSec;
                     //Debug.WriteLine($"Update is cycle {dt}ms behind, reducing tickrate to {updateStep}");
                     TickRate = updatePerSec;
@@ -110,7 +117,7 @@ namespace Game.Renderer
                 renderer.PointLights[i].Position = startPos + new OVector3(0, 2, 10 * i - 10);
             }
 
-            renderer.Camera.Position = new OVector3(player.Position.X, player.Position.Y + 0.75f, player.Position.Z - 1.5f);
+            renderer.Camera.Position = new OVector3(player.Position.X, 1.4f, player.Position.Z - 1.5f);
 
             renderer.BeginFrame();
 
