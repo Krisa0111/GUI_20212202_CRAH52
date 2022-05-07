@@ -13,8 +13,9 @@ namespace Game.ViewModel.Entities
     {
         public const int AnimationSteps = 30;
 
-        public Vector3 Velocity;
+        public Vector3 Direction;
         public float Speed;
+        public Vector3 Velocity { get => Vector3.Normalize(Direction) * Speed; }
 
         private float currentAnimatonStep;
         public float CurrentAnimatonStep
@@ -36,7 +37,7 @@ namespace Game.ViewModel.Entities
 
         public Player(Vector3 position) : base(EntityType.Player, position)
         {
-            Velocity = new Vector3(0, 0, 1);
+            Direction = new Vector3(0, 0, 1);
             Speed = 4.0f;
             models = new Model[AnimationSteps];
             for (int i = 0; i < models.Length; i++)

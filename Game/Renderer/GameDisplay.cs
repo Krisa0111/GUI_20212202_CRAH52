@@ -21,48 +21,20 @@ namespace Game.Renderer
 {
     internal class GameDisplay : IDisposable, IGameDisplay
     {
-        Entity box;
         IGameModel gameModel = Ioc.Default.GetService<IGameModel>();
         IRenderer renderer = Ioc.Default.GetService<IRenderer>();
         IGameLogic logic = Ioc.Default.GetService<IGameLogic>();
-        
+
         Player player;
         Thread updateThread;
 
         private bool Running { get; set; }
 
+        public double TickRate { get; private set; }
+
         public GameDisplay()
         {
             player = gameModel.Player;
-
-            // TODO: move this to logic
-            /*box = new Box(new Vector3(0, 0.5f, 5));
-            gameModel.Entities.Add(box);
-            gameModel.Entities.Add(new Watch(new Vector3(1, 0.7f, 10)));
-
-            gameModel.Entities.Add(new Road(new Vector3(0, 0, 60)));
-
-            for (int i = 0; i < 10; i++)
-            {
-                gameModel.Entities.Add(new Road(new Vector3(0, 0, 20 + 40 * i)));
-            }
-            for (int i = 0; i < 10; i++)
-            {
-                gameModel.Entities.Add(new Car(new Vector3(0, 0, 10 * i+10)));
-            }
-            for (int i = 0; i < 10; i++)
-            {
-                gameModel.Entities.Add(new RoadBlock(new Vector3(-1, 0, 10 * i + 15)));
-            }*/
-
-            ChunkLoader cl = new ChunkLoader("maps");
-
-            var e = cl.GetRandomChunk(new Vector3(0,0,0));
-
-            for (int i = 0; i < e.Count; i++)
-            {
-                gameModel.Entities.Add(e[i]);
-            }
 
             renderer.Camera.Position = new OVector3(0.0f, 1.5f, -1.5f);
             renderer.Camera.Yaw = 90;
@@ -79,8 +51,10 @@ namespace Game.Renderer
 
         private void UpdateLoop()
         {
-            const double updatePerSec = 120;
-            const double updateStep = 1000 / updatePerSec; // milliseconds
+            const double MAX_TPS = 120;
+            const double MIN_TPS = 120;
+            double updatePerSec = MAX_TPS;
+            double updateStep = 1000 / updatePerSec; // milliseconds
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             double accumulator = 0;
@@ -90,7 +64,29 @@ namespace Game.Renderer
                 double dt = stopwatch.Elapsed.TotalMilliseconds;
                 stopwatch.Restart();
 
+                if (dt > 500) // prevent updating after breakpoint
+                {
+                    dt = updatePerSec;
+                }
+
                 accumulator += dt;
+
+                if (accumulator > updateStep * 2)
+                {
+                    updatePerSec *= 0.75;
+                    if (updatePerSec < MIN_TPS) updatePerSec = MIN_TPS;
+                    updateStep = 1000 / updatePerSec;
+                    //Debug.WriteLine($"Update is cycle {dt}ms behind, reducing tickrate to {updateStep}");
+                    TickRate = updatePerSec;
+                }
+                else
+                {
+                    updatePerSec *= 1.1;
+                    if (updatePerSec > MAX_TPS) updatePerSec = MAX_TPS;
+                    //Debug.WriteLine($"Increasing tickrate to {updateStep}");
+                    updateStep = 1000 / updatePerSec;
+                    TickRate = updatePerSec;
+                }
 
                 while (accumulator > updateStep)
                 {
@@ -98,7 +94,7 @@ namespace Game.Renderer
                     accumulator -= updateStep;
                 }
 
-                Thread.Sleep(1);
+                Thread.Sleep(0);
             }
         }
 
@@ -121,7 +117,7 @@ namespace Game.Renderer
                 renderer.PointLights[i].Position = startPos + new OVector3(0, 2, 10 * i - 10);
             }
 
-            renderer.Camera.Position = new OVector3(player.Position.X, player.Position.Y + 0.75f, player.Position.Z - 1.5f);
+            renderer.Camera.Position = new OVector3(player.Position.X, 1.4f, player.Position.Z - 1.5f);
 
             renderer.BeginFrame();
 

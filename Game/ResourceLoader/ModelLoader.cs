@@ -22,8 +22,8 @@ namespace Game.ResourceLoader
             {
                 string[] data = rawData.Split('/');
                 Vertex = int.Parse(data[0]);
-                Texture = int.Parse(data[1]);
-                Normal = int.Parse(data[2]);
+                Texture = string.IsNullOrEmpty(data[1]) ? 0 : int.Parse(data[1]);
+                Normal = string.IsNullOrEmpty(data[2]) ? 0 : int.Parse(data[2]);
             }
         }
 
@@ -155,8 +155,8 @@ namespace Game.ResourceLoader
                 {
                     Vertex vertex = new Vertex(
                     vertices[item.Vertex - 1],
-                    normals[item.Normal - 1],
-                    uvs[item.Texture - 1]);
+                    normals.Count > 0 ? normals[item.Normal - 1] : Vector3.Zero,
+                    uvs.Count > 0 ? uvs[item.Texture - 1] : Vector2.Zero);
                     modelVertices.Add(vertex);
                 }
             }

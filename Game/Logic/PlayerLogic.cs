@@ -20,8 +20,8 @@ namespace Game.Logic
         private const float unitspermeter = 100.0f;
         private int collisionrecursionDpeth = 0;
         private float verticalVelocity;
-        private const float gravity = 5.0f;
-        private const float jumpForce = 3.0f;
+        private const float gravity = 6.6f;
+        private const float jumpForce = 2.6f;
         private bool collided;
         private volatile float finalPosX;
         private volatile bool jump;
@@ -57,7 +57,7 @@ namespace Game.Logic
             return finalPosition;
         }
 
-        private void CollideWithEntities(ref IList<Entity> entities)
+        private void CollideWithEntities(ref IReadOnlyCollection<Entity> entities)
         {
             foreach (var entity in entities)
             {
@@ -77,14 +77,13 @@ namespace Game.Logic
                 if (temp.foundCollison)
                 {
                     collided = true;
-                    if (entity.Type == EntityType.Obstacle)
+                    if (entity.Type == EntityType.Obstacle || entity.Type == EntityType.Other)
                     {
                         collisionPacket = temp;
                     }
                     else
                     {
                         // apply powerups / portals
-
                     }
                 }
             }
@@ -106,7 +105,7 @@ namespace Game.Logic
             collisionPacket.basePoint = pos;
             collisionPacket.foundCollison = false;
             // check for collision
-            IList<Entity> entities = gameModel.Entities;
+            IReadOnlyCollection<Entity> entities = gameModel.Entities;
 
             CollideWithEntities(ref entities);
             if (collisionPacket.foundCollison == false)
@@ -186,43 +185,51 @@ namespace Game.Logic
 
                 jump = false;
 
-
                 //player.Velocity.X = finalPosX - player.Position.X;
-                player.Velocity.X =
+                player.Direction.X =
                     (MathF.Abs(finalPosX - player.Position.X) < 0.85f ?
                     MathF.Sin((finalPosX - player.Position.X) * MathF.PI) :
                     MathF.Sign(finalPosX - player.Position.X) * 0.454f) * 3.0f;
             }
 
-            player.Velocity.Z = 1;
-            player.Velocity.Y = 0;
-            player.Velocity = Vector3.Normalize(player.Velocity) * player.Speed;
+            player.Direction.Z = 1;
+            player.Direction.Y = 0;
 
-            Vector3 velocity = player.Velocity;
-            velocity.Y = verticalVelocity;
-            Vector3 pos = CollideAndSlide(velocity * (float)dt,/* new Vector3(0, verticalVelocity, 0),*/ player.Position);
+
+            Vector3 pos = CollideAndSlide(
+                (player.Velocity + new Vector3(0, verticalVelocity, 0)) * (float)dt,
+                player.Position);
 
             /*if (pos.Y < collisionPacket.eRadius.Y)
             {
                 pos.Y = collisionPacket.eRadius.Y;
             }*/
 
-            float distanceMoved = Vector3.Distance(prevPos, pos);
-            float momentum = player.Velocity.Length() * (float)dt;
+            player.Position = pos;
 
-            if (distanceMoved < momentum * .99f)
+            prevPos.Y = 0;
+            pos.Y = 0;
+            float distanceMoved = Vector3.Distance(prevPos, pos);
+
+            if (distanceMoved < player.Speed * dt * .9)
             {
                 Debug.WriteLine("collision");
-            }
 
-            player.Position = pos;
+                foreach (var entity in gameModel.Entities)
+                {
+                    if (entity.Type == EntityType.Obstacle && Vector3.Distance(player.Position, entity.Position) < 3)
+                    {
+                        entity.MarkToDelete();
+                    }
+                }
+            }
 
             if (grouned)
                 player.CurrentAnimatonStep += distanceMoved * 10f;
             else
                 player.CurrentAnimatonStep += distanceMoved * 5f;
 
-            player.RotationY = MathF.Atan(player.Velocity.X / player.Velocity.Z) / 2.0f;
+            player.RotationY = MathF.Atan(player.Direction.X / player.Direction.Z) / 2.0f;
 
         }
     }

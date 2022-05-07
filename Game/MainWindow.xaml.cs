@@ -22,13 +22,9 @@ namespace Game
     /// </summary>
     public partial class MainWindow : Window
     {
-        GameController gameController;
         public MainWindow()
         {
             InitializeComponent();
-            GameLogic logic = new GameLogic();
-            GameWindow gameWindow = new GameWindow();
-            gameWindow.Show();
         }
         public MainMenuDisplay mainMenuDisplay;
 

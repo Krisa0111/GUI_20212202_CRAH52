@@ -10,10 +10,10 @@ namespace Game.ViewModel.Entities
 {
     internal class RoadBlock : Entity
     {
-        public RoadBlock(Vector3 position) : base(EntityType.Obstacle, position)
+        static string[] files = Directory.GetFiles("Models/RoadBlocks", "*.obj");
+
+        public RoadBlock(Vector3 position) : base(EntityType.Obstacle, position, ModelLoader.GetModel(files[Rnd.Next(files.Length)]))
         {
-            var files = Directory.GetFiles("Models/RoadBlocks", "*.obj");
-            Model = ModelLoader.GetModel(files[Rnd.Next(files.Length)]);
         }
     }
 }

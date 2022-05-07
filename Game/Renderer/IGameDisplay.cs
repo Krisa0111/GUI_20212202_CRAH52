@@ -6,5 +6,7 @@
         void Render();
         void Resize(int width, int height, int defaultFbo);
         void Start();
+
+        public double TickRate { get; }
     }
 }
