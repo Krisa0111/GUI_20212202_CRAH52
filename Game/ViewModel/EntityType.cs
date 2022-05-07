@@ -11,6 +11,7 @@
         Random,
         Skull,
         Obstacle,
+        Other,
         Player
 
     }

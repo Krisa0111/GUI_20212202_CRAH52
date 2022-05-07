@@ -32,6 +32,14 @@ namespace Game.ViewModel
             ModelLoader = ModelLoader.GetInstance();
             Rnd = new Random();
         }
+        protected Entity(EntityType type, Vector3 position, (Model model, Model collider) tuple)
+        {
+            Type = type;
+            Position = position;
+            Model = tuple.model;
+            ColliderModel = tuple.collider;
+        }
+
         protected Entity(EntityType type, Vector3 position, Model model, Model collider = null)
         {
             Type = type;
