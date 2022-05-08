@@ -62,7 +62,7 @@ namespace Game.Logic
         {
             foreach (var entity in entities)
             {
-                CollisionPacket temp = collisionPacket;
+                //CollisionPacket temp = collisionPacket;
 
                 for (int i = 0; i < entity.ColliderModel.Triangles.Length; i++)
                 {
@@ -73,14 +73,15 @@ namespace Game.Logic
                     P1 /= collisionPacket.eRadius;
                     P2 /= collisionPacket.eRadius;
                     P3 /= collisionPacket.eRadius;
-                    Collision.CheckTriangle(ref temp, ref P1, ref P2, ref P3);
+                    Collision.CheckTriangle(ref collisionPacket, ref P1, ref P2, ref P3);
                 }
-                if (temp.foundCollison)
+                if (collisionPacket.foundCollison && entity.ColliderModel.Triangles.Length > 0)
                 {
                     collided = true;
                     if (entity.Type == EntityType.Obstacle || entity.Type == EntityType.Other)
                     {
-                        collisionPacket = temp;
+                        //collisionPacket = temp;
+                        
                     }
                     else
                     {
@@ -90,12 +91,14 @@ namespace Game.Logic
                         if (entity.Type == EntityType.Decelerator)
                         {
                             player.Distance *= 0.8f;
+                            entity.MarkToDelete();
                         }
 
                         //Increase speed
                         else if (entity.Type == EntityType.Accelerator)
                         {
                             player.Distance *= 1.2f;
+                            entity.MarkToDelete();
                         }
 
                         //Blue portal
@@ -314,12 +317,14 @@ namespace Game.Logic
         }
         private void IncreaseSpeed(Player player, double dt)
         {
-            if (player.Distance < 3.0f)
+            if (player.Distance < 0.08f)
             {
                 player.Distance = 16.0f;
             }
-            player.Distance += (float)dt;         //Egyszer csak leesik 1 alá ???????????? talán új pálya generálásakor
-            player.Speed = (float)Math.Sqrt(player.Distance);
+            player.Distance += 0.083f;         //Egyszer csak leesik 1 alá ???????????? talán új pálya generálásakor
+            player.tempList.Add(player.Distance);
+            float temp = player.Distance;
+            player.Speed = (float)Math.Sqrt(temp);
         }
     }
 }

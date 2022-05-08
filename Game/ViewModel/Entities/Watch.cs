@@ -11,7 +11,7 @@ namespace Game.ViewModel.Entities
     internal class Watch : Entity
     {
         public Watch(Vector3 position) 
-            : base(EntityType.Decelerator, position, ModelLoader.GetModel("Models/stopwatch.obj"), ModelLoader.GetModel("Models/powerup_collider.obj"))
+            : base(EntityType.Decelerator, position, ModelLoader.GetModel("Models/stopwatch.obj")/*, ModelLoader.GetModel("Models/powerup_collider.obj")*/)
         {
 
         }
