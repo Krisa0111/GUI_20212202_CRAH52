@@ -147,18 +147,12 @@ namespace Game.Logic
                                     player.Life++;
                                 }
                             }
-
                         }
 
                         // Skull
                         else if (entity.Type == EntityType.Skull)
                         {
                             player.Life = 0;        //Egyenlőre csak 0 lesz az életeinek a száma
-                        }
-
-                        else if (entity.Type == EntityType.Obstacle)
-                        {
-                            player.Life--;
                         }
                         entity.MarkToDelete();
                     }
@@ -296,7 +290,8 @@ namespace Game.Logic
                 {
                     if (entity.Type == EntityType.Obstacle && Vector3.Distance(player.Position, entity.Position) < 3)
                     {
-                        //entity.MarkToDelete();
+                        entity.MarkToDelete();
+                        player.Life--;
                     }
                 }
                 
@@ -305,21 +300,25 @@ namespace Game.Logic
             if (grouned)
             {
                 player.CurrentAnimatonStep += distanceMoved * 10f;
-                IncreaseSpeed(player);
+                IncreaseSpeed(player, dt);
             }
             else
             {
                 player.CurrentAnimatonStep += distanceMoved * 5f;
-                IncreaseSpeed(player);
+                IncreaseSpeed(player, dt);
             }
 
             player.RotationY = MathF.Atan(player.Direction.X / player.Direction.Z) / 2.0f;
 
-            IncreaseSpeed(player);
+            IncreaseSpeed(player, dt);
         }
-        private void IncreaseSpeed(Player player)
+        private void IncreaseSpeed(Player player, double dt)
         {
-            player.Distance += 0.0083f;         //Egyszer csak leesik 1 alá ???????????? talán új pálya generálásakor
+            if (player.Distance < 3.0f)
+            {
+                player.Distance = 16.0f;
+            }
+            player.Distance += (float)dt;         //Egyszer csak leesik 1 alá ???????????? talán új pálya generálásakor
             player.Speed = (float)Math.Sqrt(player.Distance);
         }
     }
