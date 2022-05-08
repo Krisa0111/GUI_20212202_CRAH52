@@ -20,7 +20,7 @@ namespace Game.Logic
         private const float unitspermeter = 100.0f;
         private int collisionrecursionDpeth = 0;
         private float verticalVelocity;
-        private const float gravity = 6.6f;
+        private const float gravity = 6.4f;
         private const float jumpForce = 2.6f;
         private bool collided;
         private volatile float finalPosX;
