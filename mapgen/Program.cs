@@ -52,11 +52,11 @@ namespace txtgenerator
         }
         public static void Gen(string path)
         {
-            string[] entities = new string[] { "RoadBlock", "Car", "BluePortal", "RedPortal", "Watch", "Accelerator", "PlusLife", "Skull", "Random" };
+            string[] entities = new string[] { "RoadBlock", "Car", "BluePortal", "RedPortal", "Watch", "Accelerator", "PlusLife", "Skull", "Random", "BigCar", "Heart", "Truck" };
             Random rnd = new Random();
             bool end = false;
-            int maxz = 5;
-            int i = 0;
+            int maxz = 6;
+            //int i = 0;
             int ix = 2;
             StreamWriter sw = new StreamWriter(path);
             sw.WriteLine("Road 0 0 20");
@@ -66,56 +66,75 @@ namespace txtgenerator
                 double x = rnd.Next(-1, 2);
                 double y = 0;
                 double z = rnd.Next(ix, maxz);
-                double entitierandom = rnd.Next(0, 104);
-                if (entitierandom >= 0 && entitierandom <= 40)
+                double entitierandom = rnd.Next(0, 166);
+                if (entitierandom >= 0 && entitierandom <= 40) //ROADBLOCK
                 {
                     entitie = entities[0];
                 }
-                else if (entitierandom >= 41 && entitierandom <= 80)
+                else if (entitierandom >= 41 && entitierandom <= 80) // CAR
                 {
                     entitie = entities[1];
+                    ix += 1;
+                    maxz += 1;
                 }
-                else if (entitierandom >= 81 && entitierandom <= 84)
+                else if (entitierandom >= 81 && entitierandom <= 84) // BLUEPORTAL
                 {
                     entitie = entities[2];
                 }
-                else if (entitierandom >= 85 && entitierandom <= 88)
+                else if (entitierandom >= 85 && entitierandom <= 88) // REDPORTAL
                 {
                     entitie = entities[3];
                 }
-                else if (entitierandom >= 89 && entitierandom <= 92)
+                else if (entitierandom >= 89 && entitierandom <= 92) // WATCH
                 {
                     entitie = entities[4];
                     y = 0.7;
                 }
-                else if (entitierandom >= 93 && entitierandom <= 96)
+                else if (entitierandom >= 93 && entitierandom <= 96) //ACCELERATOR
                 {
                     entitie = entities[5];
                 }
-                else if (entitierandom >= 97 && entitierandom <= 100)
+                else if (entitierandom >= 97 && entitierandom <= 100) // PLUSLIFE
                 {
                     entitie = entities[6];
                 }
-                else if (entitierandom >= 100 && entitierandom <= 103)
+                else if (entitierandom >= 100 && entitierandom <= 103) // SKULL
                 {
                     entitie = entities[7];
                 }
-                else
+                else if(entitierandom >= 104 && entitierandom <= 108) // RANDOM
                 {
                     entitie = entities[8];
+                }
+                else if (entitierandom >= 109 && entitierandom <=129) // BIGCAR
+                {
+                    entitie = entities[9];
+                    ix += 1;
+                    maxz += 1;
+                }
+                else if (entitierandom >= 130 && entitierandom <= 140) // HEART
+                {
+                    entitie = entities[10];
+                }
+                else if (entitierandom >= 141 && entitierandom <= 165) // TRUCK
+                {
+                    entitie = entities[11];
+                    ix += 2;
+                    maxz += 2;
                 }
                 string _x = x.ToString(CultureInfo.InvariantCulture);
                 string _y = y.ToString(CultureInfo.InvariantCulture);
                 string _z = z.ToString(CultureInfo.InvariantCulture);
                 
-                i+=3;
-                maxz+=3;
+                ix+=2;
+                maxz+=2;
                 string line = entitie + " " + _x + " " + _y + " " + _z;
-                sw.WriteLine(line);
-                if (i > 40)
+                
+                if (maxz > 40)
                 {
                     end = true;
                 }
+                sw.WriteLine(line);
             }
             sw.Close();
             
