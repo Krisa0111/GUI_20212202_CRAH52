@@ -11,7 +11,7 @@ namespace Game.ViewModel.Entities
     internal class Road : Entity
     {
         public Road(Vector3 position)
-            : base(EntityType.Other, position, ModelLoader.GetModel("Models/road.obj"))
+            : base(EntityType.Other, position, ModelLoader.GetModel("Models/road.obj"), ModelLoader.GetModel("Models/road_collider.obj"))
         {
 
         }
