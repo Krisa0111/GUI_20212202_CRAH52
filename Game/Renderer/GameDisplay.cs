@@ -52,7 +52,7 @@ namespace Game.Renderer
         private void UpdateLoop()
         {
             const double MAX_TPS = 120;
-            const double MIN_TPS = 120;
+            const double MIN_TPS = 30;
             double updatePerSec = MAX_TPS;
             double updateStep = 1000 / updatePerSec; // milliseconds
             Stopwatch stopwatch = new Stopwatch();
