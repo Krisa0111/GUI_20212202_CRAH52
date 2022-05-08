@@ -14,7 +14,7 @@ namespace Game.HighScores
             string[] lines = new string[10];
             //lines = File.ReadAllLines("HighScoreTxt.txt");
             string[] plusLines = new string[11];
-            StreamReader sr = new StreamReader("HighScoreTxt.txt");
+            StreamReader sr = new StreamReader(@"..\..\..\..\Game\HighScores\HighScoreTxt.txt");
             string[] lines1 = new string[11];
             for (int i = 0; i < 10; i++)
             {
@@ -34,6 +34,7 @@ namespace Game.HighScores
             ;
 
 
+            Array.Sort(newArray);
             Array.Reverse(newArray);
 
             float[] finalArray = new float[newArray.Length-1];
@@ -42,11 +43,10 @@ namespace Game.HighScores
                 finalArray[i] = newArray[i];
             }
 
-            StreamWriter sw = new StreamWriter("HighScoreTxt.txt");
+            StreamWriter sw = new StreamWriter(@"..\..\..\..\Game\HighScores\HighScoreTxt.txt");
             for (int i = 0; i < finalArray.Length; i++)
             {
-            sw.WriteLine(finalArray[i]);
-
+                sw.WriteLine(finalArray[i]);
             }
             sw.Close();
         }
