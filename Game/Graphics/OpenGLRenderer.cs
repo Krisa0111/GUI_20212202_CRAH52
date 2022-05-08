@@ -43,6 +43,8 @@ namespace Game.Graphics
         public bool ShowNormals { get; set; } = false;
         public bool ShowColliders { get; set; } = false;
 
+        private Skybox skybox;
+
 
         public IDirectionalLight DirectionalLight { get => directionalLight; }
         public IPointLight[] PointLights { get => pointLights; }
@@ -94,6 +96,8 @@ namespace Game.Graphics
             models = new Dictionary<string, Mesh>();
             textures = new Dictionary<string, Texture>();
 
+            skybox = new Skybox();
+
         }
 
         public OpenGLRenderer() : this(0, 0)
@@ -104,11 +108,13 @@ namespace Game.Graphics
         public void BeginFrame()
         {
             multisapleFBO.Bind();
-            GL.ClearColor(Color4.White);
+            GL.ClearColor(Color4.Gray);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.Enable(EnableCap.DepthTest);
 
             if (ShowWireframe) GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+
+            skybox.Render(camera);
 
             shader.Use();
             shader.SetVector3("viewPos", camera.Position);
@@ -122,6 +128,7 @@ namespace Game.Graphics
             }
 
             if (ShowNormals) camera.SetMatrices(normalShader);
+
         }
 
         public void EndFrame()
