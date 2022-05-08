@@ -26,6 +26,7 @@ namespace Game.Logic
         private volatile float finalPosX;
         private volatile bool jump;
         private readonly object playerLock = new object();
+        private static Random rnd;
 
         public PlayerLogic()
         {
@@ -84,6 +85,82 @@ namespace Game.Logic
                     else
                     {
                         // apply powerups / portals
+
+                        //Decrease speed
+                        if (entity.Type == EntityType.Decelerator)
+                        {
+                            player.Distance *= 0.8f;
+                        }
+
+                        //Increase speed
+                        else if (entity.Type == EntityType.Accelerator)
+                        {
+                            player.Distance *= 1.2f;
+                        }
+
+                        //Blue portal
+                        else if (entity.Type == EntityType.BluePortal)
+                        {
+                            player.Score += player.Position.Z * 0.1f;   //Nem a pozíciót változtatja meg, hanem a Scoret módosítja
+                        }
+
+                        //Red portal
+                        else if (entity.Type == EntityType.RedPortal)
+                        {
+                            player.Score -= (player.Position.Z * 1.1f - player.Position.Z); //Nem a pozíciót változtatja meg, hanem a Scoret módosítja
+                        }
+
+                        //Plus life
+                        else if (entity.Type == EntityType.PlusLife)
+                        {
+                            if (player.Life < 5)
+                            {
+                                player.Life++;
+                            }
+                        }
+
+                        //Random portal
+                        else if (entity.Type == EntityType.Random)
+                        {
+                            rnd = new Random();
+                            float r = rnd.Next(0, 1);
+                            if (r<0.2)
+                            {
+                                player.Score += player.Position.Z * 0.1f;
+                            }
+                            else if(r < 0.4)
+                            {
+                                player.Score -= (player.Position.Z * 1.1f - player.Position.Z);
+                            }
+                            else if(r < 0.6)
+                            {
+                                player.Distance *= 0.8f;
+                            }
+                            else if (r < 0.8)
+                            {
+                                player.Distance *= 1.2f;
+                            }
+                            else
+                            {
+                                if (player.Life < 5)
+                                {
+                                    player.Life++;
+                                }
+                            }
+
+                        }
+
+                        // Skull
+                        else if (entity.Type == EntityType.Skull)
+                        {
+                            player.Life = 0;        //Egyenlőre csak 0 lesz az életeinek a száma
+                        }
+
+                        else if (entity.Type == EntityType.Obstacle)
+                        {
+                            player.Life--;
+                        }
+                        entity.MarkToDelete();
                     }
                 }
             }
@@ -219,18 +296,31 @@ namespace Game.Logic
                 {
                     if (entity.Type == EntityType.Obstacle && Vector3.Distance(player.Position, entity.Position) < 3)
                     {
-                        entity.MarkToDelete();
+                        //entity.MarkToDelete();
                     }
                 }
+                
             }
 
             if (grouned)
+            {
                 player.CurrentAnimatonStep += distanceMoved * 10f;
+                IncreaseSpeed(player);
+            }
             else
+            {
                 player.CurrentAnimatonStep += distanceMoved * 5f;
+                IncreaseSpeed(player);
+            }
 
             player.RotationY = MathF.Atan(player.Direction.X / player.Direction.Z) / 2.0f;
 
+            IncreaseSpeed(player);
+        }
+        private void IncreaseSpeed(Player player)
+        {
+            player.Distance += 0.0083f;         //Egyszer csak leesik 1 alá ???????????? talán új pálya generálásakor
+            player.Speed = (float)Math.Sqrt(player.Distance);
         }
     }
 }
