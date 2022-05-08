@@ -38,5 +38,19 @@ namespace Game
         {
             
         }
+
+
+        private void Exit_Game_ButtonClick(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void HighScore_ButtonClick(object sender, RoutedEventArgs e)
+        {
+            HighScoreTableDisplay highScoreTableDisplay;
+            HighScoreWindow highScoreWindow = new HighScoreWindow();
+            highScoreTableDisplay = new HighScoreTableDisplay();
+            highScoreWindow.Show();
+        }
     }
 }
