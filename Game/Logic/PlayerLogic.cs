@@ -20,18 +20,24 @@ namespace Game.Logic
         private const float unitspermeter = 100.0f;
         private int collisionrecursionDpeth = 0;
         private float verticalVelocity;
-        private const float gravity = 6.6f;
+        private const float gravity = 6.4f;
         private const float jumpForce = 2.6f;
         private bool collided;
         private volatile float finalPosX;
         private volatile bool jump;
         private readonly object playerLock = new object();
         private static Random rnd;
+        //private System.Media.SoundPlayer jumpsound = new System.Media.SoundPlayer(@"..\..\..\Resources\SoundEffects\jump.wav");
+        
+        
+        
+        
 
         private List<Entity> collidedEntities = new List<Entity>();
 
         public PlayerLogic()
         {
+            
             this.player = gameModel.Player;
             collisionPacket = new CollisionPacket();
             collisionPacket.eRadius = new Vector3(0.15f, 0.5f, 0.15f);
@@ -163,7 +169,6 @@ namespace Game.Logic
                         entity.MarkToDelete();
                     }
                 }
-
             }
         }
 

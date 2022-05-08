@@ -14,6 +14,20 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ContentWithTargetPath Remove="Resources\SoundEffects\collision.wav" />
+	  <ContentWithTargetPath Remove="Resources\SoundEffects\jump.wav" />
+	  <ContentWithTargetPath Remove="Resources\SoundEffects\powerup.wav" />
+	  <ContentWithTargetPath Remove="Resources\SoundEffects\theme.wav" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Resources\SoundEffects\collision.wav" />
+	  <None Remove="Resources\SoundEffects\jump.wav" />
+	  <None Remove="Resources\SoundEffects\powerup.wav" />
+	  <None Remove="Resources\SoundEffects\theme.wav" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Content Include="Resources\Maps\map1.txt" />
 	  <Content Include="Resources\Maps\map10.txt" />
 	  <Content Include="Resources\Maps\map11.txt" />
@@ -34,6 +48,10 @@
 	  <Content Include="Resources\Maps\map7.txt" />
 	  <Content Include="Resources\Maps\map8.txt" />
 	  <Content Include="Resources\Maps\map9.txt" />
+	  <Content Include="Resources\SoundEffects\collision.wav" />
+	  <Content Include="Resources\SoundEffects\jump.wav" />
+	  <Content Include="Resources\SoundEffects\theme.wav" />
+	  <Content Include="Resources\SoundEffects\powerup.wav" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -52,7 +52,7 @@ namespace txtgenerator
         }
         public static void Gen(string path)
         {
-            string[] entities = new string[] { "RoadBlock", "Car", "BluePortal", "RedPortal", "Watch", "Accelerator", "PlusLife", "Skull", "Random", "BigCar", "Heart", "Truck" };
+            string[] entities = new string[] { "RoadBlock", "Car", "BluePortal", "RedPortal", "Watch", "Accelerator", "Skull", "Random", "BigCar", "Heart", "Truck" };
             Random rnd = new Random();
             bool end = false;
             int maxz = 6;
@@ -74,8 +74,8 @@ namespace txtgenerator
                 else if (entitierandom >= 41 && entitierandom <= 80) // CAR
                 {
                     entitie = entities[1];
-                    ix += 1;
-                    maxz += 1;
+                    ix += 2;
+                    maxz += 2;
                 }
                 else if (entitierandom >= 81 && entitierandom <= 84) // BLUEPORTAL
                 {
@@ -90,35 +90,32 @@ namespace txtgenerator
                     entitie = entities[4];
                     y = 0.7;
                 }
-                else if (entitierandom >= 93 && entitierandom <= 96) //ACCELERATOR
+                else if (entitierandom >= 93 && entitierandom <= 99) //ACCELERATOR
                 {
                     entitie = entities[5];
                 }
-                else if (entitierandom >= 97 && entitierandom <= 100) // PLUSLIFE
+                
+                else if (entitierandom >= 100 && entitierandom <= 103) // SKULL
                 {
                     entitie = entities[6];
                 }
-                else if (entitierandom >= 100 && entitierandom <= 103) // SKULL
+                else if(entitierandom >= 104 && entitierandom <= 108) // RANDOM
                 {
                     entitie = entities[7];
                 }
-                else if(entitierandom >= 104 && entitierandom <= 108) // RANDOM
-                {
-                    entitie = entities[8];
-                }
                 else if (entitierandom >= 109 && entitierandom <=129) // BIGCAR
                 {
-                    entitie = entities[9];
-                    ix += 1;
-                    maxz += 1;
+                    entitie = entities[8];
+                    ix += 2;
+                    maxz += 2;
                 }
                 else if (entitierandom >= 130 && entitierandom <= 140) // HEART
                 {
-                    entitie = entities[10];
+                    entitie = entities[9];
                 }
                 else if (entitierandom >= 141 && entitierandom <= 165) // TRUCK
                 {
-                    entitie = entities[11];
+                    entitie = entities[10];
                     ix += 2;
                     maxz += 2;
                 }
