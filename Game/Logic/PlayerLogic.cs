@@ -28,6 +28,8 @@ namespace Game.Logic
         private readonly object playerLock = new object();
         private static Random rnd;
 
+        private List<Entity> collidedEntities = new List<Entity>();
+
         public PlayerLogic()
         {
             this.player = gameModel.Player;
@@ -60,9 +62,11 @@ namespace Game.Logic
 
         private void CollideWithEntities(ref IReadOnlyCollection<Entity> entities)
         {
+            collidedEntities.Clear();
             foreach (var entity in entities)
             {
                 CollisionPacket temp = collisionPacket;
+                temp.foundCollison = false;
 
                 for (int i = 0; i < entity.ColliderModel.Triangles.Length; i++)
                 {
@@ -81,6 +85,8 @@ namespace Game.Logic
                     if (entity.Type == EntityType.Obstacle || entity.Type == EntityType.Other)
                     {
                         collisionPacket = temp;
+
+                        if (entity.Type == EntityType.Obstacle) collidedEntities.Add(entity);
                     }
                     else
                     {
@@ -124,15 +130,15 @@ namespace Game.Logic
                         {
                             rnd = new Random();
                             float r = rnd.Next(0, 1);
-                            if (r<0.2)
+                            if (r < 0.2)
                             {
                                 player.Score += player.Position.Z * 0.1f;
                             }
-                            else if(r < 0.4)
+                            else if (r < 0.4)
                             {
                                 player.Score -= (player.Position.Z * 1.1f - player.Position.Z);
                             }
-                            else if(r < 0.6)
+                            else if (r < 0.6)
                             {
                                 player.Distance *= 0.8f;
                             }
@@ -157,6 +163,7 @@ namespace Game.Logic
                         entity.MarkToDelete();
                     }
                 }
+
             }
         }
 
@@ -286,26 +293,21 @@ namespace Game.Logic
             {
                 Debug.WriteLine("collision");
 
-                foreach (var entity in gameModel.Entities)
+                player.Life--;
+                foreach (var item in collidedEntities)
                 {
-                    if (entity.Type == EntityType.Obstacle && Vector3.Distance(player.Position, entity.Position) < 3)
-                    {
-                        entity.MarkToDelete();
-                        player.Life--;
-                    }
+                    item.MarkToDelete();
                 }
-                
+
             }
 
             if (grouned)
             {
                 player.CurrentAnimatonStep += distanceMoved * 10f;
-                IncreaseSpeed(player, dt);
             }
             else
             {
                 player.CurrentAnimatonStep += distanceMoved * 5f;
-                IncreaseSpeed(player, dt);
             }
 
             player.RotationY = MathF.Atan(player.Direction.X / player.Direction.Z) / 2.0f;
@@ -314,10 +316,6 @@ namespace Game.Logic
         }
         private void IncreaseSpeed(Player player, double dt)
         {
-            if (player.Distance < 3.0f)
-            {
-                player.Distance = 16.0f;
-            }
             player.Distance += (float)dt;         //Egyszer csak leesik 1 alá ???????????? talán új pálya generálásakor
             player.Speed = (float)Math.Sqrt(player.Distance);
         }
