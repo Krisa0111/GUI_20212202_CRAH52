@@ -106,16 +106,26 @@ namespace Game.Renderer
 
         public void Render()
         {
-            OVector3 startPos = new()
+            int i = 0;
+            foreach (var item in gameModel.Entities)
             {
-                X = 0,
-                Y = 0,
-                Z = player.Position.Z - (player.Position.Z % 10)
-            };
+                if (item is StreetLight)
+                {
+                    renderer.PointLights[i].Position = new OVector3(item.Position.X, item.Position.Y, item.Position.Z);
+                    renderer.PointLights[i].AmbientIntensity = OVector3.One * 0.05f;
+                    renderer.PointLights[i].DiffuseIntensity = OVector3.One * 0.5f;
+                    renderer.PointLights[i].SpecularIntensity = OVector3.One * 1.0f;
+                    i++;
+                }
 
-            for (int i = 0; i < renderer.PointLights.Length; i++)
+                if (i >= renderer.PointLights.Length) break;
+            }
+
+            for (; i < renderer.PointLights.Length; i++)
             {
-                renderer.PointLights[i].Position = startPos + new OVector3(0, 2, 10 * i - 10);
+                renderer.PointLights[i].AmbientIntensity = OVector3.Zero;
+                renderer.PointLights[i].DiffuseIntensity = OVector3.Zero;
+                renderer.PointLights[i].SpecularIntensity = OVector3.Zero;
             }
 
             renderer.Camera.Position = new OVector3(player.Position.X, 1.4f, player.Position.Z - 1.5f);
