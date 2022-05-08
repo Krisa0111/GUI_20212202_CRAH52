@@ -27,10 +27,14 @@ namespace Game.Logic
         private volatile bool jump;
         private readonly object playerLock = new object();
         private static Random rnd;
-        private System.Media.SoundPlayer jumpsound = new System.Media.SoundPlayer(@"..\..\..\Resources\SoundEffects\jump.wav");
-
+        //private System.Media.SoundPlayer jumpsound = new System.Media.SoundPlayer(@"..\..\..\Resources\SoundEffects\jump.wav");
+        
+        
+        
+        
         public PlayerLogic()
         {
+            
             this.player = gameModel.Player;
             collisionPacket = new CollisionPacket();
             collisionPacket.eRadius = new Vector3(0.15f, 0.5f, 0.15f);
@@ -61,6 +65,7 @@ namespace Game.Logic
 
         private void CollideWithEntities(ref IReadOnlyCollection<Entity> entities)
         {
+            //System.Media.SoundPlayer powerupsound = new System.Media.SoundPlayer(@"..\..\..\Resources\SoundEffects\powerup.wav");
             foreach (var entity in entities)
             {
                 CollisionPacket temp = collisionPacket;
@@ -91,29 +96,34 @@ namespace Game.Logic
                         if (entity.Type == EntityType.Decelerator)
                         {
                             player.Distance *= 0.8f;
+                            //powerupsound.Play();
                         }
 
                         //Increase speed
                         else if (entity.Type == EntityType.Accelerator)
                         {
                             player.Distance *= 1.2f;
+                            //powerupsound.Play();
                         }
 
                         //Blue portal
                         else if (entity.Type == EntityType.BluePortal)
                         {
                             player.Score += player.Position.Z * 0.1f;   //Nem a pozíciót változtatja meg, hanem a Scoret módosítja
+                            //powerupsound.Play();
                         }
 
                         //Red portal
                         else if (entity.Type == EntityType.RedPortal)
                         {
                             player.Score -= (player.Position.Z * 1.1f - player.Position.Z); //Nem a pozíciót változtatja meg, hanem a Scoret módosítja
+                            //powerupsound.Play();
                         }
 
                         //Plus life
                         else if (entity.Type == EntityType.PlusLife)
                         {
+                            //powerupsound.Play();
                             if (player.Life < 5)
                             {
                                 player.Life++;
@@ -123,6 +133,7 @@ namespace Game.Logic
                         //Random portal
                         else if (entity.Type == EntityType.Random)
                         {
+                            //powerupsound.Play();
                             rnd = new Random();
                             float r = rnd.Next(0, 1);
                             if (r<0.2)
@@ -217,7 +228,7 @@ namespace Game.Logic
                 switch (direction)
                 {
                     case Directions.Up:
-                        jumpsound.Play();
+                        //jumpsound.Play();
                         jump = true;
                         break;
                     case Directions.Down:
