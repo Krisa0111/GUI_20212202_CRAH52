@@ -73,9 +73,14 @@ void main()
     vec3 result = CalcDirLight(dirLight, norm, viewDir);
     // phase 2: point lights
     for(int i = 0; i < NR_POINT_LIGHTS; i++)
-        result += CalcPointLight(pointLights[i], norm, fragPos, viewDir);  
+        result += CalcPointLight(pointLights[i], norm, fragPos, viewDir);
     
-    FragColor.rgb = result;
+    float fogNear = 0;
+    float fogFar = 100;
+    vec3 fogColor = vec3(.5,.5,.6);
+    float fog = smoothstep(fogFar, fogNear, length(viewPos - fragPos));
+
+    FragColor.rgb = result * fog + fogColor * (1 - fog);
 }
 
 // calculates the color when using a directional light.
