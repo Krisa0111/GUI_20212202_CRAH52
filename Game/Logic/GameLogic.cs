@@ -20,7 +20,6 @@ namespace Game.Logic
         IGameModel gameModel = Ioc.Default.GetService<IGameModel>();
         ChunkLoader chunkLoader;
 
-
         private const int CHUNK_SIZE = 40;
         private const int CHUNK_GEN_DISTANCE = 100;
         private int chunkPos = 0;
@@ -36,6 +35,28 @@ namespace Game.Logic
         private void GenEntities()
         {
             var entities = chunkLoader.GetRandomChunk(new Vector3(0, 0, chunkPos));
+
+            int count = 5;
+            for (int i = 0; i < count; i++)
+            {
+                Building building1 = new Building(new Vector3(6, .1f, chunkPos + (CHUNK_SIZE / count) * i));
+                Building building2 = new Building(new Vector3(-6, .1f, chunkPos + (CHUNK_SIZE / count) * i));
+                building1.RotationY = -MathF.PI / 2;
+                building2.RotationY = MathF.PI / 2;
+                gameModel.Entities.Enqueue(building1);
+                gameModel.Entities.Enqueue(building2);
+            }
+
+            count = 3;
+
+            for (int i = 0; i < count; i++)
+            {
+                StreetLight streetLight1 = new StreetLight(new Vector3(1.5f, 4, chunkPos + (CHUNK_SIZE / count) * i));
+                StreetLight streetLight2 = new StreetLight(new Vector3(-1.5f, 4, chunkPos + (CHUNK_SIZE / count) * i));
+                streetLight2.RotationY = MathF.PI;
+                gameModel.Entities.Enqueue(streetLight1);
+                gameModel.Entities.Enqueue(streetLight2);
+            }
 
             for (int i = 0; i < entities.Count; i++)
             {
