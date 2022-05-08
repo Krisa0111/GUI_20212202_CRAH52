@@ -31,10 +31,6 @@ namespace Game.Logic
             chunkLoader = new ChunkLoader("maps");
 
             GenEntities();
-
-            gameModel.Entities.Enqueue(new Heart(new Vector3(0, .7f, 20)));
-            gameModel.Entities.Enqueue(new Heart(new Vector3(1, .7f, 20)));
-            gameModel.Entities.Enqueue(new Heart(new Vector3(-1, .7f, 20)));
         }
 
         private void GenEntities()
