@@ -27,6 +27,7 @@ namespace Game.Logic
         private volatile bool jump;
         private readonly object playerLock = new object();
         private static Random rnd;
+        private System.Media.SoundPlayer jumpsound = new System.Media.SoundPlayer(@"..\..\..\Resources\SoundEffects\jump.wav");
 
         public PlayerLogic()
         {
@@ -216,6 +217,7 @@ namespace Game.Logic
                 switch (direction)
                 {
                     case Directions.Up:
+                        jumpsound.Play();
                         jump = true;
                         break;
                     case Directions.Down:
