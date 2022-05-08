@@ -40,6 +40,7 @@ namespace Game.ViewModel.Entities
         public Player(Vector3 position) : base(EntityType.Player, position)
         {
             Direction = new Vector3(0, 0, 1);
+            Life = 5;
             //Speed = 4.0f;
             models = new Model[AnimationSteps];
             for (int i = 0; i < models.Length; i++)

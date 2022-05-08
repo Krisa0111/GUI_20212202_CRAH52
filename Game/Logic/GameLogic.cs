@@ -20,6 +20,7 @@ namespace Game.Logic
         IGameModel gameModel = Ioc.Default.GetService<IGameModel>();
         ChunkLoader chunkLoader;
 
+
         private const int CHUNK_SIZE = 40;
         private const int CHUNK_GEN_DISTANCE = 100;
         private int chunkPos = 0;

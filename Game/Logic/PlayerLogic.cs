@@ -1,4 +1,5 @@
 ﻿using Game.Controller;
+using Game.HighScores;
 using Game.ViewModel;
 using Game.ViewModel.Entities;
 using Microsoft.Toolkit.Mvvm.DependencyInjection;
@@ -166,6 +167,7 @@ namespace Game.Logic
                         else if (entity.Type == EntityType.Skull)
                         {
                             player.Life = 0;        //Egyenlőre csak 0 lesz az életeinek a száma
+                            EndOfTheGame(player.Score + player.Position.Z);
                         }
                         entity.MarkToDelete();
                     }
@@ -304,6 +306,10 @@ namespace Game.Logic
                 {
                     item.MarkToDelete();
                 }
+                if (player.Life == 0)
+                {
+                    EndOfTheGame(player.Score + player.Position.Z);
+                }
 
             }
 
@@ -324,6 +330,10 @@ namespace Game.Logic
         {
             player.Distance += (float)dt;         //Egyszer csak leesik 1 alá ???????????? talán új pálya generálásakor
             player.Speed = (float)Math.Sqrt(player.Distance);
+        }
+        private void EndOfTheGame(float finalScore)
+        {
+            HighScoreManager.EndOfTheGame(finalScore);
         }
     }
 }
