@@ -1,4 +1,5 @@
 ﻿using Game.Controller;
+using Game.HighScores;
 using Game.ViewModel;
 using Game.ViewModel.Entities;
 using Microsoft.Toolkit.Mvvm.DependencyInjection;
@@ -331,7 +332,7 @@ namespace Game.Logic
         }
         private void EndOfTheGame(float finalScore)
         {
-
+            HighScoreManager.EndOfTheGame(finalScore);
         }
     }
 }
