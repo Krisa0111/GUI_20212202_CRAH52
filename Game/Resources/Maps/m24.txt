@@ -10,4 +10,5 @@ RoadBlock 1 0 27
 RoadBlock -1 0 28
 BigCar 0 0 30
 Car 1 0 33
+Accelerator 0 0 36
 Car 0 0 38

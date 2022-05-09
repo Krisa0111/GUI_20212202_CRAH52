@@ -13,5 +13,6 @@ Heart -1 0.7 22
 Car 1 0 24
 BigCar -1 0 26
 BigCar 1 0 30
+Accelerator 0 0.8 32
 Car -1 0 34
 RoadBlock -1 0 37

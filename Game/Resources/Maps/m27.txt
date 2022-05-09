@@ -9,5 +9,6 @@ RoadBlock 1 0 24
 Random 1 0.7 26
 Heart -1 0.7 27
 BigCar 0 0 29
+Accelerator -1 0.7 32
 BigCar 1 0 35
 Watch 1 0.7 39

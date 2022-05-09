@@ -1,6 +1,7 @@
 Road 0 0 20
 Car 0 0 5
 Truck -1 0 6
+Accelerator 0 0.7 9
 Car 1 0 12
 Random 1 0.7 17
 RoadBlock -1 0 19
