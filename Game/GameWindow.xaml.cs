@@ -19,7 +19,7 @@ namespace Game
     {
         private IGameDisplay gameDisplay;
         private IGameController controller;
-
+        private bool IsRunning = true;
         private double fps;
 
         public GameWindow()
@@ -35,6 +35,14 @@ namespace Game
 
             gameDisplay = Ioc.Default.GetService<IGameDisplay>();
             controller = Ioc.Default.GetService<IGameController>();
+            gameDisplay.GameDisplayOver += GameDisplay_GameDisplayOver;
+        }
+
+        private void GameDisplay_GameDisplayOver(float obj)
+        {
+            MessageBox.Show("A játék véget ért. Brendon nem ért be a munkahelyére. A pontszámod: " + obj);
+            IsRunning = false;
+
         }
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
@@ -45,6 +53,11 @@ namespace Game
         
         private void OpenTkControl_OnRender(TimeSpan delta)
         {
+            if (IsRunning == false)
+            {
+                this.Close();
+                
+            }
             gameDisplay.Render(delta.TotalSeconds);
 
             fps = 1.0 / delta.TotalSeconds;
