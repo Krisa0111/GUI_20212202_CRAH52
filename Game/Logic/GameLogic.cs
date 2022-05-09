@@ -27,7 +27,7 @@ namespace Game.Logic
         public GameLogic()
         {
             playerLogic = new PlayerLogic();
-            chunkLoader = new ChunkLoader("maps");
+            chunkLoader = new ChunkLoader("Maps");
 
             gameModel.Entities.Enqueue(new Road(new Vector3(0, 0, chunkPos + 20)));
             GenBuildings(5);
