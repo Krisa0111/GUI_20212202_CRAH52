@@ -22,21 +22,27 @@ namespace Game.Logic
 
         private const int CHUNK_SIZE = 40;
         private const int CHUNK_GEN_DISTANCE = 80;
-        private int chunkPos = 0;
+        private int chunkPos = -60;
 
         public GameLogic()
         {
             playerLogic = new PlayerLogic();
             chunkLoader = new ChunkLoader("maps");
 
+            gameModel.Entities.Enqueue(new Road(new Vector3(0, 0, chunkPos + 20)));
+            GenBuildings(5);
+            GenStreetlights(3);
+            chunkPos += CHUNK_SIZE;
+            gameModel.Entities.Enqueue(new Road(new Vector3(0, 0, chunkPos + 20)));
+            GenBuildings(5);
+            GenStreetlights(3);
+            chunkPos += CHUNK_SIZE;
+
             GenEntities();
         }
 
-        private void GenEntities()
+        private void GenBuildings(int count)
         {
-            var entities = chunkLoader.GetRandomChunk(new Vector3(0, 0, chunkPos));
-
-            int count = 5;
             for (int i = 0; i < count; i++)
             {
                 Building building1 = new Building(new Vector3(6, .1f, chunkPos + (CHUNK_SIZE / count) * i));
@@ -46,9 +52,10 @@ namespace Game.Logic
                 gameModel.Entities.Enqueue(building1);
                 gameModel.Entities.Enqueue(building2);
             }
+        }
 
-            count = 3;
-
+        private void GenStreetlights(int count)
+        {
             for (int i = 0; i < count; i++)
             {
                 StreetLight streetLight1 = new StreetLight(new Vector3(1.6f, 4, chunkPos + (CHUNK_SIZE / count) * i));
@@ -57,6 +64,13 @@ namespace Game.Logic
                 gameModel.Entities.Enqueue(streetLight1);
                 gameModel.Entities.Enqueue(streetLight2);
             }
+        }
+        private void GenEntities()
+        {
+            var entities = chunkLoader.GetRandomChunk(new Vector3(0, 0, chunkPos));
+
+            GenBuildings(5);
+            GenStreetlights(3);
 
             for (int i = 0; i < entities.Count; i++)
             {
