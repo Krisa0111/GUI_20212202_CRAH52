@@ -13,15 +13,11 @@ namespace Game
 {
     public class MainMenuDisplay : FrameworkElement
     {
-        IGameModel model;
+        
         Size size;
         public void Resize(Size size)
         {
             this.size = size;
-        }
-        public void SetupModel(IGameModel gameModell)
-        {
-            this.model = gameModell;
         }
 
         public Brush BackGroundBrush
@@ -34,10 +30,7 @@ namespace Game
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
-            if (model != null && size.Width > 50 && size.Height>50)
-            {
-
-            }
+            
             if (ActualWidth >0 && ActualHeight >0)
             {
                 drawingContext.DrawRectangle(BackGroundBrush, null, new Rect(0, 0, ActualWidth, ActualHeight));

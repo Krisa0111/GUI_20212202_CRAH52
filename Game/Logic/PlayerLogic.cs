@@ -282,7 +282,7 @@ namespace Game.Logic
                 pos.Z += jumpDistance;
                 foreach (var item in gameModel.Entities)
                 {
-                    if (item.Type != EntityType.Other && Vector3.Distance(item.Position, pos) < 2)
+                    if (item.Type != EntityType.Other && Vector3.Distance(item.Position, pos) < 4)
                         item.MarkToDelete();
                 }
             }

@@ -25,7 +25,6 @@ namespace Game.Renderer
         IGameModel gameModel = Ioc.Default.GetService<IGameModel>();
         IRenderer renderer = Ioc.Default.GetService<IRenderer>();
         IGameLogic logic = Ioc.Default.GetService<IGameLogic>();
-        private System.Media.SoundPlayer theme = new System.Media.SoundPlayer(@"SoundEffects\theme.wav");
 
         private static Random rnd = new Random();
 
@@ -39,7 +38,6 @@ namespace Game.Renderer
         public GameDisplay()
         {
             player = gameModel.Player;
-            theme.PlayLooping();
             renderer.Camera.Position = new OVector3(0.0f, 1.5f, -1.5f);
             renderer.Camera.Yaw = 90;
             renderer.Camera.Pitch = -15;
@@ -151,8 +149,12 @@ namespace Game.Renderer
 
         public void Dispose()
         {
-            Running = false;
-            updateThread.Join();
+            if (Running)
+            {
+                Running = false;
+                updateThread.Join();
+            }
+
             renderer.Dispose();
         }
     }

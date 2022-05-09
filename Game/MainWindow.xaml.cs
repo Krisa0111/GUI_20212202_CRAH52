@@ -3,6 +3,7 @@ using Game.Logic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,23 +23,23 @@ namespace Game
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        private SoundPlayer theme = new SoundPlayer(@"SoundEffects\theme.wav");
+
         public MainWindow()
         {
             InitializeComponent();
         }
-        public MainMenuDisplay mainMenuDisplay;
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-
             mainmenudisplay.InvalidateVisual();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            
+            theme.PlayLooping();
         }
-
 
         private void Exit_Game_ButtonClick(object sender, RoutedEventArgs e)
         {
@@ -47,10 +48,18 @@ namespace Game
 
         private void HighScore_ButtonClick(object sender, RoutedEventArgs e)
         {
-            HighScoreTableDisplay highScoreTableDisplay;
+            this.Hide();
             HighScoreWindow highScoreWindow = new HighScoreWindow();
-            highScoreTableDisplay = new HighScoreTableDisplay();
             highScoreWindow.Show();
+            this.Show();
+        }
+
+        private void New_Game_ButtonClick(object sender, RoutedEventArgs e)
+        {
+            this.Hide();
+            GameWindow gameWindow = new GameWindow();
+            gameWindow.ShowDialog();
+            this.Show();
         }
     }
 }
