@@ -96,11 +96,13 @@ namespace Game.Logic
                     else if (entity.Type == EntityType.BluePortal)
                     {
                         bluePortal = true;
+                        player.Score += 10;
                     }
                     //Red portal
                     else if (entity.Type == EntityType.RedPortal)
                     {
                         redPortal = true;
+                        player.Score -= 60;
                     }
                     else
                     {
@@ -110,17 +112,20 @@ namespace Game.Logic
                         if (entity.Type == EntityType.Decelerator)
                         {
                             player.Distance *= 0.5f;
+                            player.Score += 10;
                         }
 
                         //Increase speed
                         else if (entity.Type == EntityType.Accelerator)
                         {
                             player.Distance *= 1.2f;
+                            player.Score -= 60;
                         }
 
                         //Plus life
                         else if (entity.Type == EntityType.PlusLife)
                         {
+                            player.Score += 10;
                             if (player.Life < 5)
                             {
                                 player.Life++;
@@ -135,16 +140,19 @@ namespace Game.Logic
                             if (r < 0.4)
                             {
                                 player.Distance *= 0.8f;
+                                player.Score += 10;
                             }
                             else if (r < 0.8)
                             {
                                 player.Distance *= 1.2f;
+                                player.Score -= 60;
                             }
                             else
                             {
                                 if (player.Life < 5)
                                 {
                                     player.Life++;
+                                    player.Score += 10;
                                 }
                             }
                         }
@@ -153,7 +161,7 @@ namespace Game.Logic
                         else if (entity.Type == EntityType.Skull)
                         {
                             player.Life = 0;        //Egyenlőre csak 0 lesz az életeinek a száma
-                            EndOfTheGame(player.Score + player.Position.Z);
+                            EndOfTheGame(player.Score);
                         }
                         entity.MarkToDelete();
                     }
@@ -314,7 +322,7 @@ namespace Game.Logic
                 }
                 if (player.Life == 0)
                 {
-                    EndOfTheGame(player.Score + player.Position.Z);
+                    EndOfTheGame(player.Score);
                 }
 
             }
@@ -332,6 +340,7 @@ namespace Game.Logic
 
             player.Distance += distanceMoved;
             player.Speed = MathF.Sqrt(player.Distance + 1000) / 5;
+            player.Score += distanceMoved;
         }
 
         private void EndOfTheGame(float finalScore)
