@@ -134,11 +134,11 @@ namespace Game.Logic
                             float r = rnd.Next(0, 1);
                             if (r < 0.4)
                             {
-                                player.Distance *= 0.8f;
+                                player.Distance *= 0.5f;
                             }
                             else if (r < 0.8)
                             {
-                                player.Distance *= 1.2f;
+                                player.Distance *= 1.5f;
                             }
                             else
                             {
@@ -330,14 +330,13 @@ namespace Game.Logic
 
             player.RotationY = MathF.Atan(player.Direction.X / player.Direction.Z) / 2.0f;
 
-            player.Distance += distanceMoved;
+            player.Distance += distanceMoved*1.3f;
             player.Speed = MathF.Sqrt(player.Distance + 1000) / 5;
         }
 
         private void EndOfTheGame(float finalScore)
         {
             gameModel.GameOver(finalScore);
-            HighScoreManager.EndOfTheGame(finalScore);
         }
 
         

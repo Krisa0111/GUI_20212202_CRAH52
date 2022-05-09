@@ -1,4 +1,5 @@
 ﻿using Game.Controller;
+using Game.HighScores;
 using Game.Renderer;
 using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using OpenTK.Graphics.OpenGL;
@@ -40,7 +41,13 @@ namespace Game
         private void GameDisplay_GameDisplayOver(float obj)
         {
             MessageBox.Show("A játék véget ért. Brendon nem ért be a munkahelyére. A pontszámod: " + obj);
+            
             Dispatcher.BeginInvoke(new Action(() => this.Close()));
+            HighScoreManager.EndOfTheGame(obj, GetNameOfPlayer());
+        }
+        public string GetNameOfPlayer()
+        {
+            return Microsoft.VisualBasic.Interaction.InputBox("Enter your name to get on the toplist", "You are in top 5", "Your Name");
         }
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)

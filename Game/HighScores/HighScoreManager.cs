@@ -10,44 +10,45 @@ namespace Game.HighScores
 {
     public static class HighScoreManager
     {
-        public static void EndOfTheGame(float finalScore)
+        public static void EndOfTheGame(float finalScore, string name)
         {
-            string[] lines = new string[10];
             //lines = File.ReadAllLines("HighScoreTxt.txt");
             string[] plusLines = new string[11];
             StreamReader sr = new StreamReader(@"..\..\..\..\Game\HighScores\HighScoreTxt.txt");
-            string[] lines1 = new string[11];
+            string[] lines1 = new string[10];
+            string[] lines2 = new string[10];
             for (int i = 0; i < 10; i++)
             {
-                lines1[i] = sr.ReadLine();
+                string line = sr.ReadLine();
+                lines1[i] = line.Split('#')[0];
+                lines2[i] = line.Split('#')[1];
             }
             sr.Close();
             for (int i = 0; i < lines1.Length; i++)
             {
-                plusLines[i] = lines1[i];
+                plusLines[i] = lines1[i] + '#' + lines2[i];
             }
-            plusLines[plusLines.Length - 1] = finalScore.ToString();
-            float[] newArray = new float[plusLines.Length];
-            for (int i = 0; i < newArray.Length; i++)
+            plusLines[plusLines.Length - 1] = finalScore.ToString() + '#' + name;
+
+            for (int i = plusLines.Length-1; i>=0; i--)
             {
-                newArray[i] = float.Parse(plusLines[i], CultureInfo.InvariantCulture);
+                for (int j = 0; j < i; j++)
+                {
+                    if (float.Parse(plusLines[j].Split('#')[0]) < float.Parse(plusLines[j+1].Split('#')[0]))
+                    {
+                        string tmp = plusLines[j];
+                        plusLines[j] = plusLines[j+1];
+                        plusLines[j+1] = tmp;
+                    }
+                }
             }
             ;
 
 
-            Array.Sort(newArray);
-            Array.Reverse(newArray);
-
-            float[] finalArray = new float[newArray.Length-1];
-            for (int i = 0; i < finalArray.Length; i++)
-            {
-                finalArray[i] = newArray[i];
-            }
-
             StreamWriter sw = new StreamWriter(@"..\..\..\..\Game\HighScores\HighScoreTxt.txt");
-            for (int i = 0; i < finalArray.Length; i++)
+            for (int i = 0; i < plusLines.Length-1; i++)
             {
-                sw.WriteLine(finalArray[i]);
+                sw.WriteLine(plusLines[i]);
             }
             sw.Close();
         }
