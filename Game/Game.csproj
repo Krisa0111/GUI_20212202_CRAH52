@@ -14,37 +14,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ContentWithTargetPath Remove="Resources\Maps\m10.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\m11.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\m12.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\m13.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\m14.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\m15.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\m16.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\m17.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\m18.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\m19.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\m20.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\m21.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\m22.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\m23.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\m24.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\m25.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\m26.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\m27.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\m8.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\m9.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\_1.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\_2.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\_3.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\_4.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\_5.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\_6.txt" />
-	  <ContentWithTargetPath Remove="Resources\Maps\_7.txt" />
-	  <ContentWithTargetPath Remove="Resources\SoundEffects\theme1.wav" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
 		<PackageReference Include="OpenTK" Version="4.3.0" />

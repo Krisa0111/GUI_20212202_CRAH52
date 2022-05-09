@@ -1,5 +1,8 @@
 ﻿using Game.Controller;
 using Game.Logic;
+using Game.Renderer;
+using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using OpenTK.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,22 +26,37 @@ namespace Game
     /// </summary>
     public partial class MainWindow : Window
     {
+        private IMainMenuDisplay display;
 
-        private SoundPlayer theme = new SoundPlayer(@"..\..\..\..\Game\Resources\SoundEffects\theme1.wav");
+        private SoundPlayer theme = new SoundPlayer(@"SoundEffects\theme1.wav");
         public MainWindow()
         {
             InitializeComponent();
+
+            var settings = new GLWpfControlSettings
+            {
+                MajorVersion = 3,
+                MinorVersion = 3
+            };
+            OpenTkControl.Start(settings);
+
+            display = Ioc.Default.GetService<IMainMenuDisplay>();
         }
 
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
-            mainmenudisplay.InvalidateVisual();
+            base.OnRenderSizeChanged(sizeInfo);
+            display.Resize(OpenTkControl.FrameBufferWidth, OpenTkControl.FrameBufferHeight, OpenTkControl.Framebuffer);
+        }
+
+        private void OpenTkControl_OnRender(TimeSpan delta)
+        {
+            display.Render(delta.TotalSeconds);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             theme.PlayLooping();
-            
         }
 
         private void Exit_Game_ButtonClick(object sender, RoutedEventArgs e)
@@ -60,6 +78,7 @@ namespace Game
             GameWindow gameWindow = new GameWindow();
             gameWindow.ShowDialog();
             this.Show();
+            display.Resize(OpenTkControl.FrameBufferWidth, OpenTkControl.FrameBufferHeight, OpenTkControl.Framebuffer);
         }
     }
 }

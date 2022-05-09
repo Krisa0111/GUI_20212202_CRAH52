@@ -26,11 +26,13 @@ namespace Game
         {
             Ioc.Default.ConfigureServices(
                 new ServiceCollection()
+                .AddSingleton<IRenderer, OpenGLRenderer>()
                 .AddSingleton<IGameDisplay, GameDisplay>()
                 .AddSingleton<IGameController, GameController>()
                 .AddSingleton<IGameModel, GameModel>()
                 .AddSingleton<IGameLogic, GameLogic>()
-                .AddSingleton<IRenderer, OpenGLRenderer>()
+                .AddSingleton<IMainMenuModel, MainMenuModel>()
+                .AddSingleton<IMainMenuDisplay, MainMenuDisplay>()
                 .BuildServiceProvider()
                 );
         }

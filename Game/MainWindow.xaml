@@ -6,11 +6,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Game"
+        xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" SizeChanged="Window_SizeChanged" Loaded="Window_Loaded">
+        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
     <Grid x:Name="grid">
-        <local:MainMenuDisplay x:Name="mainmenudisplay"/>
-
+        <glWpfControl:GLWpfControl 
+            x:Name="OpenTkControl" 
+            Render="OpenTkControl_OnRender"/>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
@@ -19,7 +21,7 @@
 
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="1">
-                <Label Content="Rail Runner"  FontSize="36" VerticalAlignment="Top" HorizontalAlignment="Center" FontFamily="Broadway" Padding="0" Margin="16"/>
+                <Label Content="Rush Hour"  FontSize="36" VerticalAlignment="Top" HorizontalAlignment="Center" FontFamily="Broadway" Padding="0" Margin="16"/>
                 <Button Content="New Game" Click="New_Game_ButtonClick" FontSize="24"  Padding="20" Opacity="0.8" VerticalAlignment="Top" HorizontalAlignment="Center" BorderThickness="0" FontFamily="Broadway" Margin="16">
                     <Button.Background>
                         <SolidColorBrush Color="#FFDDDDDD" Opacity="0.8"/>
