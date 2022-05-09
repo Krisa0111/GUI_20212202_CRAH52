@@ -56,9 +56,9 @@ namespace Game
             string[] writeoutScores = new string[5];
             writeoutScores[0] = "Champion: " + scoreArray[0];
             writeoutScores[1] = "2nd place: " + scoreArray[1];
-            writeoutScores[2] = "2nd place: " + scoreArray[2];
-            writeoutScores[3] = "2nd place: " + scoreArray[3];
-            writeoutScores[4] = "2nd place: " + scoreArray[4];
+            writeoutScores[2] = "3rd place: " + scoreArray[2];
+            writeoutScores[3] = "4th place: " + scoreArray[3];
+            writeoutScores[4] = "5th place: " + scoreArray[4];
             return writeoutScores;
         }
     }
