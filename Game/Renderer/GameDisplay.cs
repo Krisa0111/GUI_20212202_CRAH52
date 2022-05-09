@@ -28,22 +28,34 @@ namespace Game.Renderer
 
         private static Random rnd = new Random();
 
-        Player player;
         Thread updateThread;
 
         private bool Running { get; set; }
-
+        public int Life
+        {
+            get
+            {
+                return gameModel.Player.Life;
+            }
+        }
+        public float Score
+        {
+            get
+            {
+                return gameModel.Player.Score;
+            }
+        }
         public double TickRate { get; private set; }
 
         public event Action<float> GameDisplayOver;
 
         public GameDisplay()
         {
-            player = gameModel.Player;
             renderer.Camera.Position = new OVector3(0.0f, 1.5f, -1.5f);
             renderer.Camera.Yaw = 90;
             renderer.Camera.Pitch = -15;
             gameModel.EndOfGame += GameModel_EndOfGame;
+            
         }
 
         ~GameDisplay()
@@ -59,6 +71,7 @@ namespace Game.Renderer
 
         public void Start()
         {
+            logic.Reset();
             Running = true;
             updateThread = new Thread(UpdateLoop);
             updateThread.Start();
@@ -123,7 +136,7 @@ namespace Game.Renderer
             int i = 0;
             foreach (var item in gameModel.Entities)
             {
-                if (item.Position.Z < player.Position.Z - 20) continue;
+                if (item.Position.Z < gameModel.Player.Position.Z - 20) continue;
                 if (item is StreetLight)
                 {
                     renderer.PointLights[i].Position = new OVector3(item.Position.X, item.Position.Y, item.Position.Z);
@@ -147,9 +160,9 @@ namespace Game.Renderer
                 renderer.PointLights[i].SpecularIntensity = OVector3.Zero;
             }
 
-            float distance = player.Position.Z - 1 - renderer.Camera.Position.Z;
+            float distance = gameModel.Player.Position.Z - 1 - renderer.Camera.Position.Z;
 
-            renderer.Camera.Position = new OVector3(player.Position.X, 1.4f, renderer.Camera.Position.Z + (float)(distance * delta * 7));
+            renderer.Camera.Position = new OVector3(gameModel.Player.Position.X, 1.4f, renderer.Camera.Position.Z + (float)(distance * delta * 7));
 
             renderer.BeginFrame();
 

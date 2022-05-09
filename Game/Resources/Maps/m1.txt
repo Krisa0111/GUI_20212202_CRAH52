@@ -8,6 +8,7 @@ RoadBlock -1 0 21
 RoadBlock 0 0 21
 Accelerator 1 0.7 20
 Truck -1 0 26
+Accelerator 1 0.7 27
 Skull 0 0.7 28
 Car -1 0 30
 BigCar 0 0 36

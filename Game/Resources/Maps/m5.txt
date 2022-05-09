@@ -4,6 +4,7 @@ RedPortal -1 0 6
 Random 0 0.7 8
 Truck 0 0 13
 BigCar 1 0 14
+Accelerator -1 0.7 17
 Accelerator 0 0.7 21
 Truck -1 0 23
 Truck 1 0 27

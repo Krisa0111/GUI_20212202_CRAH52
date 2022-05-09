@@ -35,7 +35,6 @@ namespace Game
 
             gameDisplay = Ioc.Default.GetService<IGameDisplay>();
             controller = Ioc.Default.GetService<IGameController>();
-            gameDisplay.GameDisplayOver += GameDisplay_GameDisplayOver;
         }
 
         private void GameDisplay_GameDisplayOver(float obj)
@@ -62,7 +61,7 @@ namespace Game
 
             fps = 1.0 / delta.TotalSeconds;
 
-            lb_info.Content = $"FPS: {Math.Round(fps)} TickRate: {Math.Round(gameDisplay.TickRate)}";
+            lb_info.Content = $"FPS: {Math.Round(fps)} TickRate: {Math.Round(gameDisplay.TickRate)} Life: {gameDisplay.Life} Score: {gameDisplay.Score}";
 
             var code = GL.GetError();
             while (code != ErrorCode.NoError)
@@ -75,11 +74,13 @@ namespace Game
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            gameDisplay.GameDisplayOver -= GameDisplay_GameDisplayOver;
             gameDisplay.Stop();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            gameDisplay.GameDisplayOver += GameDisplay_GameDisplayOver;
             gameDisplay.Start();
         }
 

@@ -14,5 +14,6 @@ namespace Game.ViewModel
         Player Player { get; set; }
         event Action<float> EndOfGame;
         void GameOver(float highscore);
+        void Reset();
     }
 }
