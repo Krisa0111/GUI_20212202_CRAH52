@@ -118,7 +118,7 @@ namespace Game.Renderer
                     renderer.PointLights[i].Position = new OVector3(item.Position.X, item.Position.Y, item.Position.Z);
 
                     OVector3 color = new OVector3(1, .9f, .75f);
-                    float intensity = 40;
+                    float intensity = 10;
                     renderer.PointLights[i].AmbientIntensity = color * 0.005f * intensity;
                     renderer.PointLights[i].DiffuseIntensity = color * 0.3f * intensity;
                     renderer.PointLights[i].SpecularIntensity = color * 0.8f * intensity;
