@@ -36,6 +36,8 @@ namespace Game.Renderer
 
         public double TickRate { get; private set; }
 
+        public event Action<float> GameDisplayOver;
+
         public GameDisplay()
         {
             player = gameModel.Player;
@@ -43,8 +45,15 @@ namespace Game.Renderer
             renderer.Camera.Position = new OVector3(0.0f, 1.5f, -1.5f);
             renderer.Camera.Yaw = 90;
             renderer.Camera.Pitch = -15;
+            gameModel.EndOfGame += GameModel_EndOfGame;
 
             updateThread = new Thread(UpdateLoop);
+        }
+
+        private void GameModel_EndOfGame(float obj)
+        {
+            Running = false;
+            GameDisplayOver.Invoke(obj);
         }
 
         public void Start()
