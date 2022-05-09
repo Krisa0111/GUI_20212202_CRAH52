@@ -16,6 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using OVector3 = OpenTK.Mathematics.Vector3;
+using Random = System.Random;
 
 namespace Game.Renderer
 {
@@ -24,7 +25,9 @@ namespace Game.Renderer
         IGameModel gameModel = Ioc.Default.GetService<IGameModel>();
         IRenderer renderer = Ioc.Default.GetService<IRenderer>();
         IGameLogic logic = Ioc.Default.GetService<IGameLogic>();
-        private System.Media.SoundPlayer theme = new System.Media.SoundPlayer(@"..\..\..\Resources\SoundEffects\theme.wav");
+        private System.Media.SoundPlayer theme = new System.Media.SoundPlayer(@"SoundEffects\theme.wav");
+
+        private static Random rnd = new Random();
 
         Player player;
         Thread updateThread;
@@ -104,17 +107,22 @@ namespace Game.Renderer
             renderer.Resize(width, height, defaultFbo);
         }
 
-        public void Render()
+        public void Render(double delta)
         {
             int i = 0;
             foreach (var item in gameModel.Entities)
             {
+                if (item.Position.Z < player.Position.Z - 20) continue;
                 if (item is StreetLight)
                 {
                     renderer.PointLights[i].Position = new OVector3(item.Position.X, item.Position.Y, item.Position.Z);
-                    renderer.PointLights[i].AmbientIntensity = OVector3.One * 0.05f;
-                    renderer.PointLights[i].DiffuseIntensity = OVector3.One * 0.5f;
-                    renderer.PointLights[i].SpecularIntensity = OVector3.One * 1.0f;
+
+                    OVector3 color = new OVector3(1, .9f, .75f);
+                    float intensity = 40;
+                    renderer.PointLights[i].AmbientIntensity = color * 0.005f * intensity;
+                    renderer.PointLights[i].DiffuseIntensity = color * 0.3f * intensity;
+                    renderer.PointLights[i].SpecularIntensity = color * 0.8f * intensity;
+
                     i++;
                 }
 
@@ -128,7 +136,9 @@ namespace Game.Renderer
                 renderer.PointLights[i].SpecularIntensity = OVector3.Zero;
             }
 
-            renderer.Camera.Position = new OVector3(player.Position.X, 1.4f, player.Position.Z - 1.5f);
+            float distance = player.Position.Z - 1 - renderer.Camera.Position.Z;
+
+            renderer.Camera.Position = new OVector3(player.Position.X, 1.4f, renderer.Camera.Position.Z + (float)(distance * delta * 7));
 
             renderer.BeginFrame();
 

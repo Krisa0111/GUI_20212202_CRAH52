@@ -45,7 +45,7 @@ namespace Game
         
         private void OpenTkControl_OnRender(TimeSpan delta)
         {
-            gameDisplay.Render();
+            gameDisplay.Render(delta.TotalSeconds);
 
             fps = 1.0 / delta.TotalSeconds;
 
