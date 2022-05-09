@@ -12,10 +12,16 @@ namespace Game
 {
     public class HighScoreTableDisplay : FrameworkElement
     {
+        
         Size size;
+        public string[] Scores {get; set;}
         public void Resize(Size size)
         {
             this.size = size;
+        }
+        public HighScoreTableDisplay()
+        {
+            this.Scores = WriteOutHighScore(ScoreArray());
         }
         protected override void OnRender(DrawingContext drawingContext)
         {
@@ -33,6 +39,27 @@ namespace Game
             {
                 return new ImageBrush(new BitmapImage(new Uri(Path.Combine(Directory.GetCurrentDirectory(), ("Images"), "background.jpg"))));
             }
+        }
+        private string[] ScoreArray()
+        {
+            string[] scoreArray = new string[10];
+            StreamReader sr = new StreamReader(@"..\..\..\..\Game\HighScores\HighScoreTxt.txt");
+            for (int i = 0; i < scoreArray.Length; i++)
+            {
+                scoreArray[i] = sr.ReadLine();
+            }
+            sr.Close();
+            return scoreArray;
+        }
+        private string[] WriteOutHighScore(string[] scoreArray)
+        {
+            string[] writeoutScores = new string[5];
+            writeoutScores[0] = "Champion: " + scoreArray[0];
+            writeoutScores[1] = "2nd place: " + scoreArray[1];
+            writeoutScores[2] = "3rd place: " + scoreArray[2];
+            writeoutScores[3] = "4th place: " + scoreArray[3];
+            writeoutScores[4] = "5th place: " + scoreArray[4];
+            return writeoutScores;
         }
     }
 }

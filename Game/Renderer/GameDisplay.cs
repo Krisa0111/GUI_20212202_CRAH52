@@ -31,7 +31,20 @@ namespace Game.Renderer
         Thread updateThread;
 
         private bool Running { get; set; }
-
+        public int Life
+        {
+            get
+            {
+                return gameModel.Player.Life;
+            }
+        }
+        public float Score
+        {
+            get
+            {
+                return gameModel.Player.Score;
+            }
+        }
         public double TickRate { get; private set; }
 
         public event Action<float> GameDisplayOver;
@@ -42,6 +55,7 @@ namespace Game.Renderer
             renderer.Camera.Yaw = 90;
             renderer.Camera.Pitch = -15;
             gameModel.EndOfGame += GameModel_EndOfGame;
+            
         }
 
         ~GameDisplay()

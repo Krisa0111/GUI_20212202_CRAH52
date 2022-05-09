@@ -9,6 +9,8 @@ namespace Game.Renderer
         void Resize(int width, int height, int defaultFbo);
         void Start();
         event Action<float> GameDisplayOver;
+        int Life { get; }
+        float Score { get; }
         public double TickRate { get; }
     }
 }
