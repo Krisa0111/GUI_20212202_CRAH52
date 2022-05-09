@@ -21,7 +21,7 @@ namespace Game.Logic
         ChunkLoader chunkLoader;
 
         private const int CHUNK_SIZE = 40;
-        private const int CHUNK_GEN_DISTANCE = 100;
+        private const int CHUNK_GEN_DISTANCE = 80;
         private int chunkPos = 0;
 
         public GameLogic()
@@ -51,8 +51,8 @@ namespace Game.Logic
 
             for (int i = 0; i < count; i++)
             {
-                StreetLight streetLight1 = new StreetLight(new Vector3(1.5f, 4, chunkPos + (CHUNK_SIZE / count) * i));
-                StreetLight streetLight2 = new StreetLight(new Vector3(-1.5f, 4, chunkPos + (CHUNK_SIZE / count) * i));
+                StreetLight streetLight1 = new StreetLight(new Vector3(1.6f, 4, chunkPos + (CHUNK_SIZE / count) * i));
+                StreetLight streetLight2 = new StreetLight(new Vector3(-1.6f, 4, chunkPos + (CHUNK_SIZE / count) * i));
                 streetLight2.RotationY = MathF.PI;
                 gameModel.Entities.Enqueue(streetLight1);
                 gameModel.Entities.Enqueue(streetLight2);
@@ -70,7 +70,7 @@ namespace Game.Logic
         {
             foreach (var entity in gameModel.Entities)
             {
-                if (entity.Position.Z + CHUNK_SIZE < gameModel.Player.Position.Z) entity.MarkToDelete();
+                if (entity.Position.Z + CHUNK_GEN_DISTANCE < gameModel.Player.Position.Z) entity.MarkToDelete();
             }
 
             while (
@@ -107,7 +107,7 @@ namespace Game.Logic
             }
 
             // add entities
-            while (gameModel.Entities.Last().Position.Z < gameModel.Player.Position.Z + CHUNK_GEN_DISTANCE)
+            if (gameModel.Entities.Last().Position.Z < gameModel.Player.Position.Z + CHUNK_GEN_DISTANCE)
             {
                 GenEntities();
             }

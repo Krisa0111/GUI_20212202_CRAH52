@@ -25,21 +25,18 @@ namespace Game.Logic
         private const float gravity = 6.4f;
         private const float jumpForce = 2.6f;
         private bool collided;
+        private bool redPortal;
+        private bool bluePortal;
         private volatile float finalPosX;
         private volatile bool jump;
         private readonly object playerLock = new object();
-        private static Random rnd;
-        //private System.Media.SoundPlayer jumpsound = new System.Media.SoundPlayer(@"..\..\..\Resources\SoundEffects\jump.wav");
-        
-        
-        
-        
+        private static Random rnd = new Random();
 
         private List<Entity> collidedEntities = new List<Entity>();
 
         public PlayerLogic()
         {
-            
+
             this.player = gameModel.Player;
             collisionPacket = new CollisionPacket();
             collisionPacket.eRadius = new Vector3(0.15f, 0.5f, 0.15f);
@@ -70,7 +67,6 @@ namespace Game.Logic
 
         private void CollideWithEntities(ref IReadOnlyCollection<Entity> entities)
         {
-            collidedEntities.Clear();
             foreach (var entity in entities)
             {
                 CollisionPacket temp = collisionPacket;
@@ -96,9 +92,19 @@ namespace Game.Logic
 
                         if (entity.Type == EntityType.Obstacle) collidedEntities.Add(entity);
                     }
+                    //Blue portal
+                    else if (entity.Type == EntityType.BluePortal)
+                    {
+                        bluePortal = true;
+                    }
+                    //Red portal
+                    else if (entity.Type == EntityType.RedPortal)
+                    {
+                        redPortal = true;
+                    }
                     else
                     {
-                        // apply powerups / portals
+                        // apply powerups
 
                         //Decrease speed
                         if (entity.Type == EntityType.Decelerator)
@@ -110,18 +116,6 @@ namespace Game.Logic
                         else if (entity.Type == EntityType.Accelerator)
                         {
                             player.Distance *= 1.2f;
-                        }
-
-                        //Blue portal
-                        else if (entity.Type == EntityType.BluePortal)
-                        {
-                            player.Score += player.Position.Z * 0.1f;   //Nem a pozíciót változtatja meg, hanem a Scoret módosítja
-                        }
-
-                        //Red portal
-                        else if (entity.Type == EntityType.RedPortal)
-                        {
-                            player.Score -= (player.Position.Z * 1.1f - player.Position.Z); //Nem a pozíciót változtatja meg, hanem a Scoret módosítja
                         }
 
                         //Plus life
@@ -138,15 +132,7 @@ namespace Game.Logic
                         {
                             rnd = new Random();
                             float r = rnd.Next(0, 1);
-                            if (r < 0.2)
-                            {
-                                player.Score += player.Position.Z * 0.1f;
-                            }
-                            else if (r < 0.4)
-                            {
-                                player.Score -= (player.Position.Z * 1.1f - player.Position.Z);
-                            }
-                            else if (r < 0.6)
+                            if (r < 0.4)
                             {
                                 player.Distance *= 0.8f;
                             }
@@ -249,6 +235,10 @@ namespace Game.Logic
 
         public void Update(double dt)
         {
+            collidedEntities.Clear();
+            redPortal = false;
+            bluePortal = false;
+
             Vector3 prevPos = player.Position;
             bool grouned = collided;
 
@@ -286,10 +276,26 @@ namespace Game.Logic
                 (player.Velocity + new Vector3(0, verticalVelocity, 0)) * (float)dt,
                 player.Position);
 
-            /*if (pos.Y < collisionPacket.eRadius.Y)
+            if (bluePortal)
             {
-                pos.Y = collisionPacket.eRadius.Y;
-            }*/
+                float jumpDistance = rnd.Next(30, 60);
+                pos.Z += jumpDistance;
+                foreach (var item in gameModel.Entities)
+                {
+                    if (item.Type != EntityType.Other && Vector3.Distance(item.Position, pos) < 2)
+                        item.MarkToDelete();
+                }
+            }
+            else if (redPortal)
+            {
+                float jumpDistance = -rnd.Next(10, 40);
+                pos.Z += jumpDistance;
+                foreach (var item in gameModel.Entities)
+                {
+                    if (item.Type != EntityType.Other && Vector3.Distance(item.Position, pos) < 2)
+                        item.MarkToDelete();
+                }
+            }
 
             player.Position = pos;
 
@@ -324,13 +330,10 @@ namespace Game.Logic
 
             player.RotationY = MathF.Atan(player.Direction.X / player.Direction.Z) / 2.0f;
 
-            IncreaseSpeed(player, dt);
+            player.Distance += distanceMoved;
+            player.Speed = MathF.Sqrt(player.Distance + 1000) / 5;
         }
-        private void IncreaseSpeed(Player player, double dt)
-        {
-            player.Distance += (float)dt;         //Egyszer csak leesik 1 alá ???????????? talán új pálya generálásakor
-            player.Speed = (float)Math.Sqrt(player.Distance);
-        }
+
         private void EndOfTheGame(float finalScore)
         {
             HighScoreManager.EndOfTheGame(finalScore);
