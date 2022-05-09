@@ -21,6 +21,7 @@
 	  <ContentWithTargetPath Remove="Resources\Maps\_5.txt" />
 	  <ContentWithTargetPath Remove="Resources\Maps\_6.txt" />
 	  <ContentWithTargetPath Remove="Resources\Maps\_7.txt" />
+	  <ContentWithTargetPath Remove="Resources\SoundEffects\theme1.wav" />
 	</ItemGroup>
 
 	<ItemGroup>
