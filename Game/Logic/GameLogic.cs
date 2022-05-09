@@ -22,12 +22,19 @@ namespace Game.Logic
 
         private const int CHUNK_SIZE = 40;
         private const int CHUNK_GEN_DISTANCE = 80;
-        private int chunkPos = -60;
+        private int chunkPos;
         
         public GameLogic()
         {
-            playerLogic = new PlayerLogic();
             chunkLoader = new ChunkLoader("Maps");
+            Init();
+        }
+
+        private void Init()
+        {
+            chunkPos = -60;
+
+            playerLogic = new PlayerLogic();
 
             gameModel.Entities.Enqueue(new Road(new Vector3(0, 0, chunkPos + 20)));
             GenBuildings(5);
@@ -37,8 +44,14 @@ namespace Game.Logic
             GenBuildings(5);
             GenStreetlights(3);
             chunkPos += CHUNK_SIZE;
-
             GenEntities();
+
+        }
+
+        public void Reset()
+        {
+            gameModel.Reset();
+            Init();
         }
 
         private void GenBuildings(int count)
@@ -65,6 +78,7 @@ namespace Game.Logic
                 gameModel.Entities.Enqueue(streetLight2);
             }
         }
+
         private void GenEntities()
         {
             var entities = chunkLoader.GetRandomChunk(new Vector3(0, 0, chunkPos));

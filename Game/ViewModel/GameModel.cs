@@ -20,17 +20,18 @@ namespace Game.ViewModel
             get; set;
         }
 
-        public Map mapTunnel { get; set; }
-        
-
         public GameModel()
         {
             Entities = new ConcurrentQueue<Entity>();
-            mapTunnel = new MapTunnel();
             Player = new Player(new Vector3(0,0.7f,0));
         }
 
-        
+        public void Reset()
+        {
+            Entities.Clear();
+            Player = new Player(new Vector3(0, 0.7f, 0));
+            
+        }
 
         public void GameOver(float highscore)
         {
