@@ -50,12 +50,19 @@ namespace Game.Graphics.OpenGL
 
         private string[] files = new string[]
         {
-            "Images/skybox/Daylight Box_Right.bmp",
+            /*"Images/skybox/Daylight Box_Right.bmp",
             "Images/skybox/Daylight Box_Left.bmp",
             "Images/skybox/Daylight Box_Top.bmp",
             "Images/skybox/Daylight Box_Bottom.bmp",
             "Images/skybox/Daylight Box_Front.bmp",
-            "Images/skybox/Daylight Box_Back.bmp",
+            "Images/skybox/Daylight Box_Back.bmp",*/
+
+            "Images/skybox/nightsky_left.jpg",
+            "Images/skybox/nightsky_right.jpg",
+            "Images/skybox/nightsky_bottom.jpg",
+            "Images/skybox/nightsky_top.jpg",
+            "Images/skybox/nightsky_front.jpg",
+            "Images/skybox/nightsky_back.jpg",
         };
 
         private static VertexArray vao;
@@ -92,8 +99,6 @@ namespace Game.Graphics.OpenGL
             GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
             GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
             GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapR, (int)TextureWrapMode.ClampToEdge);
-
-
 
             for (int i = 0; i < 6; i++)
             {
