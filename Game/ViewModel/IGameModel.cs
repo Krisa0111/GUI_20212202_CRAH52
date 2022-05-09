@@ -12,5 +12,7 @@ namespace Game.ViewModel
     {
         ConcurrentQueue<Entity> Entities { get; set; }
         Player Player { get; set; }
+        event Action<float> EndOfGame;
+        void GameOver(float highscore);
     }
 }

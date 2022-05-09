@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Globalization;
 
 namespace Game.HighScores
 {
@@ -29,7 +30,7 @@ namespace Game.HighScores
             float[] newArray = new float[plusLines.Length];
             for (int i = 0; i < newArray.Length; i++)
             {
-                newArray[i] = float.Parse(plusLines[i]);
+                newArray[i] = float.Parse(plusLines[i], CultureInfo.InvariantCulture);
             }
             ;
 

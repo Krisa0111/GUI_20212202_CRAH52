@@ -23,7 +23,7 @@ namespace Game.Logic
         private const int CHUNK_SIZE = 40;
         private const int CHUNK_GEN_DISTANCE = 80;
         private int chunkPos = -60;
-
+        
         public GameLogic()
         {
             playerLogic = new PlayerLogic();

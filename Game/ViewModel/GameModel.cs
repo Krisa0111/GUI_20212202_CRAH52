@@ -9,9 +9,12 @@ using System.Threading.Tasks;
 
 namespace Game.ViewModel
 {
+    
     public class GameModel : IGameModel
     {
         public Player Player { get;set; }
+        public event Action<float> EndOfGame;
+
         public ConcurrentQueue<Entity> Entities
         {
             get; set;
@@ -25,6 +28,13 @@ namespace Game.ViewModel
             Entities = new ConcurrentQueue<Entity>();
             mapTunnel = new MapTunnel();
             Player = new Player(new Vector3(0,0.7f,0));
+        }
+
+        
+
+        public void GameOver(float highscore)
+        {
+            EndOfGame.Invoke(highscore);
         }
     }
 }
