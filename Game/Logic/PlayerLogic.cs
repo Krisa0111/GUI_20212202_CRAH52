@@ -23,7 +23,7 @@ namespace Game.Logic
         private int collisionrecursionDpeth = 0;
         private float verticalVelocity;
         private const float gravity = 6.4f;
-        private const float jumpForce = 2.6f;
+        private const float jumpForce = 3.5f;
         private bool collided;
         private bool redPortal;
         private bool bluePortal;
@@ -109,7 +109,7 @@ namespace Game.Logic
                         //Decrease speed
                         if (entity.Type == EntityType.Decelerator)
                         {
-                            player.Distance *= 0.8f;
+                            player.Distance *= 0.5f;
                         }
 
                         //Increase speed
