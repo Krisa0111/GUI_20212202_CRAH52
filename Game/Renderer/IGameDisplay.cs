@@ -4,7 +4,7 @@ namespace Game.Renderer
 {
     internal interface IGameDisplay
     {
-        void Dispose();
+        void Stop();
         void Render(double delta);
         void Resize(int width, int height, int defaultFbo);
         void Start();
