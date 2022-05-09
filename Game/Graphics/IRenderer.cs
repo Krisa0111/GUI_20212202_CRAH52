@@ -1,11 +1,12 @@
 ﻿using Game.ResourceLoader;
 using Game.ViewModel;
 using OpenTK.Mathematics;
+using System;
 using System.Collections.Generic;
 
 namespace Game.Graphics
 {
-    public interface IRenderer
+    public interface IRenderer : IDisposable
     {
         ICamera Camera { get; }
         IDirectionalLight DirectionalLight { get; }
@@ -15,7 +16,6 @@ namespace Game.Graphics
         bool ShowColliders { get; set; }
 
         void BeginFrame();
-        void Dispose();
         void EndFrame();
         void Render(IReadOnlyCollection<Entity> entities);
         void Render(Entity entity);

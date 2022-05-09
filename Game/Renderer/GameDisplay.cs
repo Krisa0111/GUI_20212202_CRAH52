@@ -44,8 +44,11 @@ namespace Game.Renderer
             renderer.Camera.Yaw = 90;
             renderer.Camera.Pitch = -15;
             gameModel.EndOfGame += GameModel_EndOfGame;
+        }
 
-            updateThread = new Thread(UpdateLoop);
+        ~GameDisplay()
+        {
+            Dispose();
         }
 
         private void GameModel_EndOfGame(float obj)
@@ -57,6 +60,7 @@ namespace Game.Renderer
         public void Start()
         {
             Running = true;
+            updateThread = new Thread(UpdateLoop);
             updateThread.Start();
         }
 
@@ -156,14 +160,17 @@ namespace Game.Renderer
             renderer.EndFrame();
         }
 
-        public void Dispose()
+        public void Stop()
         {
             if (Running)
             {
                 Running = false;
                 updateThread.Join();
             }
+        }
 
+        public void Dispose()
+        {
             renderer.Dispose();
         }
     }
