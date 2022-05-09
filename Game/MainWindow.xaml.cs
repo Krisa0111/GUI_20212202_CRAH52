@@ -24,8 +24,7 @@ namespace Game
     public partial class MainWindow : Window
     {
 
-        private SoundPlayer theme = new SoundPlayer(@"SoundEffects\theme.wav");
-
+        private SoundPlayer theme = new SoundPlayer(@"..\..\..\..\Game\Resources\SoundEffects\theme1.wav");
         public MainWindow()
         {
             InitializeComponent();
@@ -39,6 +38,7 @@ namespace Game
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             theme.PlayLooping();
+            
         }
 
         private void Exit_Game_ButtonClick(object sender, RoutedEventArgs e)
