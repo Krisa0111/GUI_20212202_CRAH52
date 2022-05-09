@@ -238,7 +238,7 @@ namespace Game.Logic
             collidedEntities.Clear();
             redPortal = false;
             bluePortal = false;
-
+            
             Vector3 prevPos = player.Position;
             bool grouned = collided;
 
@@ -336,7 +336,10 @@ namespace Game.Logic
 
         private void EndOfTheGame(float finalScore)
         {
+            gameModel.GameOver(finalScore);
             HighScoreManager.EndOfTheGame(finalScore);
         }
+
+        
     }
 }
