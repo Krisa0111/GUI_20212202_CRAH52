@@ -11,5 +11,6 @@ namespace Game.Logic
     {
         public void Update(double delta);
         public void Move(Directions direction);
+        public void Reset();
     }
 }
