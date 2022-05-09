@@ -231,9 +231,11 @@ namespace Game.Logic
                         break;
                     case Directions.Left:
                         finalPosX++;
+                        if (finalPosX > 1) finalPosX = 1;
                         break;
                     case Directions.Right:
                         finalPosX--;
+                        if (finalPosX < -1) finalPosX = -1;
                         break;
                     default:
                         break;
