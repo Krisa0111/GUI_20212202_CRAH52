@@ -31,7 +31,7 @@ namespace Game.Graphics
         private FrameBuffer multisapleFBO;
         private FrameBuffer intermediateFBO;
 
-        private const int MAX_POINT_LIGHTS = 16;
+        private const int MAX_POINT_LIGHTS = 24;
         private DirectionalLight directionalLight;
         private PointLight[] pointLights;
 
@@ -72,7 +72,7 @@ namespace Game.Graphics
             pointLights = new PointLight[MAX_POINT_LIGHTS];
             for (int i = 0; i < pointLights.Length; i++)
             {
-                pointLights[i] = new PointLight(Vector3.Zero, 1.0f, 0.09f, 0.032f, Vector3.One * 0.05f, Vector3.One * 0.5f, Vector3.One * 1.0f);
+                pointLights[i] = new PointLight(Vector3.Zero, 0.5f, 0.2f, 0.1f, Vector3.One * 0.05f, Vector3.One * 0.4f, Vector3.One * 0.8f);
             }
             directionalLight = new DirectionalLight(-Vector3.UnitY, Vector3.One * 0.05f, Vector3.One * 0.1f, Vector3.One * 0.2f);
             directionalLight.SetUniforms(shader);

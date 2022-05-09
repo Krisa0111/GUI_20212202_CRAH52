@@ -27,7 +27,7 @@ struct PointLight {
     vec3 specular;
 };
 
-#define NR_POINT_LIGHTS 16
+#define NR_POINT_LIGHTS 24
 
 in vec3 normal;
 in vec3 color;
@@ -77,7 +77,7 @@ void main()
     
     float fogNear = 0;
     float fogFar = 100;
-    vec3 fogColor = vec3(.5,.5,.6);
+    vec3 fogColor = vec3(.2,.2,.25);
     float fog = smoothstep(fogFar, fogNear, length(viewPos - fragPos));
 
     FragColor.rgb = result * fog + fogColor * (1 - fog);
