@@ -341,14 +341,12 @@ namespace Game.Logic
             player.RotationY = MathF.Atan(player.Direction.X / player.Direction.Z) / 2.0f;
 
             player.Distance += distanceMoved;
-            player.Speed = MathF.Sqrt((player.Distance+1000)/50) +4;
-            player.Score += distanceMoved;
+            player.Speed = MathF.Sqrt(player.Distance + 1000) / 5;
         }
 
         private void EndOfTheGame(float finalScore)
         {
             gameModel.GameOver(finalScore);
-            HighScoreManager.EndOfTheGame(finalScore);
         }
 
         

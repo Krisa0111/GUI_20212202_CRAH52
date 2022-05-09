@@ -54,11 +54,11 @@ namespace Game
         private string[] WriteOutHighScore(string[] scoreArray)
         {
             string[] writeoutScores = new string[5];
-            writeoutScores[0] = "Champion: " + scoreArray[0];
-            writeoutScores[1] = "2nd place: " + scoreArray[1];
-            writeoutScores[2] = "3rd place: " + scoreArray[2];
-            writeoutScores[3] = "4th place: " + scoreArray[3];
-            writeoutScores[4] = "5th place: " + scoreArray[4];
+            writeoutScores[0] = "Champion:  " + scoreArray[0].Split('#')[0] + " --> " + scoreArray[0].Split('#')[1];
+            writeoutScores[1] = "2nd place: " + scoreArray[1].Split('#')[0] + " --> " + scoreArray[1].Split('#')[1];
+            writeoutScores[2] = "3rd place: " + scoreArray[2].Split('#')[0] + " --> " + scoreArray[2].Split('#')[1];
+            writeoutScores[3] = "4th place: " + scoreArray[3].Split('#')[0] + " --> " + scoreArray[3].Split('#')[1];
+            writeoutScores[4] = "5th place: " + scoreArray[4].Split('#')[0] + " --> " + scoreArray[4].Split('#')[1];
             return writeoutScores;
         }
     }
