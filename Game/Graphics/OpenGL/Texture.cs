@@ -49,7 +49,7 @@ namespace Game.Graphics.OpenGL
             //   And finally, the actual pixels.
             GL.TexImage2D(TextureTarget.Texture2D,
                 0,
-                PixelInternalFormat.Rgba,
+                PixelInternalFormat.SrgbAlpha,
                 image.Width,
                 image.Height,
                 0,
