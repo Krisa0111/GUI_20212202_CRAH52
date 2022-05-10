@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using OpenTK.Wpf;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +22,7 @@ namespace Game
     /// </summary>
     public partial class HighScoreWindow : Window
     {
+
         public HighScoreWindow()
         {
             InitializeComponent();
@@ -27,6 +31,11 @@ namespace Game
         private void BackToMain_Button_Menu_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

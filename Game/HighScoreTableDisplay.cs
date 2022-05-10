@@ -37,7 +37,7 @@ namespace Game
         {
             get
             {
-                return new ImageBrush(new BitmapImage(new Uri(Path.Combine(Directory.GetCurrentDirectory(), ("Images"), "background.jpg"))));
+                return new ImageBrush(new BitmapImage(new Uri(Path.Combine(Directory.GetCurrentDirectory(), ("Images"), "background.png"))));
             }
         }
         private string[] ScoreArray()
