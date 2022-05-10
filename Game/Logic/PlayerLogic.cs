@@ -96,13 +96,11 @@ namespace Game.Logic
                     else if (entity.Type == EntityType.BluePortal)
                     {
                         bluePortal = true;
-                        player.Score += 10;
                     }
                     //Red portal
                     else if (entity.Type == EntityType.RedPortal)
                     {
                         redPortal = true;
-                        player.Score -= 60;
                     }
                     else
                     {
@@ -342,6 +340,7 @@ namespace Game.Logic
 
             player.Distance += distanceMoved;
             player.Speed = MathF.Sqrt(player.Distance + 1000) / 5;
+            player.Score += distanceMoved * Math.Sign(pos.Z - prevPos.Z);
         }
 
         private void EndOfTheGame(float finalScore)
