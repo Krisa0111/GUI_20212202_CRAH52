@@ -7,37 +7,25 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Game"
         mc:Ignorable="d"
-        Title="HighScoreWindow" Height="450" Width="800">
+        Title="HighScoreWindow" Height="450" Width="800" Loaded="Window_Loaded">
     <Window.DataContext>
         <local:HighScoreTableDisplay/>
     </Window.DataContext>
-        <Grid x:Name="grid">
-        <local:HighScoreTableDisplay x:Name="highscoretabledisplay"/>
+    <Grid x:Name="grid" Background="{Binding BackGroundBrush}">
+        <StackPanel Grid.Column="1">
+                <Label Content="High Score Table" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Center" FontFamily="Broadway" FontSize="36" Margin="20" />
+                <Label Content="{Binding Scores[0]}" HorizontalAlignment="Center" FontFamily="Broadway" FontSize="36" Grid.ColumnSpan="2" Margin="16" FontWeight="Bold" Foreground="White"/>
+                <Label Content="{Binding Scores[1]}" HorizontalAlignment="Center" FontFamily="Broadway" FontSize="36" Grid.ColumnSpan="2" Margin="16" FontWeight="Bold" Foreground="White"/>
+                <Label Content="{Binding Scores[2]}" HorizontalAlignment="Center" FontFamily="Broadway" FontSize="36" Grid.ColumnSpan="2" Margin="16" FontWeight="Bold" Foreground="White"/>
+                <Label Content="{Binding Scores[3]}" HorizontalAlignment="Center" FontFamily="Broadway" FontSize="36" Grid.ColumnSpan="2" Margin="16" FontWeight="Bold" Foreground="White"/>
+                <Label Content="{Binding Scores[4]}" HorizontalAlignment="Center" FontFamily="Broadway" FontSize="36" Grid.ColumnSpan="2" Margin="16" FontWeight="Bold" Foreground="White"/>
+                <Button Content="Back" Click="BackToMain_Button_Menu_Click" FontSize="24" Padding="20" Opacity="0.8" VerticalAlignment="Top" HorizontalAlignment="Center" BorderThickness="0" FontFamily="Broadway" Margin="16">
+                    <Button.Background>
+                        <SolidColorBrush Color="#FFDDDDDD" Opacity="0.8"/>
+                    </Button.Background>
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
-
-            <Label Content="High Score Table" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Center" FontFamily="Broadway" FontSize="36" Margin="20" />
-            <Label Content="{Binding Scores[0]}"    Grid.Column="0" HorizontalAlignment="Center" FontFamily="Broadway" FontSize="36" Grid.ColumnSpan="2" Margin="0,210,266,320" FontWeight="Bold" Foreground="White"/>
-            <Label Content="{Binding Scores[1]}" Grid.Column="0" HorizontalAlignment="Center" FontFamily="Broadway" FontSize="36" Grid.ColumnSpan="2" Margin="0,290,266,260" FontWeight="Bold" Foreground="White"/>
-            <Label Content="{Binding Scores[2]}" Grid.Column="0" HorizontalAlignment="Center" FontFamily="Broadway" FontSize="36" Grid.ColumnSpan="2" Margin="0,370,266,200" FontWeight="Bold" Foreground="White"/>
-            <Label Content="{Binding Scores[3]}" Grid.Column="0" HorizontalAlignment="Center" FontFamily="Broadway" FontSize="36" Grid.ColumnSpan="2" Margin="0,450,266,140" FontWeight="Bold" Foreground="White"/>
-            <Label Content="{Binding Scores[4]}" Grid.Column="0" HorizontalAlignment="Center" FontFamily="Broadway" FontSize="36" Grid.ColumnSpan="2" Margin="0,530,266,80" FontWeight="Bold" Foreground="White"/>
-            <Button Grid.Column="0" Content="Back" Click="BackToMain_Button_Menu_Click" FontSize="36" VerticalAlignment="Top" HorizontalAlignment="Center" FontFamily="Broadway" Padding="0" Margin="10,800,0,0">
-                
-                <Button.Background>
-                    <SolidColorBrush Color="#FFDDDDDD" Opacity="0.8"/>
-                </Button.Background>
-            </Button>
-            <StackPanel Grid.Column="1">
-
+                </Button>
             </StackPanel>
-
-        </Grid>
 
     </Grid>
 </Window>
