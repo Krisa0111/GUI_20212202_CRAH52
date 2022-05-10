@@ -30,15 +30,15 @@ namespace Game.HighScores
             }
             plusLines[plusLines.Length - 1] = finalScore.ToString() + '#' + name;
 
-            for (int i = plusLines.Length-1; i>=0; i--)
+            for (int i = plusLines.Length - 1; i >= 0; i--)
             {
                 for (int j = 0; j < i; j++)
                 {
-                    if (float.Parse(plusLines[j].Split('#')[0], CultureInfo.InvariantCulture ) < float.Parse(plusLines[j+1].Split('#')[0],CultureInfo.InvariantCulture))
+                    if (float.Parse(plusLines[j].Split('#')[0], CultureInfo.InvariantCulture) < float.Parse(plusLines[j + 1].Split('#')[0], CultureInfo.InvariantCulture))
                     {
                         string tmp = plusLines[j];
-                        plusLines[j] = plusLines[j+1];
-                        plusLines[j+1] = tmp;
+                        plusLines[j] = plusLines[j + 1];
+                        plusLines[j + 1] = tmp;
                     }
                 }
             }
@@ -46,7 +46,7 @@ namespace Game.HighScores
 
 
             StreamWriter sw = new StreamWriter(@"..\..\..\..\Game\HighScores\HighScoreTxt.txt");
-            for (int i = 0; i < plusLines.Length-1; i++)
+            for (int i = 0; i < plusLines.Length - 1; i++)
             {
                 sw.WriteLine(plusLines[i]);
             }
