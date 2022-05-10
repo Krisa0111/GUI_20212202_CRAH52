@@ -109,14 +109,14 @@ namespace Game.Logic
                         //Decrease speed
                         if (entity.Type == EntityType.Decelerator)
                         {
-                            player.Distance *= 0.000000000001f;
+                            player.Distance *= 0.5f;
                             player.Score += 10;
                         }
 
                         //Increase speed
                         else if (entity.Type == EntityType.Accelerator)
                         {
-                            player.Distance *= 2.5f;
+                            player.Distance *= 1.3f;
                             player.Score -= 60;
                         }
 
@@ -137,12 +137,12 @@ namespace Game.Logic
                             float r = rnd.Next(0, 1);
                             if (r < 0.4)
                             {
-                                player.Distance *= 0.000000000001f;
+                                player.Distance *= 0.51f;
                                 player.Score += 10;
                             }
                             else if (r < 0.8)
                             {
-                                player.Distance *= 2.5f;
+                                player.Distance *= 1.3f;
                                 player.Score -= 60;
                             }
                             else
@@ -339,7 +339,7 @@ namespace Game.Logic
             player.RotationY = MathF.Atan(player.Direction.X / player.Direction.Z) / 2.0f;
 
             player.Distance += distanceMoved;
-            player.Speed = MathF.Sqrt(player.Distance + 1000) / 5;
+            player.Speed = (float)(Math.Pow(player.Distance/3,0.6));
             player.Score += distanceMoved * Math.Sign(pos.Z - prevPos.Z);
         }
 
