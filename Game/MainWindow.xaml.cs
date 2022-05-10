@@ -79,6 +79,7 @@ namespace Game
             gameWindow.ShowDialog();
             this.Show();
             display.Resize(OpenTkControl.FrameBufferWidth, OpenTkControl.FrameBufferHeight, OpenTkControl.Framebuffer);
+            display.Reset();
         }
     }
 }
