@@ -9,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
+using System.IO;
+using System.Globalization;
 
 namespace Game
 {
@@ -42,7 +44,17 @@ namespace Game
             MessageBox.Show("A játék véget ért. Brendon nem ért be a munkahelyére. A pontszámod: " + obj);
             
             Dispatcher.BeginInvoke(new Action(() => this.Close()));
-            HighScoreManager.EndOfTheGame(obj, GetNameOfPlayer());
+            string[] scores = new string[10];
+            StreamReader sr = new StreamReader(@"..\..\..\..\Game\HighScores\HighScoreTxt.txt");
+            for (int i = 0; i < scores.Length; i++)
+            {
+                scores[i] = sr.ReadLine();
+            }
+            sr.Close();
+            if (float.Parse(scores[4].Split('#')[0], CultureInfo.InvariantCulture) <= (float)obj)
+            {
+                HighScoreManager.EndOfTheGame(obj, GetNameOfPlayer());
+            }
         }
         public string GetNameOfPlayer()
         {

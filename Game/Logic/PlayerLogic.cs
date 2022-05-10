@@ -137,7 +137,7 @@ namespace Game.Logic
                             float r = rnd.Next(0, 1);
                             if (r < 0.4)
                             {
-                                player.Distance *= 0.51f;
+                                player.Distance *= 0.5f;
                                 player.Score += 10;
                             }
                             else if (r < 0.8)
