@@ -34,7 +34,7 @@ namespace Game.HighScores
             {
                 for (int j = 0; j < i; j++)
                 {
-                    if (float.Parse(plusLines[j].Split('#')[0]) < float.Parse(plusLines[j+1].Split('#')[0]))
+                    if (float.Parse(plusLines[j].Split('#')[0], CultureInfo.InvariantCulture ) < float.Parse(plusLines[j+1].Split('#')[0],CultureInfo.InvariantCulture))
                     {
                         string tmp = plusLines[j];
                         plusLines[j] = plusLines[j+1];
